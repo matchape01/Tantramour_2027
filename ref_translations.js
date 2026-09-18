@@ -29,6 +29,12 @@ var REF_TRANSLATIONS = [
 
   // ── PAGE ACCUEIL ─────────────────────────────────────────────────────────────
   { key: "home_festival_dates", fr: "Festival · 29 août – 4 septembre 2026", en: "Festival · August 29 – September 4, 2026" },
+  { key: "home_title_1",       fr: "Tantramour",                 en: "Tantramour" },
+  { key: "home_title_2",       fr: "2026",                       en: "2026" },
+  { key: "home_website_text",  fr: "tantramourfestival.com",      en: "tantramourfestival.com" },
+  { key: "home_website_url",   fr: "https://tantramourfestival.com", en: "https://tantramourfestival.com" },
+  { key: "card_editer_index_title", fr: "Éditer Accueil (index)", en: "Edit Home (index)" },
+  { key: "card_editer_index_desc",  fr: "Modifier les textes de la page d'accueil (dates, titre, site web)", en: "Edit homepage texts (dates, title, website)" },
   { key: "home_subtitle",      fr: "Page destinée à la DreamTeam", en: "Page for the DreamTeam" },
   { key: "home_group_general", fr: "DreamTeam",                  en: "DreamTeam" },
   { key: "home_group_planning",fr: "Gestion planning",           en: "Schedule Management" },

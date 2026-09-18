@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tantramour — Éditer Accueil (index.html)</title>
+<script src="ref_translations.js"></script>
+<script src="i18n.js"></script>
+<script src="github-api.js"></script>
+<script src="loader.js"></script>
+<style>
+  :root {
+    --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
+    --text:#1f2328; --muted:#57606a; --accent:#1d4ed8;
+    --accent-hover:#1e40af;
+    --success:#166534; --success-bg:#dcfce7; --success-border:#86efac;
+    --warn:#b45309; --warn-bg:#fffbeb; --warn-border:#fcd34d;
+    --danger:#dc2626; --danger-bg:#fee2e2;
+  }
+  .dark {
+    --bg:#0d1117; --surface:#161b22; --border:#30363d;
+    --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
+    --accent-hover:#1d4ed8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:-apple-system,"Segoe UI",system-ui,sans-serif;
+    font-size:14px; line-height:1.5;
+    background:var(--bg); color:var(--text);
+  }
+  .wrap { max-width:920px; margin:0 auto; padding:28px 20px 100px; }
+
+  /* ── HEADER ── */
+  header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+  .logo h1 { font-size:20px; font-weight:700; }
+  .logo p  { font-size:24px; font-weight:800; color:var(--accent); line-height:1.2; margin-top:2px; }
+  .header-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .btn {
+    cursor:pointer; background:var(--surface); border:1px solid var(--border);
+    border-radius:6px; padding:7px 14px; font-size:13px; font-weight:600;
+    color:var(--text); font-family:inherit; display:inline-flex; align-items:center;
+    gap:6px; text-decoration:none; transition:all .15s;
+  }
+  .btn:hover { background:var(--border); }
+  .btn-save { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .btn-save:hover { background:var(--accent-hover); }
+
+  /* ── BANNER / HELP ── */
+  .help-box {
+    background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:6px; padding:14px 18px; margin-bottom:24px; font-size:13px; color:var(--text);
+  }
+
+  /* ── FORM CONTAINER ── */
+  .edit-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:24px; margin-bottom:24px;
+  }
+  .field-row {
+    margin-bottom:22px; padding-bottom:20px; border-bottom:1px solid var(--border);
+  }
+  .field-row:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+
+  .field-header {
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;
+  }
+  .field-title {
+    font-size:14px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px;
+  }
+  .field-badge {
+    font-size:11px; font-weight:600; padding:2px 8px; border-radius:12px;
+    background:#e0f2fe; color:#0369a1;
+  }
+
+  .field-inputs {
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  @media (max-width:640px) {
+    .field-inputs { grid-template-columns:1fr; }
+  }
+
+  .input-block label {
+    display:block; font-size:12px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5px; color:var(--muted); margin-bottom:6px;
+  }
+  .input-block input {
+    width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px;
+    background:var(--bg); color:var(--text); font-size:14px; font-family:inherit;
+    outline:none; transition:border-color .15s, box-shadow .15s;
+  }
+  .input-block input:focus {
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(59,130,212,.15);
+  }
+
+  /* ── LIVE PREVIEW ── */
+  .preview-section {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:24px; margin-top:24px;
+  }
+  .preview-title {
+    font-size:15px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .preview-tabs {
+    display:flex; gap:6px;
+  }
+  .preview-tab {
+    cursor:pointer; padding:4px 12px; border-radius:16px; font-size:12px; font-weight:700;
+    border:1px solid var(--border); background:var(--bg); color:var(--muted);
+  }
+  .preview-tab.active {
+    background:var(--accent); border-color:var(--accent); color:#fff;
+  }
+
+  .preview-box {
+    background:var(--bg); border:1px solid var(--border); border-radius:12px;
+    padding:32px 20px; text-align:center;
+  }
+  .preview-sub { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:10px; }
+  .preview-h1  { font-size:32px; font-weight:800; letter-spacing:-.5px; color:var(--text); line-height:1.1; }
+  .preview-link { display:inline-block; margin-top:10px; font-size:13px; color:var(--accent); text-decoration:underline; font-weight:600; }
+
+  /* ── TOAST ── */
+  #toast {
+    position:fixed; bottom:24px; right:24px; border-radius:8px;
+    padding:12px 18px; font-size:13px; font-weight:600; z-index:200;
+    display:none; max-width:420px; box-shadow:0 4px 16px rgba(0,0,0,.15);
+  }
+  #toast.show { display:block; animation:slideIn .25s ease; }
+  @keyframes slideIn { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <h1 data-i18n="home_title_1">Tantramour</h1>
+      <p>✏️ Éditer le texte de la page Accueil (index.html)</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" href="gestion_planning.html">← Gestion Planning</a>
+      <a class="btn" href="index.html" target="_blank">🌐 Voir Index</a>
+      <button class="btn btn-save" onclick="saveAll()">💾 Sauvegarder</button>
+      <button class="btn" onclick="document.body.classList.toggle('dark')">🌙</button>
+    </div>
+  </header>
+
+  <div class="help-box">
+    <strong>💡 Éditeur des textes d'accueil :</strong>
+    <p style="margin-top:4px;">Ce formulaire permet d'éditer les textes principaux affichés sur la page d'accueil (<code>index.html</code>) en <strong>Français</strong> et en <strong>Anglais</strong>. Les modifications sont enregistrées dans <code>ref_translations.js</code>.</p>
+  </div>
+
+  <div class="edit-card">
+
+    <!-- 1) DATES DU FESTIVAL -->
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title">
+          <span>📅</span> 1) Dates du Festival (Sous-titre haut)
+        </div>
+        <span class="field-badge">Clé : home_festival_dates</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block">
+          <label>🇫🇷 Français</label>
+          <input type="text" id="dates_fr" placeholder="ex: Festival · 29 août – 4 septembre 2026" oninput="updatePreview()" />
+        </div>
+        <div class="input-block">
+          <label>🇬🇧 Anglais</label>
+          <input type="text" id="dates_en" placeholder="ex: Festival · August 29 – September 4, 2026" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 2) TITRE PRINCIPAL - LIGNE 1 -->
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title">
+          <span>🏷️</span> 2) Titre - Ligne 1 (Nom)
+        </div>
+        <span class="field-badge">Clé : home_title_1</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block">
+          <label>🇫🇷 Français</label>
+          <input type="text" id="title1_fr" placeholder="ex: Tantramour" oninput="updatePreview()" />
+        </div>
+        <div class="input-block">
+          <label>🇬🇧 Anglais</label>
+          <input type="text" id="title1_en" placeholder="ex: Tantramour" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 3) TITRE PRINCIPAL - LIGNE 2 (ANNEE) -->
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title">
+          <span>🏷️</span> 3) Titre - Ligne 2 (Année / Édition)
+        </div>
+        <span class="field-badge">Clé : home_title_2</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block">
+          <label>🇫🇷 Français</label>
+          <input type="text" id="title2_fr" placeholder="ex: 2026 ou 2027" oninput="updatePreview()" />
+        </div>
+        <div class="input-block">
+          <label>🇬🇧 Anglais</label>
+          <input type="text" id="title2_en" placeholder="ex: 2026 ou 2027" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 4) SITE WEB DU FESTIVAL -->
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title">
+          <span>🌐</span> 4) Lien Site Web Festival (Texte & URL)
+        </div>
+        <span class="field-badge">Clé : home_website_text & home_website_url</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block">
+          <label>🔗 Texte affiché (FR)</label>
+          <input type="text" id="web_text_fr" placeholder="ex: tantramourfestival.com" oninput="updatePreview()" />
+        </div>
+        <div class="input-block">
+          <label>🔗 Texte affiché (EN)</label>
+          <input type="text" id="web_text_en" placeholder="ex: tantramourfestival.com" oninput="updatePreview()" />
+        </div>
+      </div>
+      <div class="field-inputs" style="margin-top:12px;">
+        <div class="input-block" style="grid-column:1 / -1;">
+          <label>🌐 URL de destination du lien (href)</label>
+          <input type="text" id="web_url" placeholder="ex: https://tantramourfestival.com" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;">
+      <button class="btn btn-save" onclick="saveAll()" style="padding:10px 24px;font-size:14px;">
+        💾 Enregistrer les modifications
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ── APERÇU LIVE ── -->
+  <div class="preview-section">
+    <div class="preview-title">
+      <span>👁️ Aperçu direct du bandeau Accueil</span>
+      <div class="preview-tabs">
+        <button class="preview-tab active" id="tabFr" onclick="setPreviewLang('fr')">🇫🇷 Français</button>
+        <button class="preview-tab" id="tabEn" onclick="setPreviewLang('en')">🇬🇧 Anglais</button>
+      </div>
+    </div>
+    <div class="preview-box">
+      <div class="preview-sub" id="prevDates">Festival · 29 août – 4 septembre 2026</div>
+      <div class="preview-h1" id="prevTitle1">Tantramour</div>
+      <div class="preview-h1" id="prevTitle2">2026</div>
+      <a class="preview-link" id="prevLink" href="https://tantramourfestival.com" target="_blank" rel="noopener">tantramourfestival.com</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+var _previewLang = 'fr';
+
+function setPreviewLang(lang) {
+  _previewLang = lang;
+  document.getElementById('tabFr').classList.toggle('active', lang === 'fr');
+  document.getElementById('tabEn').classList.toggle('active', lang === 'en');
+  updatePreview();
+}
+
+function getTransValue(key, lang, fallback) {
+  if (typeof REF_TRANSLATIONS !== 'undefined' && Array.isArray(REF_TRANSLATIONS)) {
+    var entry = REF_TRANSLATIONS.find(function(r) { return r.key === key; });
+    if (entry && entry[lang]) return entry[lang];
+  }
+  return fallback || '';
+}
+
+function setTransValue(key, frVal, enVal) {
+  if (typeof REF_TRANSLATIONS === 'undefined' || !Array.isArray(REF_TRANSLATIONS)) return;
+  var entry = REF_TRANSLATIONS.find(function(r) { return r.key === key; });
+  if (entry) {
+    entry.fr = frVal;
+    entry.en = enVal;
+  } else {
+    REF_TRANSLATIONS.push({ key: key, fr: frVal, en: enVal });
+  }
+}
+
+function initFields() {
+  document.getElementById('dates_fr').value = getTransValue('home_festival_dates', 'fr', 'Festival · 29 août – 4 septembre 2026');
+  document.getElementById('dates_en').value = getTransValue('home_festival_dates', 'en', 'Festival · August 29 – September 4, 2026');
+
+  document.getElementById('title1_fr').value = getTransValue('home_title_1', 'fr', 'Tantramour');
+  document.getElementById('title1_en').value = getTransValue('home_title_1', 'en', 'Tantramour');
+
+  document.getElementById('title2_fr').value = getTransValue('home_title_2', 'fr', '2026');
+  document.getElementById('title2_en').value = getTransValue('home_title_2', 'en', '2026');
+
+  document.getElementById('web_text_fr').value = getTransValue('home_website_text', 'fr', 'tantramourfestival.com');
+  document.getElementById('web_text_en').value = getTransValue('home_website_text', 'en', 'tantramourfestival.com');
+
+  var webUrl = getTransValue('home_website_url', 'fr', 'https://tantramourfestival.com');
+  document.getElementById('web_url').value = webUrl;
+
+  updatePreview();
+}
+
+function updatePreview() {
+  var lang = _previewLang;
+  var d = document.getElementById(lang === 'fr' ? 'dates_fr' : 'dates_en').value;
+  var t1 = document.getElementById(lang === 'fr' ? 'title1_fr' : 'title1_en').value;
+  var t2 = document.getElementById(lang === 'fr' ? 'title2_fr' : 'title2_en').value;
+  var wt = document.getElementById(lang === 'fr' ? 'web_text_fr' : 'web_text_en').value;
+  var wu = document.getElementById('web_url').value || '#';
+
+  document.getElementById('prevDates').textContent = d || '—';
+  document.getElementById('prevTitle1').textContent = t1 || '—';
+  document.getElementById('prevTitle2').textContent = t2 || '';
+  var prevLink = document.getElementById('prevLink');
+  prevLink.textContent = wt || '—';
+  prevLink.href = wu.indexOf('://') === -1 ? 'https://' + wu : wu;
+}
+
+function generateRefTranslationsContent() {
+  var escJs = function(v) {
+    return String(v || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  };
+  var lines = (REF_TRANSLATIONS || []).map(function(e) {
+    return '  { key: "' + escJs(e.key) + '", fr: "' + escJs(e.fr) + '", en: "' + escJs(e.en) + '" },';
+  }).join('\n');
+
+  return '/**\n' +
+    ' * TANTRAMOUR — Référentiel de traductions FR → EN\n' +
+    ' * Modifié via Rapport_Editer_Accueil.html / MasterData\n' +
+    ' */\n' +
+    'var REF_TRANSLATIONS = [\n' + lines + '\n];\n';
+}
+
+async function saveAll() {
+  var dFr = document.getElementById('dates_fr').value.trim();
+  var dEn = document.getElementById('dates_en').value.trim();
+  var t1Fr = document.getElementById('title1_fr').value.trim();
+  var t1En = document.getElementById('title1_en').value.trim();
+  var t2Fr = document.getElementById('title2_fr').value.trim();
+  var t2En = document.getElementById('title2_en').value.trim();
+  var wtFr = document.getElementById('web_text_fr').value.trim();
+  var wtEn = document.getElementById('web_text_en').value.trim();
+  var wu = document.getElementById('web_url').value.trim();
+
+  setTransValue('home_festival_dates', dFr, dEn);
+  setTransValue('home_title_1', t1Fr, t1En);
+  setTransValue('home_title_2', t2Fr, t2En);
+  setTransValue('home_website_text', wtFr, wtEn);
+  setTransValue('home_website_url', wu, wu);
+
+  try {
+    var content = generateRefTranslationsContent();
+    await saveFile('ref_translations.js', content);
+    showToast('✅ Modifications enregistrées dans ref_translations.js !', false);
+  } catch (err) {
+    showToast('❌ Erreur lors de la sauvegarde : ' + err.message, true);
+  }
+}
+
+function showToast(msg, isError) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isError ? '#fee2e2' : '#dcfce7';
+  t.style.color = isError ? '#dc2626' : '#166534';
+  t.style.border = '1px solid ' + (isError ? '#fca5a5' : '#86efac');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 4000);
+}
+
+loadData(['ref_translations.js'], function() {
+  if (typeof I18n !== 'undefined') I18n.apply();
+  initFields();
+});
+</script>
+
+</body>
+</html>

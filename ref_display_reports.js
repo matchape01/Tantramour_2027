@@ -499,6 +499,25 @@ var REF_DISPLAY_REPORTS = [
     "order": 5
   },
   {
+    "id": "rep_editer_accueil",
+    "title": "Éditer Accueil (index)",
+    "titleKey": "card_editer_index_title",
+    "desc": "Modifier les textes de la page d'accueil (dates, titre, site web)",
+    "descKey": "card_editer_index_desc",
+    "icon": "✏️",
+    "url": "Rapport_Editer_Accueil.html",
+    "section": "Admin",
+    "showInDreamTeam": false,
+    "active": true,
+    "cardStyle": "background:#eff6ff;border-color:#bfdbfe;color:#1e40af;",
+    "iconStyle": "background:rgba(255,255,255,.6);border-color:#bfdbfe;",
+    "titleStyle": "color:#1e40af;",
+    "descStyle": "color:#1e3a8a;",
+    "arrowStyle": "color:#3b82d4;",
+    "isProtected": true,
+    "order": 1
+  },
+  {
     "id": "rep_gestion_affichage",
     "title": "Gestion Affichage",
     "titleKey": "card_gestion_affichage_title",

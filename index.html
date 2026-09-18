@@ -207,9 +207,9 @@
 
   <div class="logo">
     <div class="logo-sub" data-i18n="home_festival_dates">Festival · 29 août – 4 septembre 2026</div>
-    <h1>Tantramour</h1>
-    <h1>2026</h1>
-    <a class="logo-link" href="https://tantramourfestival.com" target="_blank" rel="noopener">tantramourfestival.com</a>
+    <h1 data-i18n="home_title_1">Tantramour</h1>
+    <h1 data-i18n="home_title_2">2026</h1>
+    <a class="logo-link" id="homeWebsiteLink" data-i18n="home_website_text" href="https://tantramourfestival.com" target="_blank" rel="noopener">tantramourfestival.com</a>
     <h2>Bienvenue · Welcome</h2>
     <div class="lang-bar">
       <button id="langBtn" onclick="I18n.setLang(I18n.getLang()==='fr'?'en':'fr')">🌐 EN</button>
@@ -361,9 +361,23 @@ function msgFvNext() {
   _renderFvMsg();
 }
 
-loadData(['ref_news.js'], function() {
+function updateWebsiteHref() {
+  var a = document.getElementById('homeWebsiteLink');
+  if (!a) return;
+  var url = (typeof I18n !== 'undefined') ? I18n.t('home_website_url') : 'https://tantramourfestival.com';
+  if (url && url !== 'home_website_url') {
+    a.href = url.indexOf('://') === -1 ? 'https://' + url : url;
+  }
+}
+
+loadData(['ref_translations.js', 'ref_news.js'], function() {
+  if (typeof I18n !== 'undefined') I18n.apply();
+  updateWebsiteHref();
   renderMsgFvWidget();
-  document.addEventListener('tm_lang_changed', renderMsgFvWidget);
+  document.addEventListener('tm_lang_changed', function() {
+    updateWebsiteHref();
+    renderMsgFvWidget();
+  });
 });
 // ── FIN MESSAGE IMPORTANT ─────────────────────────────────────────────────────
 
