@@ -26,6 +26,7 @@ var I18n = (function() {
   function init() {
     // Construire le dictionnaire à partir de REF_TRANSLATIONS
     if (typeof REF_TRANSLATIONS !== 'undefined') {
+      _dict = {};
       REF_TRANSLATIONS.forEach(function(entry) {
         _dict[entry.key] = { fr: entry.fr, en: entry.en };
       });
@@ -76,6 +77,13 @@ var I18n = (function() {
   }
 
   function apply() {
+    // Si REF_TRANSLATIONS a été rechargé ou complété dynamiquement, actualiser _dict
+    if (typeof REF_TRANSLATIONS !== 'undefined' && Array.isArray(REF_TRANSLATIONS)) {
+      REF_TRANSLATIONS.forEach(function(entry) {
+        _dict[entry.key] = { fr: entry.fr, en: entry.en };
+      });
+    }
+
     // Mettre à jour l'attribut html lang
     document.documentElement.lang = _lang;
 
