@@ -371,13 +371,13 @@ function populateAbsentSelect(roleFilter) {
   const sel = document.getElementById('selAbsent');
   sel.innerHTML = '<option value="">— Choisissez une personne —</option>';
 
-  // Extraire toutes les personnes présentes dans AGENDA
-  const present = new Map(); // nom -> Set<role>
+  // Extraire tous les IDs présents dans AGENDA
+  const present = new Map(); // id -> Set<role>
   AGENDA.forEach(e => {
-    function addPerson(nom, role) {
-      if (!nom || !nom.trim()) return;
-      if (!present.has(nom)) present.set(nom, new Set());
-      present.get(nom).add(role);
+    function addPerson(id, role) {
+      if (!id || !id.trim()) return;
+      if (!present.has(id)) present.set(id, new Set());
+      present.get(id).add(role);
     }
     if (e.fac1)       addPerson(e.fac1, 'animateur');
     if (e.fac2)       addPerson(e.fac2, 'animateur');
@@ -391,11 +391,11 @@ function populateAbsentSelect(roleFilter) {
 
   const sorted = [...present.entries()]
     .filter(([, roles]) => roleFilter ? roles.has(roleFilter) : true)
-    .sort((a, b) => a[0].localeCompare(b[0]));
+    .sort((a, b) => resolveName(a[0]).localeCompare(resolveName(b[0])));
 
-  sorted.forEach(([nom]) => {
+  sorted.forEach(([id]) => {
     const o = document.createElement('option');
-    o.value = nom; o.textContent = nom;
+    o.value = id; o.textContent = resolveName(id);
     sel.appendChild(o);
   });
 }
@@ -460,14 +460,14 @@ window.runAnalysis = runAnalysis;
 
 // Calcule la charge (en minutes) de chaque personne sur tout l'AGENDA (rôle donné)
 function buildWorkloadMap(role) {
-  const map = new Map(); // nom -> minutes totales
+  const map = new Map(); // id -> minutes totales
   const fields = ROLE_FIELDS[role];
   AGENDA.forEach(e => {
     fields.forEach(f => {
-      const nom = e[f];
-      if (!nom || !nom.trim()) return;
+      const id = e[f];
+      if (!id || !id.trim()) return;
       const dur = durationMin(e.heure);
-      map.set(nom, (map.get(nom) || 0) + dur);
+      map.set(id, (map.get(id) || 0) + dur);
     });
   });
   return map;
@@ -475,7 +475,7 @@ function buildWorkloadMap(role) {
 
 // Vérifie si une personne a un conflit sur un créneau donné
 // (elle est déjà assignée à un autre atelier qui se chevauche)
-function hasConflict(nom, targetEntry, targetIdx) {
+function hasConflict(id, targetEntry, targetIdx) {
   const targetIv = parseInterval(targetEntry.heure);
   if (!targetIv) return false;
 
@@ -485,14 +485,14 @@ function hasConflict(nom, targetEntry, targetIdx) {
     if (e.jour !== targetEntry.jour) return false;
     const iv = parseInterval(e.heure);
     if (!overlaps(iv, targetIv)) return false;
-    return allRoles.some(role => ROLE_FIELDS[role].some(f => e[f] === nom));
+    return allRoles.some(role => ROLE_FIELDS[role].some(f => e[f] === id));
   });
 }
 
 // Déjà assigné à cet atelier (dans un autre rôle) ?
-function alreadyInEntry(nom, entry) {
+function alreadyInEntry(id, entry) {
   return ['fac1','fac2','traduction','helper1','helper2','helper3','helper4','angel']
-    .some(f => entry[f] === nom);
+    .some(f => entry[f] === id);
 }
 
 function computeProposals(entry, idx, role, field) {
@@ -508,12 +508,12 @@ function computeProposals(entry, idx, role, field) {
 
   return candidates
     .map(r => {
-      const nom = r.value;
-      if (nom === absentName) return null; // l'absent lui-même
-      if (alreadyInEntry(nom, entry) && entry[field] !== absentName) return null; // déjà dans cet atelier sous un autre rôle
+      const id = r.id;
+      if (id === absentName) return null; // l'absent lui-même
+      if (alreadyInEntry(id, entry) && entry[field] !== absentName) return null; // déjà dans cet atelier sous un autre rôle
 
-      const conflict = hasConflict(nom, entry, idx);
-      const load     = workload.get(nom) || 0;
+      const conflict = hasConflict(id, entry, idx);
+      const load     = workload.get(id) || 0;
 
       // Score 0-100 : plus c'est élevé, mieux c'est
       // Règle 1 : conflit → score 0 (non viable)
@@ -523,11 +523,11 @@ function computeProposals(entry, idx, role, field) {
       const loadScore = maxLoad > 0 ? Math.max(0, 100 - (load / maxLoad) * 80) : 100;
 
       // Bonus : déjà assigné ce jour mais pas en conflit → +10 (mobilisation déjà faite)
-      const sameDay  = AGENDA.some(e => e.jour === entry.jour && ROLE_FIELDS[role].some(f => e[f] === nom));
+      const sameDay  = AGENDA.some(e => e.jour === entry.jour && ROLE_FIELDS[role].some(f => e[f] === id));
       const bonus    = sameDay ? 10 : 0;
 
       const score = Math.round(Math.min(100, loadScore + bonus));
-      return { nom, score, load, conflict: false };
+      return { nom: id, score, load, conflict: false };
     })
     .filter(Boolean)
     .sort((a, b) => b.score - a.score)
@@ -632,11 +632,12 @@ function renderCard(a) {
   } else {
     selectHtml += `<option value="">— Choisir un remplaçant —</option>`;
     proposals.forEach((p, i) => {
-      const h = Math.floor(p.load / 60);
-      const m = p.load % 60;
-      const loadStr = h > 0 ? `${h}h${m > 0 ? m + 'min' : ''}` : `${m}min`;
-      const label = `${p.nom}  [${scoreLabel(p.score)} — charge: ${loadStr}]`;
-      selectHtml += `<option value="${p.nom}" ${dec.chosen === p.nom ? 'selected' : ''} class="${i === 0 ? 'opt-best' : ''}">${label}</option>`;
+        const h = Math.floor(p.load / 60);
+        const m = p.load % 60;
+        const loadStr = h > 0 ? `${h}h${m > 0 ? m + 'min' : ''}` : `${m}min`;
+        const displayName = resolveName(p.nom);
+        const label = `${displayName}  [${scoreLabel(p.score)} — charge: ${loadStr}]`;
+        selectHtml += `<option value="${p.nom}" ${dec.chosen === p.nom ? 'selected' : ''} class="${i === 0 ? 'opt-best' : ''}">${label}</option>`;
     });
   }
   selectHtml += `</select>`;
@@ -674,7 +675,7 @@ function renderCard(a) {
   // Boutons d'action
   let actionsHtml = '';
   if (isValidated) {
-    actionsHtml = `<span class="validated-badge">✅ Validé → ${dec.chosen}</span>
+    actionsHtml = `<span class="validated-badge">✅ Validé → ${resolveName(dec.chosen)}</span>
       <button class="btn-skip" onclick="undoValidate('${key}')">Annuler</button>`;
   } else if (isSkipped) {
     actionsHtml = `<span class="skipped-badge">⏭ Ignoré</span>
@@ -698,9 +699,9 @@ function renderCard(a) {
     </div>
     <div class="card-body">
       <div class="repl-row">
-        <div class="repl-label">Actuel</div>
-        <div style="font-size:13px;font-weight:700;color:var(--red);text-decoration:line-through;">${a.entry[a.field]}</div>
-      </div>
+            <div class="repl-label">Actuel</div>
+            <div style="font-size:13px;font-weight:700;color:var(--red);text-decoration:line-through;">${resolveName(a.entry[a.field])}</div>
+          </div>
       <div class="repl-row">
         <div class="repl-label">Remplaçant</div>
         <div class="repl-select-wrap">
@@ -863,14 +864,14 @@ function renderSummary(saved) {
   const zone = document.getElementById('summaryZone');
   let rows = saved.map(a => {
     const key = a.idx + '_' + a.role + '_' + a.field;
-    const newName = decisions[key].chosen;
+    const newId = decisions[key].chosen;
     return `<div class="summary-row">
       <span class="role-badge ${ROLE_CLS[a.role]}">${ROLE_LABEL[a.role]}</span>
       <span style="font-size:12px;color:var(--muted)">${a.entry.jour} — ${a.entry.heure}</span>
       <span style="font-size:13px;font-weight:600;flex:1">${a.entry.atelier}</span>
-      <span class="summary-old">${absentName}</span>
+      <span class="summary-old">${resolveName(absentName)}</span>
       <span class="summary-arrow">→</span>
-      <span class="summary-new">${newName}</span>
+      <span class="summary-new">${resolveName(newId)}</span>
     </div>`;
   }).join('');
 

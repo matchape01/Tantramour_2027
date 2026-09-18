@@ -279,7 +279,8 @@ AGENDA.forEach(function(e) {
   }
   if (!eqs || Object.keys(eqs).length === 0) return;
 
-  var facs = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).join(', ');
+  var facsIds = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean);
+  var facs = facsIds.map(function(id){ return resolveName(id); }).join(', ');
   var jourLabel = (JOUR_META[e.jour] || e.jour);
   var prepDur = (e.logisticId && typeof LOGISTICS !== 'undefined' && LOGISTICS[e.logisticId])
     ? (LOGISTICS[e.logisticId].prepDuration || 0)
@@ -305,7 +306,8 @@ AGENDA.forEach(function(e) {
       heurePrepa:  heurePrepa,
       lieu:        e.lieu || '',
       atelier:     e.atelier || '',
-      facs:        facs,
+      facs:        facs,       // noms affichés
+      facsIds:     facsIds,    // IDs pour le filtrage
       typeAtelier: e.type || '',
       typeEq:      eq.type || '',
       categorieEq: eq.categorie || '',
@@ -373,15 +375,15 @@ function buildFilters() {
     var o = document.createElement('option'); o.value = t; o.textContent = t; selTA.appendChild(o);
   });
 
-  // Animateurs
+  // Animateurs — option.value = ID, option.text = nom affiché
   var animsSet = new Set();
   AGENDA.forEach(function(e) {
-    [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).forEach(function(f){ animsSet.add(f); });
+    [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).forEach(function(id){ animsSet.add(id); });
   });
-  var anims = Array.from(animsSet).sort(function(a,b){ return a.localeCompare(b,'fr'); });
+  var anims = Array.from(animsSet).sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); });
   var selAnim = document.getElementById('fAnimateur');
-  anims.forEach(function(a) {
-    var o = document.createElement('option'); o.value = a; o.textContent = a; selAnim.appendChild(o);
+  anims.forEach(function(id) {
+    var o = document.createElement('option'); o.value = id; o.textContent = resolveName(id); selAnim.appendChild(o);
   });
 
   // Types équipements
@@ -418,7 +420,7 @@ function getFiltered() {
     if (fTA      && r.typeAtelier !== fTA)             return false;
     if (fTE      && r.typeEq !== fTE)                  return false;
     if (fCat     && r.categorieEq !== fCat)            return false;
-    if (fAnim    && !r.facs.includes(fAnim))           return false;
+    if (fAnim    && r.facsIds.indexOf(fAnim) === -1)   return false;
     if (fAtelier && !r.atelier.toLowerCase().includes(fAtelier)) return false;
     if (fEq      && !r.nomEq.toLowerCase().includes(fEq))        return false;
     return true;

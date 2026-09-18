@@ -290,8 +290,8 @@ const personnesEnConflit = new Set(conflits.map(c => c.nom));
 
 // Peupler filtre Personne
 const selP = document.getElementById('filterPersonne');
-[...personnesEnConflit].sort((a,b) => a.localeCompare(b,'fr')).forEach(nom => {
-  const o = document.createElement('option'); o.value = nom; o.text = nom; selP.appendChild(o);
+[...personnesEnConflit].sort((a,b) => resolveName(a).localeCompare(resolveName(b),'fr')).forEach(id => {
+  const o = document.createElement('option'); o.value = id; o.text = resolveName(id); selP.appendChild(o);
 });
 
 // Afficher stats
@@ -327,7 +327,7 @@ function render() {
   // Trier : jour → nom
   items.sort((a,b) => {
     const dj = JOUR_ORDER.indexOf(a.jour) - JOUR_ORDER.indexOf(b.jour);
-    return dj !== 0 ? dj : a.nom.localeCompare(b.nom, 'fr');
+    return dj !== 0 ? dj : resolveName(a.nom).localeCompare(resolveName(b.nom), 'fr');
   });
 
   // Grouper par jour
@@ -380,7 +380,7 @@ function renderCard(c) {
 
   return `<div class="conflict-card ${typeCls}">
     <div class="cc-header">
-      <span class="cc-nom">${esc(c.nom)}</span>
+      <span class="cc-nom">${esc(resolveName(c.nom))}</span>
       <span class="cc-badge ${badgeCls}">${badgeTxt}</span>
     </div>
     <div class="cc-body">${rows}</div>

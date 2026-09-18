@@ -222,14 +222,14 @@ function pills(vs, cls) { return vs.filter(Boolean).map(v => pill(v, cls)).join(
 const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 
 function construire() {
-  const parHelper = new Map(); // nom → Map(jour → [atelier entry])
+  const parHelper = new Map(); // id → Map(jour → [atelier entry])
 
   AGENDA.forEach(e => {
     ['helper1','helper2','helper3','helper4'].forEach(field => {
-      const nom = e[field];
-      if (!nom) return;
-      if (!parHelper.has(nom)) parHelper.set(nom, new Map());
-      const parJour = parHelper.get(nom);
+      const id = e[field];
+      if (!id) return;
+      if (!parHelper.has(id)) parHelper.set(id, new Map());
+      const parJour = parHelper.get(id);
       if (!parJour.has(e.jour)) parJour.set(e.jour, []);
       parJour.get(e.jour).push(e);
     });
@@ -237,7 +237,7 @@ function construire() {
 
   // Construire la liste finale triée
   const result = [];
-  parHelper.forEach((parJour, nom) => {
+  parHelper.forEach((parJour, id) => {
     const jours = JOUR_ORDER
       .filter(j => parJour.has(j))
       .map(j => ({
@@ -245,10 +245,10 @@ function construire() {
         date: parJour.get(j)[0].date,
         ateliers: parJour.get(j).slice().sort((a,b) => heureEnMinutes(a.heure) - heureEnMinutes(b.heure))
       }));
-    result.push({ nom, jours });
+    result.push({ nom: id, jours });
   });
 
-  result.sort((a,b) => a.nom.localeCompare(b.nom, 'fr'));
+  result.sort((a,b) => resolveName(a.nom).localeCompare(resolveName(b.nom), 'fr'));
   return result;
 }
 
@@ -269,11 +269,13 @@ document.getElementById('sumNote').textContent     = totalNote;
 
 // ── Peupler filtre Helper — toutes les entrées de REF_HELPERS ──
 const selH = document.getElementById('filterHelper');
-const nomsAvecAteliers = new Set(DATA.map(h => h.nom));
-REF_HELPERS.forEach(ref => {
+const idsAvecAteliers = new Set(DATA.map(h => h.nom));
+// REF_HELPERS = alias de REF_RESSOURCES filtrés par rôle "helper" — on parcourt REF_RESSOURCES
+const helpersRef = (REF_RESSOURCES || []).filter(r => r.roles && r.roles.indexOf('helper') !== -1);
+helpersRef.sort((a,b) => a.value.localeCompare(b.value, 'fr')).forEach(ref => {
   const o = document.createElement('option');
-  o.value = ref.value;
-  o.text  = nomsAvecAteliers.has(ref.value) ? ref.value : `${ref.value} (aucun atelier)`;
+  o.value = ref.id;
+  o.text  = idsAvecAteliers.has(ref.id) ? ref.value : `${ref.value} (aucun atelier)`;
   selH.appendChild(o);
 });
 
@@ -281,12 +283,12 @@ REF_HELPERS.forEach(ref => {
 // RENDU
 // ════════════════════════════════════════════════
 function renderAtelier(e) {
-  const facs    = pills([e.fac1, e.fac2], 'pill-f');
+  const facs    = pills([e.fac1, e.fac2].map(id => id ? resolveName(id) : null), 'pill-f');
   const coHelpers = pills(
-    ['helper1','helper2','helper3','helper4'].map(f => e[f]).filter(Boolean),
+    ['helper1','helper2','helper3','helper4'].map(f => e[f] ? resolveName(e[f]) : null).filter(Boolean),
     'pill-h'
   );
-  const angel = pill(e.angel, 'pill-a');
+  const angel = pill(e.angel ? resolveName(e.angel) : null, 'pill-a');
   const logEntry = getLogEntry(e);
   const hasLog   = !!logEntry;
   const hasNote = e.note && e.note.trim();
@@ -352,7 +354,7 @@ function render() {
   const fl  = document.getElementById('filterLog').value;
 
   let data = DATA
-    .filter(h => !fh || h.nom === fh)
+    .filter(h => !fh || h.nom === fh)  // compare IDs
     .map(h => ({
       ...h,
       jours: h.jours
@@ -391,11 +393,12 @@ function render() {
           ${j.ateliers.map(e => renderAtelier(e)).join('')}
         </div>`).join('');
 
+      const helperNom = resolveName(h.nom);
       return `<div class="helper-block">
         <div class="helper-header">
-          <div class="helper-avatar">${initiales(h.nom)}</div>
+          <div class="helper-avatar">${initiales(helperNom)}</div>
           <div>
-            <div class="helper-name">${h.nom}</div>
+            <div class="helper-name">${helperNom}</div>
             <span class="helper-badge">🤝 Helper</span>
           </div>
           <div class="helper-meta">

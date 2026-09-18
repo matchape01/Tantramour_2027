@@ -531,26 +531,29 @@ function noteLabel(noteVal, lang) {
   return noteVal;
 }
 
+// BILINGUES indexé par ID depuis la migration
 var BILINGUES = new Set(
   (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
     .filter(function(r) {
       var l = r.langues || [];
       return l.indexOf('FR') !== -1 && l.indexOf('EN') !== -1;
     })
-    .map(function(r) { return r.value.trim(); })
+    .map(function(r) { return r.id; })
 );
-function isBilingue(nom) { return nom && BILINGUES.has(nom.trim()); }
+// isBilingue reçoit maintenant un ID (ex: "R_SANDRINE")
+function isBilingue(id) { return id && BILINGUES.has(id.trim()); }
 
-// Retourne le lien URL d'une ressource identifiée par son nom (value)
-function lienRessource(nom) {
-  if (!nom || typeof REF_RESSOURCES === 'undefined') return '';
-  var r = REF_RESSOURCES.find(function(r) { return r.value.trim() === nom.trim(); });
+// Retourne le lien URL d'une ressource identifiée par son ID
+function lienRessource(id) {
+  if (!id || typeof REF_RESSOURCES === 'undefined') return '';
+  var r = REF_RESSOURCES.find(function(r) { return r.id === id; });
   return (r && r.lien && r.lien.trim()) ? r.lien.trim() : '';
 }
 
-// Enveloppe un nom en lien cliquable si une URL est définie dans REF_RESSOURCES
-function nomAvecLien(nom) {
-  var url = lienRessource(nom);
+// Enveloppe un ID en lien cliquable (affiche le nom résolu)
+function nomAvecLien(id) {
+  var nom = resolveName(id);
+  var url = lienRessource(id);
   return url
     ? '<a href="' + url.replace(/"/g,'&quot;') + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-decoration-style:dotted;cursor:pointer">' + esc(nom) + '</a>'
     : esc(nom);
@@ -844,11 +847,11 @@ function cardHtml(e, globalIdx, opts) {
   var lieuLangHtml =
     (e.lieu ? '<span class="badge badge-lieu">📍 ' + esc(e.lieu) + '</span>' : '') +
     (e.traduction || isBilingue(e.fac1) || isBilingue(e.fac2)
-      ? '<span class="badge badge-trad" title="' + (e.traduction ? esc(e.traduction) : 'FR / ENG') + '">FR / ENG</span>'
+      ? '<span class="badge badge-trad" title="' + (e.traduction ? esc(resolveName(e.traduction)) : 'FR / ENG') + '">FR / ENG</span>'
       : '<span class="badge badge-trad-fr" title="Atelier en français">FR</span>');
 
-  // Animateurs
-  var facsHtml = facs.map(function(f) { return '<span class="badge badge-fac">🎓 ' + esc(f) + '</span>'; }).join('');
+  // Animateurs (résolution ID → nom)
+  var facsHtml = facs.map(function(id) { return '<span class="badge badge-fac">🎓 ' + esc(resolveName(id)) + '</span>'; }).join('');
 
   // Consigne + note
   var extrasHtml =

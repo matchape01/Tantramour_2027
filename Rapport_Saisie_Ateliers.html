@@ -665,11 +665,11 @@ function buildFilterOptions() {
     if (e.fac3) facsSet.add(e.fac3);
     if (e.fac4) facsSet.add(e.fac4);
   });
-  var facsSorted = Array.from(facsSet).sort(function(a,b){ return a.localeCompare(b,'fr'); });
+  var facsSorted = Array.from(facsSet).sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); });
   var selFac = document.getElementById('filterFac');
-  facsSorted.forEach(function(f) {
+  facsSorted.forEach(function(id) {
     var opt = document.createElement('option');
-    opt.value = f; opt.textContent = f;
+    opt.value = id; opt.textContent = resolveName(id);
     selFac.appendChild(opt);
   });
 
@@ -738,7 +738,7 @@ function renderList(ateliers) {
     var d      = findDescByKey(e);
     var logId  = e.logisticId || '';
     var logEntry = logId && LOGISTICS[logId];
-    var facs   = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).join(' & ');
+    var facs   = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & ');
     var meta   = JOUR_META[e.jour] || {};
     var pimentStr = e.piment > 0 ? '<span style="letter-spacing:-1px">' + '🌶️'.repeat(e.piment) + '</span>' : '';
 
@@ -823,8 +823,8 @@ function selectAtelier(idx) {
   document.getElementById('eTitle').textContent = e.atelier || '—';
 
   // Grille infos
-  var facs    = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).join(' / ') || '—';
-  var helpers = [e.helper1, e.helper2, e.helper3, e.helper4].filter(Boolean).join(', ') || '—';
+  var facs    = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).map(function(id){ return resolveName(id); }).join(' / ') || '—';
+  var helpers = [e.helper1, e.helper2, e.helper3, e.helper4].filter(Boolean).map(function(id){ return resolveName(id); }).join(', ') || '—';
   var duree   = getDureeAtelier(e.heure);
   var gridData = [
     ['🆔 ID',                            e.id || '—'],
@@ -835,8 +835,8 @@ function selectAtelier(idx) {
     ['🏷 ' + I18n.t('r14_grid_type'),    e.type || '—'],
     ['🎓 ' + I18n.t('r14_grid_fac'),     facs],
     ['🤝 ' + I18n.t('col_helpers'),      helpers],
-    ['🌐 ' + I18n.t('r14_grid_trad'),    e.traduction || '—'],
-    ['👼 ' + I18n.t('col_angel'),        e.angel || '—'],
+    ['🌐 ' + I18n.t('r14_grid_trad'),    e.traduction ? resolveName(e.traduction) : '—'],
+    ['👼 ' + I18n.t('col_angel'),        e.angel ? resolveName(e.angel) : '—'],
     ['📌 ' + I18n.t('col_note'),         e.note || '—'],
   ];
   document.getElementById('eGrid').innerHTML = gridData.map(function(pair) {

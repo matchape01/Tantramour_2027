@@ -208,7 +208,7 @@ function fmtMin(mins) {
 // ════════════════════════════════════════════════
 function construireShifts() {
   // 1. Collecter tous les ateliers avec un angel + heure parsable
-  const parAngel = new Map(); // nom → [{ atelier, jour, date, heure, lieu, type, iv }]
+  const parAngel = new Map(); // id → [{ atelier, jour, date, heure, lieu, type, iv }]
 
   AGENDA.forEach(e => {
     if (!e.angel) return;
@@ -224,7 +224,8 @@ function construireShifts() {
   // 2. Pour chaque angel, regrouper par jour puis construire les shifts
   const angelsData = []; // [{ nom, shifts: [{ jour, date, debut, fin, ateliers }] }]
 
-  parAngel.forEach((slots, nom) => {
+  parAngel.forEach((slots, id) => {
+    const nom = resolveName(id); // résoudre ID → nom affiché
     // Grouper par jour
     const parJour = new Map();
     slots.forEach(s => {

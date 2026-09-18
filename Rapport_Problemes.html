@@ -234,16 +234,16 @@ const TYPES_EXCLUS = new Set(
     .map(function(t) { return t.value; })
 );
 
-// Index des ressources par nom
+// Index des ressources par ID
 const RES_MAP = {};
-(REF_RESSOURCES || []).forEach(r => { RES_MAP[r.value] = r; });
+(REF_RESSOURCES || []).forEach(r => { RES_MAP[r.id] = r; });
 
-function hasRole(nom, role) {
-  const r = RES_MAP[nom];
+function hasRole(id, role) {
+  const r = RES_MAP[id];
   return r && r.roles && r.roles.indexOf(role) !== -1;
 }
-function isAnglophone(nom) { return hasRole(nom, 'anglophone'); }
-function isTraducteur(nom) { return hasRole(nom, 'traducteur'); }
+function isAnglophone(id) { return hasRole(id, 'anglophone'); }
+function isTraducteur(id) { return hasRole(id, 'traducteur'); }
 
 // ════════════════════════════════════════════════════════════════
 // RÈGLES DE DÉTECTION
@@ -396,25 +396,26 @@ function renderCard(p) {
   if (p.cas2) badges += `<span class="cas-badge b2">🤝 ${p.nbRes}/${p.minRes} ressource${p.minRes>1?'s':''}</span>`;
 
   // Pills animateurs
-  const facsHtml = [e.fac1, e.fac2].filter(Boolean).map(nom => {
-    const en = isAnglophone(nom);
+  const facsHtml = [e.fac1, e.fac2].filter(Boolean).map(id => {
+    const en = isAnglophone(id);
+    const nom = resolveName(id);
     return `<span class="pill ${en ? 'pill-en' : 'pill-f'}">${en ? '🇬🇧 ' : ''}${esc(nom)}</span>`;
   }).join('');
 
   // Pills helpers
   const helpers = [e.helper1, e.helper2, e.helper3, e.helper4].filter(Boolean);
   const helpersHtml = helpers.length
-    ? helpers.map(n => `<span class="pill ${isTraducteur(n) ? 'pill-t' : 'pill-h'}">${esc(n)}</span>`).join('')
+    ? helpers.map(id => `<span class="pill ${isTraducteur(id) ? 'pill-t' : 'pill-h'}">${esc(resolveName(id))}</span>`).join('')
     : `<span class="pill pill-missing">Aucun helper</span>`;
 
   // Traducteur
   const tradHtml = e.traduction
-    ? `<span class="pill pill-t">🌐 ${esc(e.traduction)}</span>`
+    ? `<span class="pill pill-t">🌐 ${esc(resolveName(e.traduction))}</span>`
     : `<span class="pill pill-missing">⚠️ Aucun traducteur</span>`;
 
   // Problèmes textuels
   let issues = '';
-  if (p.cas1) issues += `<div class="problem-item"><span class="problem-icon">🌐</span><span>Atelier animé par un animateur anglophone (${p.angloFacs.map(esc).join(', ')}) — aucun traducteur assigné dans le champ <strong>Traduction</strong>.</span></div>`;
+  if (p.cas1) issues += `<div class="problem-item"><span class="problem-icon">🌐</span><span>Atelier animé par un animateur anglophone (${p.angloFacs.map(id => esc(resolveName(id))).join(', ')}) — aucun traducteur assigné dans le champ <strong>Traduction</strong>.</span></div>`;
   if (p.cas2) {
     const parts = [];
     if (p.minRes   > 0) parts.push(`total min : <strong>${p.minRes}</strong> (actuellement ${p.nbRes})`);
@@ -500,35 +501,35 @@ function populateEditor(idx) {
       <label data-i18n="filter_traducteur">Traducteur</label>
       <select id="ef_trad_${idx}" onchange="onEF(${idx},'traduction',this.value)">
         <option value="">— aucun —</option>
-        ${traducteurs.map(r => `<option value="${esc(r.value)}"${r.value === e.traduction ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${traducteurs.map(r => `<option value="${esc(r.id)}"${r.id === e.traduction ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 1</label>
       <select id="ef_h1_${idx}" onchange="onEF(${idx},'helper1',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.value)}"${r.value === e.helper1 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper1 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 2</label>
       <select id="ef_h2_${idx}" onchange="onEF(${idx},'helper2',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.value)}"${r.value === e.helper2 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper2 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 3</label>
       <select id="ef_h3_${idx}" onchange="onEF(${idx},'helper3',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.value)}"${r.value === e.helper3 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper3 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 4</label>
       <select id="ef_h4_${idx}" onchange="onEF(${idx},'helper4',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.value)}"${r.value === e.helper4 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper4 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
   `;

@@ -24,7 +24,7 @@
  */
 
 const GITHUB_OWNER  = 'matchape01';
-const GITHUB_REPO   = 'Tantramour';
+const GITHUB_REPO   = 'Tantramour_2027';
 const GITHUB_BRANCH = 'main';   // branche cible (main ou master)
 
 // ── Cache SHA en mémoire ──────────────────────────────────────────────────────

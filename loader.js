@@ -32,7 +32,7 @@ window.resolveResourceId = function(name) {
 // Ces variables sont déclarées localement dans loader.js pour éviter tout conflit
 // avec les déclarations const de github-api.js (chargé sur certaines pages).
 var _LDR_GH_OWNER  = 'matchape01';
-var _LDR_GH_REPO   = 'Tantramour';
+var _LDR_GH_REPO   = 'Tantramour_2027';
 var _LDR_GH_BRANCH = 'main';
 
 // ── Liste des fichiers de référence modifiables ───────────────────────────────

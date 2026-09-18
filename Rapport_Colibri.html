@@ -191,16 +191,16 @@ loadData(['data.js'], function() {
 
 var JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 
-// ── Index des ressources ───────────────────────────────────────────────────────
+// ── Index des ressources (indexé par ID depuis la migration) ──────────────────
 var RES_MAP = {};
-(REF_RESSOURCES || []).forEach(function(r) { RES_MAP[r.value] = r; });
+(REF_RESSOURCES || []).forEach(function(r) { RES_MAP[r.id] = r; });
 
-function hasRole(nom, role) {
-  var r = RES_MAP[nom];
+function hasRole(id, role) {
+  var r = RES_MAP[id];
   return !!(r && r.roles && r.roles.indexOf(role) !== -1);
 }
-function isColibri(nom)    { return hasRole(nom, 'colibri'); }
-function isTraducteur(nom) { return hasRole(nom, 'traducteur'); }
+function isColibri(id)    { return hasRole(id, 'colibri'); }
+function isTraducteur(id) { return hasRole(id, 'traducteur'); }
 
 
 // ── Construction de la liste des ateliers Colibri ─────────────────────────────
@@ -312,18 +312,18 @@ function renderCard(w) {
 
   // Animateurs
   var facsHtml = [e.fac1, e.fac2].filter(Boolean)
-    .map(function(nom) { return '<span class="pill pill-f">' + esc(nom) + '</span>'; })
+    .map(function(id) { return '<span class="pill pill-f">' + esc(resolveName(id)) + '</span>'; })
     .join('') || '<span class="avail-note">—</span>';
 
   // Helpers — marquer les Colibris
   var helpers = [e.helper1, e.helper2, e.helper3, e.helper4].filter(Boolean);
   var helpersHtml = helpers.length
-    ? helpers.map(function(nom) {
-        var col  = isColibri(nom);
-        var trad = isTraducteur(nom);
+    ? helpers.map(function(id) {
+        var col  = isColibri(id);
+        var trad = isTraducteur(id);
         var cls  = col ? 'pill-colibri' : (trad ? 'pill-t' : 'pill-h');
         var icon = col ? '🐦 ' : (trad ? '🌐 ' : '');
-        return '<span class="pill ' + cls + '">' + icon + esc(nom) + '</span>';
+        return '<span class="pill ' + cls + '">' + icon + esc(resolveName(id)) + '</span>';
       }).join('')
     : '<span class="avail-note">Aucun helper</span>';
 
@@ -333,7 +333,7 @@ function renderCard(w) {
     var col  = isColibri(e.traduction);
     var cls  = col ? 'pill-colibri' : 'pill-t';
     var icon = col ? '🐦 ' : '🌐 ';
-    tradHtml = '<span class="pill ' + cls + '">' + icon + esc(e.traduction) + '</span>';
+    tradHtml = '<span class="pill ' + cls + '">' + icon + esc(resolveName(e.traduction)) + '</span>';
   } else {
     tradHtml = '<span class="avail-note">—</span>';
   }

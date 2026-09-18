@@ -408,13 +408,13 @@ populateSelect('selJour',   REF_JOURS,         'value', 'label');
 populateSelect('fJour',     REF_JOURS,         'value', 'label');
 populateSelect('fLieu',     REF_LIEUX,         'value', 'label');
 populateSelect('fType',     REF_TYPES,         'value', 'label');
-populateSelect('fFac1',       REF_ANIMATEURS, 'value', 'value');
-populateSelect('fFac2',       REF_ANIMATEURS, 'value', 'value');
-populateSelect('fTraduction', REF_TRADUCTEURS,   'value', 'value');
-populateSelect('fHelper1',    REF_HELPERS,       'value', 'value');
-populateSelect('fHelper2',    REF_HELPERS,       'value', 'value');
-populateSelect('fHelper3',    REF_HELPERS,       'value', 'value');
-populateSelect('fHelper4',    REF_HELPERS,       'value', 'value');
+populateSelect('fFac1',       REF_RESSOURCES.filter(function(r){return r.roles.indexOf('animateur')!==-1;}), 'id', 'value');
+populateSelect('fFac2',       REF_RESSOURCES.filter(function(r){return r.roles.indexOf('animateur')!==-1;}), 'id', 'value');
+populateSelect('fTraduction', REF_RESSOURCES.filter(function(r){return r.roles.indexOf('traducteur')!==-1;}), 'id', 'value');
+populateSelect('fHelper1',    REF_RESSOURCES.filter(function(r){return r.roles.indexOf('helper')!==-1;}), 'id', 'value');
+populateSelect('fHelper2',    REF_RESSOURCES.filter(function(r){return r.roles.indexOf('helper')!==-1;}), 'id', 'value');
+populateSelect('fHelper3',    REF_RESSOURCES.filter(function(r){return r.roles.indexOf('helper')!==-1;}), 'id', 'value');
+populateSelect('fHelper4',    REF_RESSOURCES.filter(function(r){return r.roles.indexOf('helper')!==-1;}), 'id', 'value');
 // fAngel sera peuplé dynamiquement — non pré-peuplé ici
 populateSelect('fNote',       REF_NOTES,         'value', 'value');
 
@@ -656,16 +656,17 @@ function updateAngelField(type, heure, jour, storedAngel) {
     // Mode éditable : select peuplé avec REF_ANGELS
     grp.innerHTML = `<label>Angel <span class="role-a">A</span></label>
       <select id="fAngel" class="form-select"><option value="">— Aucun —</option></select>`;
-    populateSelect('fAngel', REF_ANGELS, 'value', 'value');
+    populateSelect('fAngel', REF_RESSOURCES.filter(function(r){return r.roles.indexOf('angel')!==-1;}), 'id', 'value');
     setSelectVal('fAngel', storedAngel || '');
   } else {
     // Mode lecture seule : affiche l'angel calculé
-    const resolved = resolveAngel(jour || document.getElementById('fJour').value,
-                                  heure || document.getElementById('fHeure').value);
+    const resolvedId = resolveAngel(jour || document.getElementById('fJour').value,
+                                    heure || document.getElementById('fHeure').value);
+    const resolvedName = typeof resolveName === 'function' ? resolveName(resolvedId) : resolvedId;
     grp.innerHTML = `<label>Angel <span class="role-a">A</span>
         <span style="font-size:11px;color:var(--muted);font-weight:400;margin-left:4px">(calculé automatiquement)</span></label>
       <div style="padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font-size:13px;min-height:34px" id="fAngelReadonly">
-        ${resolved ? `<span class="pill pill-a" style="font-size:12px">${resolved}</span>` : '<em>Aucun shift Angel sur cette période</em>'}
+        ${resolvedName ? `<span class="pill pill-a" style="font-size:12px">${resolvedName}</span>` : '<em>Aucun shift Angel sur cette période</em>'}
       </div>`;
   }
 }

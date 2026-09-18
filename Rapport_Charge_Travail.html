@@ -474,18 +474,19 @@ function buildStats(jourFilter) {
     };
   }
 
-  const helperStats = Object.entries(helpers).map(([nom, list]) => ({
-    nom, role: 'Helper', ...computeHelperStats(list)
+  // Résoudre les IDs en noms affichés dès la construction des stats
+  const helperStats = Object.entries(helpers).map(([id, list]) => ({
+    nom: resolveName(id), id, role: 'Helper', ...computeHelperStats(list)
   })).sort((a, b) => b.minutes - a.minutes || b.count - a.count);
 
-  const angelStats = Object.entries(angels).map(([nom, list]) => ({
-    nom, role: 'Angel', ...computeAngelStats(list)
+  const angelStats = Object.entries(angels).map(([id, list]) => ({
+    nom: resolveName(id), id, role: 'Angel', ...computeAngelStats(list)
   })).sort((a, b) => b.minutes - a.minutes || b.count - a.count);
 
   // Les traducteurs utilisent la même règle de déduplication que les angels
   // (même créneau simultané = compté une seule fois)
-  const tradStats = Object.entries(trads).map(([nom, list]) => ({
-    nom, role: 'Traducteur', ...computeAngelStats(list)
+  const tradStats = Object.entries(trads).map(([id, list]) => ({
+    nom: resolveName(id), id, role: 'Traducteur', ...computeAngelStats(list)
   })).sort((a, b) => b.minutes - a.minutes || b.count - a.count);
 
   return { helperStats, angelStats, tradStats, helpersExclus: HELPERS_EXCLUS };
@@ -623,8 +624,8 @@ function renderPersonCard(person, rank, max, roleOverride) {
         // Rendu d'une ligne atelier indentée sous un shift
         function shiftRowHtml(a) {
           const dur = parseDuration(a.heure);
-          const angelLabel = (a.angel && a.angel !== person.nom)
-            ? `<span style="font-size:10px;color:var(--muted);margin-left:4px;">(${I18n.t('r6_angel_label')} ${a.angel})</span>`
+          const angelLabel = (a.angel && a.angel !== person.id)
+            ? `<span style="font-size:10px;color:var(--muted);margin-left:4px;">(${I18n.t('r6_angel_label')} ${resolveName(a.angel)})</span>`
             : '';
           return `<div class="angel-shift-atelier-row">
             <span class="detail-heure">${a.heure || '—'}</span>
@@ -1180,7 +1181,7 @@ function buildHarmony(helperStats, angelStats, tradStats, helpersExclus) {
 
             const dur = iv.e - iv.s;
             const ateliersCoverts = Object.values(angelBlocks)
-              .filter(b => b.angel === overP.nom && b.jour === jour)
+              .filter(b => b.angel === overP.id && b.jour === jour)
               .filter(b => {
                 const biv = parseInterval(b.heure);
                 return biv && biv.s >= iv.s && biv.e <= iv.e;
@@ -1488,8 +1489,8 @@ function render() {
   const personFilter  = document.getElementById('filterPersonne').value;
   const { helperStats, angelStats, tradStats, helpersExclus } = buildStats(jourFilter);
 
-  // Appliquer le filtre personne si actif
-  const filterList = list => personFilter ? list.filter(p => p.nom === personFilter) : list;
+  // Appliquer le filtre personne si actif (personFilter = ID depuis le select)
+  const filterList = list => personFilter ? list.filter(p => p.id === personFilter) : list;
   const hStats = filterList(helperStats);
   const aStats = filterList(angelStats);
   const tStats = filterList(tradStats);
@@ -1680,9 +1681,9 @@ window.toggleMode    = toggleMode;
     if (e.angel)   nomsSet.add(e.angel);
     if (e.traduction) nomsSet.add(e.traduction);
   });
-  [...nomsSet].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' })).forEach(nom => {
+  [...nomsSet].sort((a, b) => resolveName(a).localeCompare(resolveName(b), 'fr', { sensitivity: 'base' })).forEach(id => {
     const o = document.createElement('option');
-    o.value = nom; o.textContent = nom;
+    o.value = id; o.textContent = resolveName(id);
     selPersonne.appendChild(o);
   });
 })();

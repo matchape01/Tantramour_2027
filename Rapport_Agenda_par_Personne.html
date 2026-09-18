@@ -278,17 +278,17 @@ DATA.forEach(r => {
     const meetRoles = r[19].split(',').map(s=>s.trim()).filter(Boolean);
     if (meetRoles.length && typeof REF_RESSOURCES !== 'undefined') {
       REF_RESSOURCES.forEach(res => {
-        if (!res.value) return;
+        if (!res.id) return;
         if (!meetRoles.some(mr => res.roles && res.roles.indexOf(mr) !== -1)) return;
-        addPerson(res.value, 'M');
+        addPerson(res.id, 'M');
       });
     }
   }
 });
 
-const persons = Object.keys(personRoleMap).sort((a,b)=>a.localeCompare(b,'fr'));
+const persons = Object.keys(personRoleMap).sort((a,b)=>resolveName(a).localeCompare(resolveName(b),'fr'));
 const sel = document.getElementById('filterPerson');
-persons.forEach(p => { const o=document.createElement('option'); o.value=p; o.text=p; sel.appendChild(o); });
+persons.forEach(p => { const o=document.createElement('option'); o.value=p; o.text=resolveName(p); sel.appendChild(o); });
 
 const types = [...new Set(DATA.map(r=>r[3]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr'));
 const selType = document.getElementById('filterType');
@@ -308,7 +308,7 @@ function getMatches(person, role) {
     if (r[3] === 'REUNION' && r[19] && person) {
       const meetRoles = r[19].split(',').map(s=>s.trim()).filter(Boolean);
       if (meetRoles.length && typeof REF_RESSOURCES !== 'undefined') {
-        const res = REF_RESSOURCES.find(res => res.value === person);
+        const res = REF_RESSOURCES.find(res => res.id === person);
         if (res && meetRoles.some(mr => res.roles && res.roles.indexOf(mr) !== -1)) {
           if (!roles.includes('M')) roles.push('M');
         }
@@ -349,7 +349,8 @@ function getVal(item, col) {
 }
 
 function pills(vals, cls) {
-  return vals.filter(Boolean).map(v=>`<span class="pill ${cls}">${v}</span>`).join('');
+  // vals peut contenir des IDs (ex: "R_SABRYNA") → résoudre en noms
+  return vals.filter(Boolean).map(function(id){ return `<span class="pill ${cls}">${resolveName(id)}</span>`; }).join('');
 }
 
 let isMobileView = window.innerWidth < 768;
@@ -410,8 +411,8 @@ function cardHtml({r, roles}) {
   }).join(' ');
   const facs = pills([r[6],r[7]],'pill-f');
   const helpers = pills([r[9],r[10],r[11],r[12]],'pill-h');
-  const angel = r[13] ? `<span class="pill pill-a">${r[13]}</span>` : '';
-  const trad = r[8] ? `<span class="pill pill-t">${r[8]}</span>` : '';
+  const angel = r[13] ? `<span class="pill pill-a">${resolveName(r[13])}</span>` : '';
+  const trad = r[8] ? `<span class="pill pill-t">${resolveName(r[8])}</span>` : '';
   const lieu = r[5] ? `<span class="tag">${r[5]}</span>` : '';
   const piment = (r[16]||0) > 0 ? `<span style="letter-spacing:-1px;font-size:13px">${'🌶️'.repeat(r[16])}</span>` : '';
   const agendaIdx = r._agendaIdx !== undefined ? r._agendaIdx : -1;
@@ -633,7 +634,8 @@ function openLogModal(agendaIdx) {
     return '<div class="log-meta-row"><span class="log-meta-lbl">' + lbl + '</span>' +
            '<span class="log-meta-val">' + html + '</span></div>';
   }
-  function pill(txt, cls) {
+  function pill(id, cls) {
+    var txt = resolveName(id);
     return txt ? '<span class="pill-sm ' + cls + '">' + esc(txt) + '</span>' : '';
   }
 

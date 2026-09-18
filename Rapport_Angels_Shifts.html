@@ -286,7 +286,7 @@ SLOTS.forEach(function(slot) {
     var dur = shiftDur(cell.heure);
     html += '<td class="td-angel" style="padding:8px;">';
     html += '<div class="angel-chip" style="background:' + c.bg + ';border:1px solid ' + c.border + ';">';
-    html += '<span class="angel-name" style="color:' + c.text + '">👼 ' + cell.angel + '</span>';
+    html += '<span class="angel-name" style="color:' + c.text + '">👼 ' + resolveName(cell.angel) + '</span>';
     html += '<span class="angel-heure" style="color:' + c.text + '">' + (cell.heure || '') + '</span>';
     if (dur) html += '<span class="angel-dur" style="color:' + c.text + '">' + dur + '</span>';
     html += '</div></td>';
@@ -302,13 +302,13 @@ document.getElementById('tableWrap').innerHTML = html;
 // Affiche nom + téléphone de tous les angels (depuis REF_RESSOURCES)
 function buildContacts() {
   var angels = (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
-    .filter(function(r) { return r.roles && r.roles.indexOf('angel') !== -1 && r.value !== 'TEST'; })
+    .filter(function(r) { return r.roles && r.roles.indexOf('angel') !== -1 && r.id !== 'R_TEST'; })
     .sort(function(a, b) { return a.value.localeCompare(b.value); });
 
   if (!angels.length) return;
 
   var cards = angels.map(function(r) {
-    var c = angelColors[r.value] || { bg: 'var(--angel-bg)', border: 'var(--angel-border)', text: 'var(--angel-text)' };
+    var c = angelColors[r.id] || { bg: 'var(--angel-bg)', border: 'var(--angel-border)', text: 'var(--angel-text)' };
     var telHtml = (r.tel && r.tel.trim())
       ? '<div class="contact-tel">📞 <a href="tel:' + r.tel.replace(/\s/g,'') + '" style="color:inherit;text-decoration:none;">' + r.tel + '</a></div>'
       : '<div class="contact-tel-missing">📞 Numéro non renseigné</div>';
@@ -374,7 +374,7 @@ function buildTable() {
       var dur = shiftDur(cell.heure);
       h += '<td class="td-angel" style="padding:8px;">';
       h += '<div class="angel-chip" style="background:' + c.bg + ';border:1px solid ' + c.border + ';">';
-      h += '<span class="angel-name" style="color:' + c.text + '">👼 ' + cell.angel + '</span>';
+      h += '<span class="angel-name" style="color:' + c.text + '">👼 ' + resolveName(cell.angel) + '</span>';
       h += '<span class="angel-heure" style="color:' + c.text + '">' + (cell.heure || '') + '</span>';
       if (dur) h += '<span class="angel-dur" style="color:' + c.text + '">' + dur + '</span>';
       h += '</div></td>';

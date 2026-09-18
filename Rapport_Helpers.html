@@ -200,17 +200,17 @@ function fmtMin(mins) {
 // On regroupe en "blocs contigus" (tolérance 5 min)
 // ════════════════════════════════════════════════
 function construireShiftsHelpers() {
-  const parHelper = new Map(); // nom → [{ atelier, jour, date, heure, lieu, type, iv }]
+  const parHelper = new Map(); // id → [{ atelier, jour, date, heure, lieu, type, iv }]
 
   AGENDA.forEach(e => {
     const iv = parseIntervalle(e.heure);
     if (!iv) return;
     // Un helper peut être dans helper1, helper2, helper3 ou helper4
     ['helper1','helper2','helper3','helper4'].forEach(field => {
-      const nom = e[field];
-      if (!nom) return;
-      if (!parHelper.has(nom)) parHelper.set(nom, []);
-      parHelper.get(nom).push({
+      const id = e[field];
+      if (!id) return;
+      if (!parHelper.has(id)) parHelper.set(id, []);
+      parHelper.get(id).push({
         atelier: e.atelier, jour: e.jour, date: e.date,
         heure: e.heure, lieu: e.lieu || '', type: e.type, iv,
         fac1: e.fac1 || '', fac2: e.fac2 || ''
@@ -221,7 +221,8 @@ function construireShiftsHelpers() {
   const HELPER_DATA = [];
   const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 
-  parHelper.forEach((slots, nom) => {
+  parHelper.forEach((slots, id) => {
+    const nom = resolveName(id);
     const parJour = new Map();
     slots.forEach(s => {
       if (!parJour.has(s.jour)) parJour.set(s.jour, []);
@@ -266,7 +267,7 @@ let currentView = 'cards';
 // Peupler filtre Helper
 const selH = document.getElementById('filterHelper');
 HELPER_DATA.forEach(a => {
-  const o = document.createElement('option'); o.value = a.nom; o.text = a.nom; selH.appendChild(o);
+  const o = document.createElement('option'); o.value = a.nom; o.text = a.nom; selH.appendChild(o); // nom déjà résolu
 });
 
 // Résumé global
@@ -299,7 +300,7 @@ function renderCards(data) {
       sh.ateliers
         .sort((x,y) => x.iv.debut - y.iv.debut)
         .map(at => {
-          const facs = [at.fac1, at.fac2].filter(Boolean).join(' & ');
+          const facs = [at.fac1, at.fac2].filter(Boolean).map(function(id){return resolveName(id);}).join(' & ');
           return `<div class="shift-row">
           <span class="shift-jour">${sh.jour}</span>
           <span class="shift-date">${sh.date}</span>

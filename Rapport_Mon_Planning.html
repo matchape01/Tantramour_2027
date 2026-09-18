@@ -404,11 +404,11 @@ function heureMin(h) {
 }
 
 function construireData() {
-  const byPerson = new Map(); // nom → entrées[]
+  const byPerson = new Map(); // id-ressource → entrées[]
 
-  function addEntry(nom, role, entry) {
-    if (!nom || !nom.trim()) return;
-    const n = nom.trim();
+  function addEntry(id, role, entry) {
+    if (!id || !id.trim()) return;
+    const n = id.trim();
     if (!byPerson.has(n)) byPerson.set(n, []);
     byPerson.get(n).push(Object.assign({}, entry, { role }));
   }
@@ -442,12 +442,12 @@ function construireData() {
       var roles = e.meetingRoles.split(',').map(function(r) { return r.trim(); }).filter(Boolean);
       if (roles.length && typeof REF_RESSOURCES !== 'undefined') {
         REF_RESSOURCES.forEach(function(res) {
-          if (!res.value) return;
+          if (!res.id) return;
           var hasRole = roles.some(function(r) { return res.roles && res.roles.indexOf(r) !== -1; });
           if (!hasRole) return;
           // Éviter les doublons si cette personne est déjà dans fac1..fac4 / helpers / etc.
-          const alreadyAdded = [e.fac1,e.fac2,e.fac3,e.fac4,e.traduction,e.helper1,e.helper2,e.helper3,e.helper4,e.angel].indexOf(res.value) !== -1;
-          if (!alreadyAdded) addEntry(res.value, 'M', base);
+          const alreadyAdded = [e.fac1,e.fac2,e.fac3,e.fac4,e.traduction,e.helper1,e.helper2,e.helper3,e.helper4,e.angel].indexOf(res.id) !== -1;
+          if (!alreadyAdded) addEntry(res.id, 'M', base);
         });
       }
     }
@@ -455,14 +455,14 @@ function construireData() {
 
   // Trier chaque personne par jour puis heure
   const result = [];
-  byPerson.forEach(function(entries, nom) {
+  byPerson.forEach(function(entries, id) {
     entries.sort(function(a,b) {
       const dj = JOUR_ORDER.indexOf(a.jour) - JOUR_ORDER.indexOf(b.jour);
       return dj !== 0 ? dj : heureMin(a.heure) - heureMin(b.heure);
     });
-    result.push({ nom: nom, entries: entries });
+    result.push({ nom: id, entries: entries }); // .nom stocke l'ID ; l'affichage appelle resolveName()
   });
-  result.sort(function(a,b) { return a.nom.localeCompare(b.nom,'fr'); });
+  result.sort(function(a,b) { return resolveName(a.nom).localeCompare(resolveName(b.nom),'fr'); });
   return result;
 }
 
@@ -501,11 +501,11 @@ updateGlobalStats();
 // BARRE DE RECHERCHE + SELECT PERSONNE
 // ════════════════════════════════════════════════════════
 
-// Alimenter le select Personne dynamiquement
+// Alimenter le select Personne dynamiquement (value = ID, text = nom résolu)
 var selP = document.getElementById('filterPerson');
 ALL_DATA.forEach(function(p) {
   var o = document.createElement('option');
-  o.value = p.nom; o.text = p.nom;
+  o.value = p.nom; o.text = resolveName(p.nom);
   selP.appendChild(o);
 });
 
@@ -513,9 +513,9 @@ ALL_DATA.forEach(function(p) {
 function onSearch() {
   var val = document.getElementById('filterSearch').value;
   document.getElementById('searchClear').classList.toggle('visible', val.length > 0);
-  // Si la saisie correspond exactement à une option, sélectionner dans le select
+  // Si la saisie correspond exactement à une option (par nom résolu), sélectionner dans le select
   var lower = val.trim().toLowerCase();
-  var match = ALL_DATA.find(function(p) { return p.nom.toLowerCase() === lower; });
+  var match = ALL_DATA.find(function(p) { return resolveName(p.nom).toLowerCase() === lower; });
   if (match) {
     document.getElementById('filterPerson').value = match.nom;
   } else {
@@ -546,8 +546,8 @@ function getFiltered() {
 
   return ALL_DATA
     .filter(function(p) {
-      if (fp) return p.nom === fp;                              // sélection exacte dans le select
-      if (fs) return p.nom.toLowerCase().indexOf(fs) !== -1;   // saisie libre partielle
+      if (fp) return p.nom === fp;                                             // sélection exacte (par ID)
+      if (fs) return resolveName(p.nom).toLowerCase().indexOf(fs) !== -1;     // saisie libre sur nom résolu
       return true;
     })
     .map(function(p) {
@@ -564,7 +564,8 @@ function getFiltered() {
 // ════════════════════════════════════════════════════════
 // UTILITAIRES HTML
 // ════════════════════════════════════════════════════════
-function initiales(nom) {
+function initiales(id) {
+  var nom = resolveName(id);
   return nom.split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0].toUpperCase();}).join('');
 }
 
@@ -595,7 +596,7 @@ function renderCards(data) {
     var rolesHtml = Object.keys(rolesSet).map(roleBadgeHtml).join(' ');
 
     var rows = p.entries.map(function(e) {
-      var facs = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean);
+      var facs = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).map(function(id){return resolveName(id);});
       var facsHtml = facs.length && e.role !== 'F'
         ? '<br><span style="font-size:11px;color:var(--muted);font-style:italic">🎓 ' + facs.join(' & ') + '</span>'
         : '';
@@ -618,7 +619,7 @@ function renderCards(data) {
       '<div class="role-header">' +
         '<div class="role-avatar">' + initiales(p.nom) + '</div>' +
         '<div>' +
-          '<div class="role-name">' + p.nom + '</div>' +
+          '<div class="role-name">' + resolveName(p.nom) + '</div>' +
           '<div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">' + rolesHtml + '</div>' +
         '</div>' +
         '<div class="role-stats"><strong>' + n + '</strong> intervention' + (n>1?'s':'') + '</div>' +
@@ -637,9 +638,9 @@ function renderTable(data) {
   var trs = '';
   data.forEach(function(p) {
     p.entries.forEach(function(e) {
-      var facs = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).join(' & ');
+      var facs = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).map(function(id){return resolveName(id);}).join(' & ');
       trs += '<tr>' +
-        '<td style="font-weight:700">' + p.nom + '</td>' +
+        '<td style="font-weight:700">' + resolveName(p.nom) + '</td>' +
         '<td>' + e.jour + '</td>' +
         '<td>' + e.date + '</td>' +
         '<td style="white-space:nowrap;color:var(--role-accent);font-weight:700;font-variant-numeric:tabular-nums">' + (e.heure||'—') + '</td>' +
@@ -752,10 +753,10 @@ render();
 // ════════════════════════════════════════════════════════
 var RES_MAP_MP = {};
 (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : []).forEach(function(r) {
-  RES_MAP_MP[r.value] = r;
+  RES_MAP_MP[r.id] = r; // indexé par ID depuis la migration
 });
-function isAnglophoneMP(nom) {
-  var r = RES_MAP_MP[nom];
+function isAnglophoneMP(id) {
+  var r = RES_MAP_MP[id];
   return r && r.roles && r.roles.indexOf('anglophone') !== -1;
 }
 
@@ -779,7 +780,8 @@ function openLogModal(midx) {
     return '<div class="log-meta-row"><span class="log-meta-lbl">' + lbl + '</span>' +
            '<span class="log-meta-val">' + html + '</span></div>';
   }
-  function pill(txt, cls) {
+  function pill(id, cls) {
+    var txt = resolveName(id);
     return txt ? '<span class="pill-sm ' + cls + '">' + esc(txt) + '</span>' : '';
   }
 

@@ -378,13 +378,19 @@ function buildFilters() {
 
   function fill(selId, set, sorted) {
     var sel = document.getElementById(selId);
-    (sorted ? Array.from(set).sort(function(a,b){return a.localeCompare(b,'fr');}) : JOUR_ORDER.filter(function(j){return set.has(j);}))
-      .forEach(function(v) {
+    var arr = sorted
+      ? Array.from(set).sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); })
+      : JOUR_ORDER.filter(function(j){ return set.has(j); });
+    arr.forEach(function(v) {
         var o = document.createElement('option');
-        o.value = v; o.textContent = v;
+        o.value = v;
         if (selId === 'fJour') {
           var meta = JOUR_META[v] || {};
           o.textContent = v + (meta.date ? ' — ' + meta.date : '');
+        } else if (selId === 'fNom') {
+          o.textContent = resolveName(v);  // résoudre ID → nom affiché
+        } else {
+          o.textContent = v;
         }
         sel.appendChild(o);
       });
@@ -554,8 +560,8 @@ function renderModalBody() {
   var debut = heureMin(e.heure);
   var arrivee = (debut!==null) ? fmtHeure(debut-prep) : '';
 
-  var facs = [e.fac1,e.fac2,e.fac3,e.fac4].filter(Boolean);
-  var helpers = [e.helper1,e.helper2,e.helper3,e.helper4].filter(Boolean);
+  var facs = [e.fac1,e.fac2,e.fac3,e.fac4].filter(Boolean).map(function(id){ return resolveName(id); });
+  var helpers = [e.helper1,e.helper2,e.helper3,e.helper4].filter(Boolean).map(function(id){ return resolveName(id); });
   var hasBilingue = isBilingue(e.fac1) || isBilingue(e.fac2) || isBilingue(e.fac3) || isBilingue(e.fac4);
   var langBadge = (e.traduction || hasBilingue)
     ? '<span class="badge badge-lang badge-en">FR / EN</span>'
@@ -575,7 +581,7 @@ function renderModalBody() {
   if (e.lieu) rows1.push(['📍 '+(lang==='en'?'Venue':'Lieu'), esc(e.lieu)]);
   rows1.push(['🎓 '+(lang==='en'?'Teacher(s)':'Animateur(s)'), facs.length ? facs.map(esc).join(' &amp; ') : '—']);
   rows1.push(['🙌 '+(lang==='en'?'Helper(s)':'Helper(s)'), helpers.length ? helpers.map(esc).join(', ') : '—']);
-  rows1.push(['🌐 '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? esc(e.traduction) : '—']);
+  rows1.push(['🌐 '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? esc(resolveName(e.traduction)) : '—']);
   rows1.push(['👼 Angel', angelWithPhone(e.angel)]);
   rows1.push(['🏷 Note', noteVal ? esc(noteVal) : '—']);
 
@@ -774,15 +780,16 @@ function noteLabel(val, lang) {
 function pimentHtml(n) {
   return n > 0 ? '<span class="piment">'+'🌶️'.repeat(n)+'</span>' : '';
 }
-function isBilingue(nom) {
-  if (!nom || typeof REF_RESSOURCES==='undefined') return false;
-  var r = REF_RESSOURCES.find(function(x){ return x.value===nom; });
+function isBilingue(id) {
+  if (!id || typeof REF_RESSOURCES==='undefined') return false;
+  var r = REF_RESSOURCES.find(function(x){ return x.id===id; });
   return r && r.langues && r.langues.indexOf('FR')!==-1 && r.langues.indexOf('EN')!==-1;
 }
-function angelWithPhone(nom) {
-  if (!nom) return '—';
+function angelWithPhone(id) {
+  if (!id) return '—';
+  var nom = resolveName(id);
   if (typeof REF_RESSOURCES === 'undefined') return esc(nom);
-  var r = REF_RESSOURCES.find(function(x){ return x.value===nom; });
+  var r = REF_RESSOURCES.find(function(x){ return x.id===id; });
   if (!r || !r.tel) return esc(nom);
   return esc(nom) + ' <span style="color:var(--muted)">(' + esc(r.tel) + ')</span>';
 }

@@ -238,9 +238,9 @@ function buildFilters() {
   });
 
   var selFac = document.getElementById('filterFac');
-  Array.from(facsPresents).sort(function(a,b){ return a.localeCompare(b,'fr'); }).forEach(function(f) {
+  Array.from(facsPresents).sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); }).forEach(function(id) {
     var o = document.createElement('option');
-    o.value = f; o.textContent = f;
+    o.value = id; o.textContent = resolveName(id);
     selFac.appendChild(o);
   });
 
@@ -262,7 +262,7 @@ function render() {
 
   var filtered = SPECIALS.filter(function(s) {
     if (fJour && s.jour !== fJour) return false;
-    if (fFac  && s.fac1 !== fFac && s.fac2 !== fFac) return false;
+    if (fFac  && s.fac1 !== fFac && s.fac2 !== fFac) return false;  // compare IDs
     if (fType && s.type !== fType) return false;
     return true;
   });
@@ -314,7 +314,7 @@ function getFilteredSpecials() {
 
   return SPECIALS.filter(function(s) {
     if (fJour && s.jour !== fJour) return false;
-    if (fFac  && s.fac1 !== fFac && s.fac2 !== fFac) return false;
+    if (fFac  && s.fac1 !== fFac && s.fac2 !== fFac) return false;  // compare IDs
     if (fType && s.type !== fType) return false;
     return true;
   });
@@ -338,7 +338,7 @@ function getDuration(h) {
 window.render = render;
 
 function renderCard(s) {
-  var facs = [s.fac1, s.fac2].filter(Boolean).join(' & ');
+  var facs = [s.fac1, s.fac2].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & ');
   return '<div class="ws-card">' +
     '<div class="ws-header">' +
       (s.type ? '<span class="ws-type-badge">' + esc(s.type) + '</span>' : '') +

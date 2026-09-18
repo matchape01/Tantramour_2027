@@ -281,11 +281,11 @@ loadData(['ref_resource_types.js', 'ref_ressources.js', 'data.js'], function() {
 // ════════════════════════════════════════════════════════════════
 var JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 
-var RES_BY_NAME = {};
-REF_RESSOURCES.forEach(function(r) { RES_BY_NAME[r.value] = r; });
+var RES_BY_ID = {};
+REF_RESSOURCES.forEach(function(r) { RES_BY_ID[r.id] = r; });
 
-function isAnglophone(nom) {
-  var r = RES_BY_NAME[nom];
+function isAnglophone(id) {
+  var r = RES_BY_ID[id];
   return r && r.roles.indexOf('anglophone') !== -1;
 }
 
@@ -372,21 +372,22 @@ function renderCard(w) {
   var e = w.entry;
 
   // Animateurs avec badge anglophone
-  var facsHtml = [e.fac1, e.fac2].filter(Boolean).map(function(nom) {
-    var en = isAnglophone(nom);
+  var facsHtml = [e.fac1, e.fac2].filter(Boolean).map(function(id) {
+    var en = isAnglophone(id);
+    var nom = resolveName(id);
     return '<span class="pill ' + (en ? 'pill-en' : 'pill-f') + '">' + (en ? '🇬🇧 ' : '') + esc(nom) + '</span>';
   }).join('');
 
   // Helpers
   var helpersHtml = w.helpers.length
-    ? w.helpers.map(function(nom) {
-        return '<span class="pill pill-h">' + esc(nom) + '</span>';
+    ? w.helpers.map(function(id) {
+        return '<span class="pill pill-h">' + esc(resolveName(id)) + '</span>';
       }).join('')
     : '<span class="avail-note">Aucun helper assigné</span>';
 
   // Zone traducteur
   var tradHtml = w.tradField
-    ? '<span class="pill pill-t">🌐 ' + esc(w.tradField) + '</span>'
+    ? '<span class="pill pill-t">🌐 ' + esc(resolveName(w.tradField)) + '</span>'
     : '<span class="pill pill-tbc">⏳ TBC — traducteur non assigné</span>';
 
   // Action : bouton éditer si TBC

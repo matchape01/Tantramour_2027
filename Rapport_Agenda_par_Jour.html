@@ -1287,15 +1287,16 @@ function _noteLabel(val, lang) {
 function _pimentHtml(n) {
   return n > 0 ? '<span class="piment-modal">'+'🌶️'.repeat(n)+'</span>' : '';
 }
-function _isBilingue2(nom) {
-  if (!nom || typeof REF_RESSOURCES==='undefined') return false;
-  var r = REF_RESSOURCES.find(function(x) { return x.value===nom; });
+function _isBilingue2(id) {
+  if (!id || typeof REF_RESSOURCES==='undefined') return false;
+  var r = REF_RESSOURCES.find(function(x) { return x.id===id; });
   return r && r.langues && r.langues.indexOf('FR')!==-1 && r.langues.indexOf('EN')!==-1;
 }
-function _angelWithPhone(nom) {
-  if (!nom) return '—';
+function _angelWithPhone(id) {
+  if (!id) return '—';
+  var nom = resolveName(id);
   if (typeof REF_RESSOURCES === 'undefined') return _esc(nom);
-  var r = REF_RESSOURCES.find(function(x) { return x.value===nom; });
+  var r = REF_RESSOURCES.find(function(x) { return x.id===id; });
   if (!r || !r.tel) return _esc(nom);
   return _esc(nom) + ' <span style="color:var(--muted)">(' + _esc(r.tel) + ')</span>';
 }
@@ -1400,8 +1401,8 @@ function _renderModalBody() {
   var debut   = _heureMin2(e.heure);
   var arrivee = (debut!==null) ? _fmtHeure2(debut-prep) : '';
 
-  var facs    = [e.fac1,e.fac2,e.fac3,e.fac4].filter(Boolean);
-  var helpers = [e.helper1,e.helper2,e.helper3,e.helper4].filter(Boolean);
+  var facs    = [e.fac1,e.fac2,e.fac3,e.fac4].filter(Boolean).map(function(id){return resolveName(id);});
+  var helpers = [e.helper1,e.helper2,e.helper3,e.helper4].filter(Boolean).map(function(id){return resolveName(id);});
   var hasBilingue = _isBilingue2(e.fac1) || _isBilingue2(e.fac2) || _isBilingue2(e.fac3) || _isBilingue2(e.fac4);
   var langBadge = (e.traduction || hasBilingue)
     ? '<span class="badge-lang badge-en">FR / EN</span>'
@@ -1422,7 +1423,7 @@ function _renderModalBody() {
   rows1.push(['📍 '+(lang==='en'?'Venue':'Lieu'), e.lieu ? _lieuLabel(e.lieu) : '—']);
   rows1.push(['🎓 '+(lang==='en'?'Teacher(s)':'Animateur(s)'), facs.length ? facs.map(_esc).join(' &amp; ') : '—']);
   rows1.push(['🙌 '+(lang==='en'?'Helper(s)':'Helper(s)'), helpers.length ? helpers.map(_esc).join(', ') : '—']);
-  rows1.push(['🌐 '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? _esc(e.traduction) : '—']);
+  rows1.push(['🌐 '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? _esc(resolveName(e.traduction)) : '—']);
   rows1.push(['👼 Angel', _angelWithPhone(e.angel)]);
   rows1.push(['🏷 Note', noteVal ? _esc(noteVal) : '—']);
 

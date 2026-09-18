@@ -460,7 +460,7 @@ function populateFilters() {
     if (r.lieu      && lieux.indexOf(r.lieu)           === -1) lieux.push(r.lieu);
     if (r.eqType    && fourns.indexOf(r.eqType)        === -1) fourns.push(r.eqType);
     if (r.eqCat     && cats.indexOf(r.eqCat)           === -1) cats.push(r.eqCat);
-    if (r.fac1      && animateurs.indexOf(r.fac1)      === -1) animateurs.push(r.fac1);
+    if (r.fac1      && animateurs.indexOf(r.fac1)      === -1) animateurs.push(r.fac1);  // IDs
     if (r.atelier   && ateliers.indexOf(r.atelier)     === -1) ateliers.push(r.atelier);
     if (r.hasEquip  && r.eqName && equips.indexOf(r.eqName) === -1) equips.push(r.eqName);
   });
@@ -468,7 +468,8 @@ function populateFilters() {
   var jourOrder = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
   jours.sort(function(a,b) { return jourOrder.indexOf(a)-jourOrder.indexOf(b); });
   types.sort(); lieux.sort(); fourns.sort(); cats.sort();
-  animateurs.sort(); ateliers.sort(); equips.sort();
+  animateurs.sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); });
+  ateliers.sort(); equips.sort();
 
   function fill(sel, arr, allLabel) {
     var el = document.getElementById(sel);
@@ -481,12 +482,21 @@ function populateFilters() {
       el.appendChild(o);
     });
   }
+  // Animateurs : option.value = ID, text = nom affiché
+  var elAnim = document.getElementById('fAnimateur');
+  var curAnim = elAnim.value;
+  elAnim.innerHTML = '<option value="">Tous</option>';
+  animateurs.forEach(function(id) {
+    var o = document.createElement('option');
+    o.value = id; o.textContent = resolveName(id);
+    if (id === curAnim) o.selected = true;
+    elAnim.appendChild(o);
+  });
   fill('fJour',        jours,      'Tous les jours');
   fill('fType',        types,      'Tous les types');
   fill('fLieu',        lieux,      'Tous les lieux');
   fill('fFournisseur', fourns,     'Tous');
   fill('fCategorie',   cats,       'Toutes');
-  fill('fAnimateur',   animateurs, 'Tous');
 
   // Combos avec search
   COMBO_OPTIONS['fAtelier'] = ateliers;
@@ -573,7 +583,7 @@ function renderTable() {
     html += '<tr' + rowClass + '>';
     html += '<td class="bold" style="white-space:nowrap;">' + esc(r.atelierId) + '</td>';
     html += '<td class="bold">' + esc(r.atelier) + '</td>';
-    html += '<td>' + esc(r.fac1) + '</td>';
+    html += '<td>' + esc(resolveName(r.fac1)) + '</td>';
     html += '<td style="white-space:nowrap;">' + esc(r.date) + '</td>';
     html += '<td style="white-space:nowrap;">' + esc(r.heureDebut) + '</td>';
     html += '<td style="white-space:nowrap;">' + esc(r.heureFin) + '</td>';

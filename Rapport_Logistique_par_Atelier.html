@@ -191,8 +191,8 @@ function onDateChange() {
     if (r[17]) facsSet.add(r[17]);
     if (r[18]) facsSet.add(r[18]);
   });
-  Array.from(facsSet).sort((a, b) => a.localeCompare(b, 'fr')).forEach(f => {
-    const o = document.createElement('option'); o.value = f; o.text = f; sf.appendChild(o);
+  Array.from(facsSet).sort((a, b) => resolveName(a).localeCompare(resolveName(b), 'fr')).forEach(id => {
+    const o = document.createElement('option'); o.value = id; o.text = resolveName(id); sf.appendChild(o);
   });
   sf.disabled = false;
 
@@ -261,10 +261,10 @@ function showRecap(r) {
   const noteLabel2 = noteRef2 ? noteRef2.value : noteVal2;
   const notePill = noteLabel2 ? `<span class="pill pill-lieu" style="background:#fff8e1;color:#78350f;border-color:#fde68a">${noteLabel2}</span>` : '';
   document.getElementById('rMeta').innerHTML = `${r[0]} — ${r[1]} &nbsp;·&nbsp; ${r[2]} &nbsp; ${type} ${lieu}${notePill ? ' &nbsp;' + notePill : ''}`;
-  document.getElementById('rFac').innerHTML = pillList([r[6],r[7],r[17],r[18]],'pill-f') || '<span style="color:var(--muted)">—</span>';
-  document.getElementById('rHelpers').innerHTML = pillList([r[9],r[10],r[11],r[12]],'pill-h') || '<span style="color:var(--muted)">—</span>';
-  document.getElementById('rAngel').innerHTML = pill(r[13],'pill-a') || '<span style="color:var(--muted)">—</span>';
-  document.getElementById('rTraduction').innerHTML = pill(r[8],'pill-t') || '<span style="color:var(--muted)">—</span>';
+  document.getElementById('rFac').innerHTML = pillList([r[6],r[7],r[17],r[18]].map(id => id ? resolveName(id) : id),'pill-f') || '<span style="color:var(--muted)">—</span>';
+  document.getElementById('rHelpers').innerHTML = pillList([r[9],r[10],r[11],r[12]].map(id => id ? resolveName(id) : id),'pill-h') || '<span style="color:var(--muted)">—</span>';
+  document.getElementById('rAngel').innerHTML = pill(r[13] ? resolveName(r[13]) : r[13],'pill-a') || '<span style="color:var(--muted)">—</span>';
+  document.getElementById('rTraduction').innerHTML = pill(r[8] ? resolveName(r[8]) : r[8],'pill-t') || '<span style="color:var(--muted)">—</span>';
   // Informations Logistiques — lecture depuis LOGISTICS via logisticId (r[15])
   const logBox = document.getElementById('rLogistics');
   const logId  = r[15] && r[15].trim();

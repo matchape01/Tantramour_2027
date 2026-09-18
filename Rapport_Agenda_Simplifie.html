@@ -417,7 +417,7 @@ function render() {
         var left   = 'calc('+(item._col * pct).toFixed(1)+'% + 2px)';
         var width  = 'calc('+pct.toFixed(1)+'% - 4px)';
         var fmtH   = e.heure ? e.heure.replace(/\s+/g,' ').trim() : '';
-        var facs   = [e.fac1, e.fac2, e.fac3, e.fac4].filter(function(f){ return f && String(f).trim()!==''; });
+        var facs   = [e.fac1, e.fac2, e.fac3, e.fac4].filter(function(f){ return f && String(f).trim()!==''; }).map(function(id){ return resolveName(id); });
         var facsStr = facs.join(', ');
 
         bodyHtml += '<div class="evt '+css+'" style="top:'+top.toFixed(1)+'px;height:'+height.toFixed(1)+'px;left:'+left+';width:'+width+';"'

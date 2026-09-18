@@ -273,9 +273,9 @@ function buildFilters() {
   });
 
   var selFac = document.getElementById('filterFac');
-  Array.from(facsPresents).sort(function(a,b){ return a.localeCompare(b,'fr'); }).forEach(function(f) {
+  Array.from(facsPresents).sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); }).forEach(function(id) {
     var o = document.createElement('option');
-    o.value = f; o.textContent = f;
+    o.value = id; o.textContent = resolveName(id);
     selFac.appendChild(o);
   });
 
@@ -298,7 +298,7 @@ function render() {
 
   var filtered = ATELIERS.filter(function(e) {
     if (fJour && e.jour !== fJour) return false;
-    if (fFac  && e.fac1 !== fFac && e.fac2 !== fFac) return false;
+    if (fFac  && e.fac1 !== fFac && e.fac2 !== fFac) return false;  // compare IDs
     if (fType && e.type !== fType) return false;
     var s = getStatus(e);
     if (fStatus === 'none'          && (s.hasFr || s.hasEn)) return false;
@@ -343,7 +343,7 @@ window.render = render;
 
 function renderCard(e, agendaIdx) {
   var s = getStatus(e);
-  var facs = [e.fac1, e.fac2].filter(Boolean).join(' & ');
+  var facs = [e.fac1, e.fac2].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & ');
 
   // Classe de la carte
   var cls = 'miss-both';

@@ -378,17 +378,17 @@ function buildFilterOptions() {
     selJour.appendChild(opt);
   });
 
-  // Animateurs (triés alphabétiquement)
+  // Animateurs (triés alphabétiquement par nom affiché)
   var facsSet = new Set();
   AGENDA_ATELIERS.forEach(function(e) {
     if (e.fac1) facsSet.add(e.fac1);
     if (e.fac2) facsSet.add(e.fac2);
   });
-  var facsSorted = Array.from(facsSet).sort(function(a,b){ return a.localeCompare(b,'fr'); });
+  var facsSorted = Array.from(facsSet).sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); });
   var selFac = document.getElementById('filterFac');
-  facsSorted.forEach(function(f) {
+  facsSorted.forEach(function(id) {
     var opt = document.createElement('option');
-    opt.value = f; opt.textContent = f;
+    opt.value = id; opt.textContent = resolveName(id);
     selFac.appendChild(opt);
   });
 
@@ -415,7 +415,7 @@ function getFilteredAteliers() {
   // Filtrer les entrées AGENDA
   var filtered = AGENDA_ATELIERS.filter(function(e) {
     if (fJour && e.jour !== fJour) return false;
-    if (fFac  && e.fac1 !== fFac && e.fac2 !== fFac) return false;
+    if (fFac  && e.fac1 !== fFac && e.fac2 !== fFac) return false;  // compare IDs
     if (fType && e.type !== fType) return false;
     return true;
   });
@@ -477,7 +477,7 @@ function renderList(ateliers) {
 
   list.innerHTML = ateliers.map(function(e, idx) {
     var d   = findDescByName((e.atelier||'').trim());
-    var facs = [e.fac1, e.fac2].filter(Boolean).join(' & ');
+    var facs = [e.fac1, e.fac2].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & ');
     var meta = JOUR_META[e.jour] || {};
     var pimentStr = e.piment > 0
       ? '<span style="letter-spacing:-1px">' + '🌶️'.repeat(e.piment) + '</span>' : '';
@@ -559,7 +559,7 @@ function selectAtelier(idx) {
     e.heure && '🕐 ' + e.heure,
     e.lieu  && '📍 ' + e.lieu,
     e.type  && '🏷 ' + e.type,
-    [e.fac1,e.fac2].filter(Boolean).length && '🎓 ' + [e.fac1,e.fac2].filter(Boolean).join(' & '),
+    [e.fac1,e.fac2].filter(Boolean).length && '🎓 ' + [e.fac1,e.fac2].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & '),
   ].filter(Boolean).join('&nbsp;&nbsp;&nbsp;');
 
   document.getElementById('bcAtelier').textContent = e.atelier || '—';

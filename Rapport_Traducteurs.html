@@ -214,7 +214,7 @@ function dureeFromHeure(heure) {
 // ════════════════════════════════════════════════
 function construireShiftsTraducteurs() {
   // 1. Collecter tous les ateliers par traducteur
-  const parTraducteur = new Map(); // nom → [{ atelier, jour, date, heure, lieu, type, iv }]
+  const parTraducteur = new Map(); // id → [{ atelier, jour, date, heure, lieu, type, iv }]
 
   AGENDA.forEach(e => {
     if (!e.traduction) return;
@@ -232,7 +232,8 @@ function construireShiftsTraducteurs() {
   const TRADUCTEURS_DATA = []; // [{ nom, shifts: [{ jour, date, debut, fin, ateliers }] }]
   const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 
-  parTraducteur.forEach((slots, nom) => {
+  parTraducteur.forEach((slots, id) => {
+    const nom = resolveName(id);
     // Grouper par jour
     const parJour = new Map();
     slots.forEach(s => {
@@ -330,7 +331,7 @@ function renderCards(data) {
       sh.ateliers
         .sort((x,y) => x.iv.debut - y.iv.debut)
         .map(at => {
-          const facs = [at.fac1, at.fac2].filter(Boolean).join(' & ');
+          const facs = [at.fac1, at.fac2].filter(Boolean).map(function(id){return resolveName(id);}).join(' & ');
           const dur  = dureeMin(at.iv);
           return `<div class="shift-row">
           <span class="shift-jour">${sh.jour}</span>
@@ -370,7 +371,7 @@ function renderTable(data) {
       sh.ateliers
         .sort((x,y) => x.iv.debut - y.iv.debut)
         .forEach(at => {
-          const facs = [at.fac1, at.fac2].filter(Boolean).join(' & ');
+          const facs = [at.fac1, at.fac2].filter(Boolean).map(function(id){return resolveName(id);}).join(' & ');
           rows.push({ nom: a.nom, jour: sh.jour, date: sh.date,
             heure: at.heure, dur: dureeMin(at.iv),
             facs, atelier: at.atelier, lieu: at.lieu, type: at.type });

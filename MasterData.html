@@ -260,6 +260,18 @@
     <a href="Rapport_Gerer_Ressources.html" target="_blank" data-i18n="md_banner_btn">Gérer les Ressources →</a>
   </div>
 
+  <!-- BOUTON MIGRATION ONE-SHOT -->
+  <div id="migrationBanner" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fef9c3;border:2px solid #fde68a;border-radius:10px;align-items:center;gap:14px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:0;">
+      <strong style="color:#854d0e;">🔄 Migration données → IDs ressources</strong><br>
+      <span style="font-size:12px;color:#92400e;">Remplace les noms en clair (ex: "Marie Dupont") par les IDs stables (ex: "R_MARIE") dans data.js. Opération unique, non-destructive.</span>
+    </div>
+    <button onclick="runMigrateToIds()" style="cursor:pointer;background:#854d0e;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;font-family:inherit;white-space:nowrap;">
+      🔄 Migrer vers IDs
+    </button>
+    <span id="migrationStatus" style="font-size:12px;color:#92400e;"></span>
+  </div>
+
   <!-- ONGLETS -->
   <div class="tabs">
     <button class="tab active" onclick="showTab('lieux',this)">📍 <span data-i18n="md_tab_lieux">Lieux</span></button>
@@ -4314,6 +4326,87 @@ async function pmSave() {
   }
 }
 window.pmSave = pmSave;
+
+// ════════════════════════════════════════════════════════════
+// MIGRATION ONE-SHOT : noms → IDs dans AGENDA (data.js)
+// ════════════════════════════════════════════════════════════
+function runMigrateToIds() {
+  if (!confirm('Migrer data.js : remplacer les noms en clair par les IDs dans fac1/fac2/fac3/fac4/traduction/helper1-4/angel ?\n\nOpération non-destructive : les noms non trouvés seront laissés tels quels.')) return;
+
+  var statusEl = document.getElementById('migrationStatus');
+  statusEl.textContent = '⏳ Analyse en cours…';
+
+  // Index nom → ID
+  var nameToId = {};
+  (REF_RESSOURCES || []).forEach(function(r) {
+    if (r.value && r.id) nameToId[r.value.trim()] = r.id;
+  });
+
+  var FIELDS = ['fac1','fac2','fac3','fac4','traduction','helper1','helper2','helper3','helper4','angel'];
+  var changed = 0;
+  var notFound = [];
+
+  AGENDA.forEach(function(e) {
+    FIELDS.forEach(function(f) {
+      var val = e[f];
+      if (!val || !val.trim()) return;
+      // Déjà un ID ? (commence par R_ ou A_ ou H_ ou TR_ ou F_ etc.)
+      if (/^[A-Z_]+_/.test(val)) return;
+      // C'est un nom en clair — chercher dans le map
+      var id = nameToId[val.trim()];
+      if (id) {
+        e[f] = id;
+        changed++;
+      } else {
+        if (notFound.indexOf(val) === -1) notFound.push(val);
+      }
+    });
+  });
+
+  if (changed === 0 && notFound.length === 0) {
+    statusEl.textContent = '✅ Rien à migrer — données déjà à jour.';
+    return;
+  }
+
+  var summary = changed + ' champ(s) migré(s).';
+  if (notFound.length > 0) summary += ' ⚠️ Non trouvés : ' + notFound.join(', ');
+  statusEl.textContent = '💾 Sauvegarde…';
+
+  // Régénérer et sauvegarder data.js
+  var content = genererDataJs();
+  saveFile('data.js', content).then(function() {
+    statusEl.textContent = '✅ Migration terminée ! ' + summary;
+    showToast('✅ Migration terminée ! ' + changed + ' champ(s) migré(s).', false);
+  }).catch(function(err) {
+    statusEl.textContent = '❌ Erreur : ' + err.message;
+    showToast('❌ ' + err.message, true);
+    // Rollback en mémoire (reload)
+    location.reload(true);
+  });
+}
+window.runMigrateToIds = runMigrateToIds;
+
+// Afficher le bouton de migration si des noms en clair sont détectés
+(function checkIfMigrationNeeded() {
+  var FIELDS = ['fac1','fac2','fac3','fac4','traduction','helper1','helper2','helper3','helper4','angel'];
+  var idPattern = /^[A-Z_]+_/;
+  var needsMigration = false;
+  for (var i = 0; i < AGENDA.length; i++) {
+    var e = AGENDA[i];
+    for (var j = 0; j < FIELDS.length; j++) {
+      var val = e[FIELDS[j]];
+      if (val && val.trim() && !idPattern.test(val)) {
+        needsMigration = true;
+        break;
+      }
+    }
+    if (needsMigration) break;
+  }
+  if (needsMigration) {
+    var banner = document.getElementById('migrationBanner');
+    banner.style.display = 'flex';
+  }
+})();
 
 }); // fin loadData
 </script>
