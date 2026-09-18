@@ -25,4 +25,5 @@ var REF_TYPES = [
   { id: "T_CONF", value: "CONFERENCE", label: "CONFERENCE", minRes: 2, minHelpers: 1, minTrad: 0, tradCounts: 1 },
   { id: "T_MEETING", value: "REUNION", label: "REUNION", minRes: 0, minHelpers: 0, minTrad: 0, tradCounts: 0 },
   { id: "T_TANTRA", value: "ATELIERS TANTRA", label: "ATELIERS TANTRA", minRes: 2, minHelpers: 1, minTrad: 1, tradCounts: 1 },
+  { id: "T_ART", value: "ATELIER ARTISTIQUE", label: "ATELIER ARTISTIQUE", minRes: 2, minHelpers: 1, minTrad: 1, tradCounts: 1 },
 ];
