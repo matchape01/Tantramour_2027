@@ -38,6 +38,7 @@ var _LDR_GH_BRANCH = 'main';
 // ── Liste des fichiers de référence modifiables ───────────────────────────────
 var REFRESHABLE = [
   'data.js',
+  'Ateliers.js',
   'ref_ressources.js',
   'ref_descriptions.js',
   'ref_consignes_type.js',
