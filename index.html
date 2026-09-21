@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour 2026</title>
+<title>Tantramour 2027</title>
 <style>
   :root {
     --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
@@ -374,9 +374,14 @@ loadData(['ref_translations.js', 'ref_news.js'], function() {
   if (typeof I18n !== 'undefined') I18n.apply();
   updateWebsiteHref();
   renderMsgFvWidget();
+  // Titre de l'onglet du navigateur
+  var pageTitle = (typeof I18n !== 'undefined') ? I18n.t('home_page_title') : '';
+  if (pageTitle && pageTitle !== 'home_page_title') document.title = pageTitle;
   document.addEventListener('tm_lang_changed', function() {
     updateWebsiteHref();
     renderMsgFvWidget();
+    var pt = (typeof I18n !== 'undefined') ? I18n.t('home_page_title') : '';
+    if (pt && pt !== 'home_page_title') document.title = pt;
   });
 });
 // ── FIN MESSAGE IMPORTANT ─────────────────────────────────────────────────────

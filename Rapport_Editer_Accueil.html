@@ -154,6 +154,26 @@
 
   <div class="edit-card">
 
+    <!-- 0) TITRE ONGLET NAVIGATEUR -->
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title">
+          <span>🔖</span> 0) Titre de l'onglet navigateur (balise &lt;title&gt;)
+        </div>
+        <span class="field-badge">Clé : home_page_title</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block">
+          <label>🇫🇷 Français</label>
+          <input type="text" id="page_title_fr" placeholder="ex: Tantramour 2027" oninput="updatePreview()" />
+        </div>
+        <div class="input-block">
+          <label>🇬🇧 Anglais</label>
+          <input type="text" id="page_title_en" placeholder="ex: Tantramour 2027" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
     <!-- 1) DATES DU FESTIVAL -->
     <div class="field-row">
       <div class="field-header">
@@ -299,14 +319,17 @@ function setTransValue(key, frVal, enVal) {
 }
 
 function initFields() {
-  document.getElementById('dates_fr').value = getTransValue('home_festival_dates', 'fr', 'Festival · 29 août – 4 septembre 2026');
-  document.getElementById('dates_en').value = getTransValue('home_festival_dates', 'en', 'Festival · August 29 – September 4, 2026');
+  document.getElementById('page_title_fr').value = getTransValue('home_page_title', 'fr', 'Tantramour 2027');
+  document.getElementById('page_title_en').value = getTransValue('home_page_title', 'en', 'Tantramour 2027');
+
+  document.getElementById('dates_fr').value = getTransValue('home_festival_dates', 'fr', 'Festival · 27 août – 2 septembre 2027');
+  document.getElementById('dates_en').value = getTransValue('home_festival_dates', 'en', 'Festival · August 27 – September 2, 2027');
 
   document.getElementById('title1_fr').value = getTransValue('home_title_1', 'fr', 'Tantramour');
   document.getElementById('title1_en').value = getTransValue('home_title_1', 'en', 'Tantramour');
 
-  document.getElementById('title2_fr').value = getTransValue('home_title_2', 'fr', '2026');
-  document.getElementById('title2_en').value = getTransValue('home_title_2', 'en', '2026');
+  document.getElementById('title2_fr').value = getTransValue('home_title_2', 'fr', '2027');
+  document.getElementById('title2_en').value = getTransValue('home_title_2', 'en', '2027');
 
   document.getElementById('web_text_fr').value = getTransValue('home_website_text', 'fr', 'tantramourfestival.com');
   document.getElementById('web_text_en').value = getTransValue('home_website_text', 'en', 'tantramourfestival.com');
@@ -358,6 +381,10 @@ async function saveAll() {
   var wtFr = document.getElementById('web_text_fr').value.trim();
   var wtEn = document.getElementById('web_text_en').value.trim();
   var wu = document.getElementById('web_url').value.trim();
+
+  var ptFr = document.getElementById('page_title_fr').value.trim();
+  var ptEn = document.getElementById('page_title_en').value.trim();
+  setTransValue('home_page_title', ptFr, ptEn);
 
   setTransValue('home_festival_dates', dFr, dEn);
   setTransValue('home_title_1', t1Fr, t1En);
