@@ -22,7 +22,7 @@ var REF_TRANSLATIONS = [
   { key: "home_title_2", fr: "2027", en: "2027" },
   { key: "home_website_text", fr: "tantramourfestival.com", en: "tantramourfestival.com" },
   { key: "home_website_url", fr: "https://tantramourfestival.com", en: "https://tantramourfestival.com" },
-  { key: "home_page_title", fr: "Tantramour 2027", en: "Tantramour 2027" },
+  { key: "home_page_title", fr: "Tantramour 2027 (3ème Edition)", en: "Tantramour 2027 (3rd Edition)" },
   { key: "card_editer_index_title", fr: "Éditer Accueil (index)", en: "Edit Home (index)" },
   { key: "card_editer_index_desc", fr: "Modifier les textes de la page d'accueil (dates, titre, site web)", en: "Edit homepage texts (dates, title, website)" },
   { key: "home_subtitle", fr: "Page destinée à la DreamTeam", en: "Page for the DreamTeam" },
