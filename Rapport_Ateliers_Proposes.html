@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tantramour 2027 — Ateliers Proposés</title>
 <script src="ref_translations.js"></script>
-<script src="ref_types.js?v=1"></script>
-<script src="ref_ressources.js?v=1"></script>
-<script src="Ateliers.js?v=2"></script>
 <script src="i18n.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
@@ -906,24 +903,19 @@ function showToast(msg, isError) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// BOOT
+// BOOT — même pattern que Rapport_Editer_Atelier.html
+// Tout le rendu est dans le callback loadData, garantissant que
+// ref_types.js, ref_ressources.js et Ateliers.js sont chargés
+// depuis l'API GitHub avant tout affichage.
 // ═══════════════════════════════════════════════════════════════
 
-function bootUI() {
+loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js'], function() {
   populateTypeSelects();
   populateAnimateurSelects();
   renderStats();
   applyFilters();
   document.getElementById('c_dureeH').value   = '1';
   document.getElementById('c_dureeMin').value = '30';
-}
-
-// 1. Rendu immédiat avec les données déjà en mémoire (scripts <head>)
-bootUI();
-
-// 2. Rechargement frais via API GitHub → re-rendu avec données à jour
-loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js'], function() {
-  bootUI();
 });
 </script>
 
