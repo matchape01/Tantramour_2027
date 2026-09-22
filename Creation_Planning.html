@@ -1422,9 +1422,19 @@
     function syncFromAgenda() {
       if (typeof AGENDA === 'undefined' || !Array.isArray(AGENDA)) return;
 
+      // Ensemble des libellés de dates valides pour le festival configuré (ex: "Samedi 28 aout")
+      const validDates = new Set(FESTIVAL_DAYS.map(d => (d.dateLabel || '').toLowerCase().trim()));
+
       PLACED_EVENTS = [];
       AGENDA.forEach(item => {
         if (!item.jour || !item.heure) return;
+
+        // Filtrer strictement : l'atelier doit appartenir aux dates du festival configuré
+        const itemDate = (item.date || '').toLowerCase().trim();
+        if (validDates.size > 0 && itemDate && !validDates.has(itemDate)) {
+          return; // Atelier d'une autre édition / autre date -> ignoré
+        }
+
         const iv = parseIntervalStr(item.heure);
         if (!iv) return;
 
