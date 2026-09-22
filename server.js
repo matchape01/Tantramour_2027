@@ -33,6 +33,7 @@ const MIME = {
 // Sécurité : seuls ces fichiers peuvent être écrits par /save
 const ALLOWED = new Set([
   'data.js',
+  'Ateliers.js',
   'logistics.js',
   'logistics.special.js',
   'logistics.helpers.js',

@@ -25,6 +25,7 @@ ROOT = Path(__file__).parent.resolve()
 # Fichiers autorisés à être modifiés via /save (sécurité)
 ALLOWED = {
     'data.js',
+    'Ateliers.js',
     'logistics.js',
     'logistics.special.js',
     'logistics.helpers.js',

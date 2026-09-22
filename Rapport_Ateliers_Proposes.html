@@ -4,181 +4,116 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tantramour 2027 — Ateliers Proposés</title>
-<script src="ref_translations.js"></script>
-<script src="i18n.js"></script>
-<script src="github-api.js"></script>
-<script src="loader.js"></script>
-<!-- ref_types et ref_ressources chargés statiquement AVANT le script principal,
-     sans passer par bustStaticScripts (même pattern que Rapport_Editer_Atelier) -->
 <style>
-  :root {
-    --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
-    --text:#1f2328; --muted:#57606a; --accent:#1d4ed8;
-    --accent-hover:#1e40af;
-    --success:#166534; --success-bg:#dcfce7; --success-border:#86efac;
-    --warn:#b45309; --warn-bg:#fffbeb; --warn-border:#fcd34d;
-    --danger:#dc2626; --danger-bg:#fee2e2; --danger-border:#fca5a5;
-    --new-bg:#eff6ff; --new-border:#bfdbfe; --new-text:#1d4ed8;
-    --approved-bg:#dcfce7; --approved-border:#86efac; --approved-text:#166534;
-    --rejected-bg:#fee2e2; --rejected-border:#fca5a5; --rejected-text:#dc2626;
-  }
-  .dark {
-    --bg:#0d1117; --surface:#161b22; --border:#30363d;
-    --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
-    --accent-hover:#1d4ed8;
-    --new-bg:#1e2a3a; --new-border:#1d4ed8; --new-text:#93c5fd;
-    --approved-bg:#0d2a1a; --approved-border:#166534; --approved-text:#6ee7b7;
-    --rejected-bg:#2a0d0d; --rejected-border:#dc2626; --rejected-text:#fca5a5;
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:-apple-system,"Segoe UI",system-ui,sans-serif; font-size:14px; line-height:1.5; background:var(--bg); color:var(--text); }
-  .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 100px; }
+:root {
+  --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
+  --text:#1f2328; --muted:#57606a; --accent:#1d4ed8;
+  --success-bg:#dcfce7; --success-border:#86efac; --success-text:#166534;
+  --danger-bg:#fee2e2; --danger-border:#fca5a5; --danger-text:#dc2626;
+  --warn-bg:#fffbeb; --warn-border:#fcd34d; --warn-text:#b45309;
+  --new-bg:#eff6ff; --new-border:#bfdbfe; --new-text:#1d4ed8;
+}
+.dark {
+  --bg:#0d1117; --surface:#161b22; --border:#30363d;
+  --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
+  --new-bg:#1e2a3a; --new-border:#1d4ed8; --new-text:#93c5fd;
+  --success-bg:#0d2a1a; --success-border:#166534; --success-text:#6ee7b7;
+  --danger-bg:#2a0d0d; --danger-border:#dc2626; --danger-text:#fca5a5;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,"Segoe UI",system-ui,sans-serif; font-size:14px; line-height:1.5; background:var(--bg); color:var(--text); }
+.wrap { max-width:1100px; margin:0 auto; padding:24px 20px 80px; }
 
-  /* ── HEADER ── */
-  header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
-  .logo h1 { font-size:18px; font-weight:700; }
-  .logo p  { font-size:22px; font-weight:800; color:var(--accent); line-height:1.2; margin-top:2px; }
-  .header-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+/* HEADER */
+header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+.logo h1 { font-size:18px; font-weight:700; }
+.logo p  { font-size:20px; font-weight:800; color:var(--accent); margin-top:2px; }
+.header-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 
-  /* ── BOUTONS ── */
-  .btn {
-    cursor:pointer; background:var(--surface); border:1px solid var(--border);
-    border-radius:6px; padding:7px 14px; font-size:13px; font-weight:600;
-    color:var(--text); font-family:inherit; display:inline-flex; align-items:center;
-    gap:6px; text-decoration:none; transition:all .15s;
-  }
-  .btn:hover { background:var(--border); }
-  .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
-  .btn-primary:hover { background:var(--accent-hover); }
-  .btn-success { background:#166534; color:#fff; border-color:#166534; }
-  .btn-success:hover { background:#14532d; }
-  .btn-danger  { background:var(--danger); color:#fff; border-color:var(--danger); }
-  .btn-danger:hover { background:#b91c1c; }
-  .btn-sm { padding:4px 10px; font-size:12px; }
+/* BOUTONS */
+.btn { cursor:pointer; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:7px 14px; font-size:13px; font-weight:600; color:var(--text); font-family:inherit; display:inline-flex; align-items:center; gap:6px; text-decoration:none; transition:background .15s; }
+.btn:hover { background:var(--border); }
+.btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+.btn-primary:hover { opacity:.9; }
+.btn-success { background:var(--success-text); color:#fff; border-color:var(--success-text); }
+.btn-danger  { background:#dc2626; color:#fff; border-color:#dc2626; }
+.btn-sm { padding:4px 10px; font-size:12px; }
 
-  /* ── TABS ── */
-  .tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px; }
-  .tab { cursor:pointer; padding:10px 20px; font-size:13px; font-weight:600; color:var(--muted); border:none; background:none; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; font-family:inherit; }
-  .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-  .tab:hover:not(.active) { color:var(--text); }
-  .tab-pane { display:none; }
-  .tab-pane.active { display:block; }
+/* TABS */
+.tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:24px; gap:0; }
+.tab { cursor:pointer; padding:10px 20px; font-size:13px; font-weight:600; color:var(--muted); border:none; background:none; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .15s; font-family:inherit; }
+.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
 
-  /* ── FORMULAIRE ── */
-  .form-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px; margin-bottom:24px; }
-  .form-card h2 { font-size:16px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
-  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .form-grid.full { grid-template-columns:1fr; }
-  @media(max-width:640px) { .form-grid { grid-template-columns:1fr; } }
-  .field { display:flex; flex-direction:column; gap:5px; }
-  .field.span2 { grid-column:1/-1; }
-  label.field-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
-  .field input, .field select, .field textarea {
-    padding:9px 12px; border:1px solid var(--border); border-radius:8px;
-    background:var(--bg); color:var(--text); font-size:14px; font-family:inherit;
-    outline:none; transition:border-color .15s, box-shadow .15s;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus {
-    border-color:var(--accent); box-shadow:0 0 0 3px rgba(29,78,216,.15);
-  }
-  .field textarea { resize:vertical; min-height:80px; }
-  .duration-row { display:flex; gap:8px; align-items:center; }
-  .duration-row select { flex:1; }
-  .duration-sep { color:var(--muted); font-size:13px; }
+/* STATS */
+.stats-bar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.stat-pill { padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid var(--border); background:var(--surface); color:var(--muted); cursor:pointer; }
+.stat-pill:hover { border-color:var(--accent); color:var(--accent); }
+.stat-pill .n { margin-left:5px; background:var(--border); border-radius:10px; padding:1px 7px; }
+.new-pill    { border-color:var(--new-border);     color:var(--new-text);     background:var(--new-bg); }
+.approved-pill { border-color:var(--success-border); color:var(--success-text); background:var(--success-bg); }
+.rejected-pill { border-color:var(--danger-border);  color:var(--danger-text);  background:var(--danger-bg); }
 
-  /* ── ANIMATEURS MULTI-SELECT ── */
-  .animateurs-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-  @media(max-width:700px) { .animateurs-grid { grid-template-columns:1fr 1fr; } }
-  .animateur-slot label.field-label { font-size:11px; margin-bottom:4px; }
+/* FILTRES */
+.filters-bar { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+.fg { display:flex; flex-direction:column; gap:4px; flex:1; min-width:150px; }
+.fg label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); }
+.fg input, .fg select { padding:7px 10px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px; font-family:inherit; outline:none; }
+.fg input:focus, .fg select:focus { border-color:var(--accent); }
 
-  /* ── FILTRES ── */
-  .filters-bar {
-    background:var(--surface); border:1px solid var(--border); border-radius:8px;
-    padding:14px 16px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;
-  }
-  .filter-group { display:flex; flex-direction:column; gap:4px; min-width:160px; flex:1; }
-  .filter-group label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); }
-  .filter-group input, .filter-group select { padding:7px 10px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px; font-family:inherit; outline:none; }
-  .filter-group input:focus, .filter-group select:focus { border-color:var(--accent); }
-  .filter-reset { align-self:flex-end; }
+/* TABLEAU */
+.table-wrap { overflow-x:auto; border-radius:8px; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th { background:var(--surface); padding:10px 12px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; }
+tbody tr { border-bottom:1px solid var(--border); }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--surface); }
+tbody td { padding:10px 12px; vertical-align:middle; }
+.cell-id   { font-family:monospace; font-size:12px; color:var(--muted); }
+.cell-name { font-weight:600; }
+.cell-sub  { font-size:12px; color:var(--muted); margin-top:2px; }
 
-  /* ── STATS BAR ── */
-  .stats-bar { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
-  .stat-pill {
-    padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700;
-    border:1px solid var(--border); background:var(--surface); color:var(--muted);
-    cursor:pointer; transition:all .15s;
-  }
-  .stat-pill:hover, .stat-pill.active { border-color:var(--accent); color:var(--accent); background:var(--new-bg); }
-  .stat-pill .count { margin-left:6px; background:var(--border); border-radius:10px; padding:1px 7px; }
-  .stat-pill.new-pill { border-color:var(--new-border); color:var(--new-text); background:var(--new-bg); }
-  .stat-pill.approved-pill { border-color:var(--approved-border); color:var(--approved-text); background:var(--approved-bg); }
-  .stat-pill.rejected-pill { border-color:var(--danger-border); color:var(--rejected-text); background:var(--rejected-bg); }
+/* BADGE */
+.badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:700; }
+.badge-NEW      { background:var(--new-bg);     color:var(--new-text);     border:1px solid var(--new-border); }
+.badge-APPROVED { background:var(--success-bg); color:var(--success-text); border:1px solid var(--success-border); }
+.badge-REJECTED { background:var(--danger-bg);  color:var(--danger-text);  border:1px solid var(--danger-border); }
 
-  /* ── TABLE ── */
-  .table-wrap { overflow-x:auto; border-radius:8px; border:1px solid var(--border); }
-  table { width:100%; border-collapse:collapse; font-size:13px; }
-  thead th { background:var(--surface); padding:10px 12px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; }
-  tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
-  tbody tr:last-child { border-bottom:none; }
-  tbody tr:hover { background:var(--surface); }
-  tbody td { padding:10px 12px; vertical-align:middle; }
-  .id-cell { font-family:monospace; font-size:12px; color:var(--muted); white-space:nowrap; }
-  .name-cell { font-weight:600; max-width:240px; }
-  .name-cell .name-en { font-size:12px; color:var(--muted); font-weight:400; margin-top:2px; }
-  .type-cell { font-size:12px; color:var(--muted); max-width:160px; }
-  .anim-cell { font-size:12px; max-width:180px; }
-  .dur-cell { white-space:nowrap; font-size:12px; }
-  .actions-cell { white-space:nowrap; display:flex; gap:6px; }
+/* MESSAGE VIDE */
+.empty-msg { text-align:center; padding:50px 20px; color:var(--muted); font-size:13px; }
 
-  /* ── BADGE STATUT ── */
-  .badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:700; letter-spacing:.3px; }
-  .badge-NEW      { background:var(--new-bg);      color:var(--new-text);      border:1px solid var(--new-border); }
-  .badge-APPROVED { background:var(--approved-bg); color:var(--approved-text); border:1px solid var(--approved-border); }
-  .badge-REJECTED { background:var(--rejected-bg); color:var(--rejected-text); border:1px solid var(--danger-border); }
+/* FORMULAIRE */
+.form-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px; margin-bottom:20px; }
+.form-card h2 { font-size:15px; font-weight:700; margin-bottom:18px; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:640px){ .form-grid { grid-template-columns:1fr; } }
+.field { display:flex; flex-direction:column; gap:5px; }
+.field.span2 { grid-column:1/-1; }
+.field label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); }
+.field input, .field select, .field textarea { padding:8px 12px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); font-size:14px; font-family:inherit; outline:none; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color:var(--accent); }
+.field textarea { resize:vertical; min-height:80px; }
+.anim-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+@media(max-width:700px){ .anim-grid { grid-template-columns:1fr 1fr; } }
+.dur-row { display:flex; gap:8px; align-items:center; }
+.dur-row select { flex:1; }
+.help-box { background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:6px; padding:12px 16px; margin-bottom:16px; font-size:13px; }
+.form-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
 
-  /* ── MODALE ÉDITION ── */
-  .modal-overlay {
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,.5);
-    z-index:100; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
-  }
-  .modal-overlay.open { display:flex; }
-  .modal {
-    background:var(--bg); border:1px solid var(--border); border-radius:12px;
-    width:100%; max-width:760px; padding:28px; position:relative;
-    box-shadow:0 8px 40px rgba(0,0,0,.2);
-  }
-  .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
-  .modal-header h2 { font-size:17px; font-weight:700; display:flex; align-items:center; gap:8px; }
-  .modal-close { cursor:pointer; background:none; border:none; font-size:20px; color:var(--muted); padding:4px; line-height:1; }
-  .modal-close:hover { color:var(--text); }
-  .modal-id-display { font-family:monospace; font-size:12px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 12px; color:var(--muted); margin-bottom:16px; }
-  .modal-actions { display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); flex-wrap:wrap; gap:8px; }
+/* MODALE */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:100; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--bg); border:1px solid var(--border); border-radius:12px; width:100%; max-width:760px; padding:28px; position:relative; box-shadow:0 8px 40px rgba(0,0,0,.2); }
+.modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.modal-header h2 { font-size:16px; font-weight:700; }
+.modal-close { cursor:pointer; background:none; border:none; font-size:22px; color:var(--muted); line-height:1; }
+.modal-id { font-family:monospace; font-size:12px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 12px; color:var(--muted); margin-bottom:16px; }
+.modal-actions { display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); flex-wrap:wrap; gap:8px; }
 
-  /* ── EMPTY STATE ── */
-  .empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
-  .empty-state .empty-icon { font-size:40px; margin-bottom:12px; }
-  .empty-state p { font-size:14px; }
-
-  /* ── TOAST ── */
-  #toast {
-    position:fixed; bottom:24px; right:24px; border-radius:8px;
-    padding:12px 18px; font-size:13px; font-weight:600; z-index:300;
-    display:none; max-width:420px; box-shadow:0 4px 16px rgba(0,0,0,.15);
-  }
-  #toast.show { display:block; animation:slideIn .25s ease; }
-  @keyframes slideIn { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
-
-  /* ── HELP BOX ── */
-  .help-box {
-    background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--accent);
-    border-radius:6px; padding:12px 16px; margin-bottom:20px; font-size:13px;
-  }
-
-  /* ── STATUT ADMIN CHANGE ── */
-  .statut-select { padding:4px 8px; border:1px solid var(--border); border-radius:6px; font-size:12px; font-weight:600; font-family:inherit; background:var(--bg); color:var(--text); cursor:pointer; }
-
-  .no-results { text-align:center; padding:40px; color:var(--muted); font-size:13px; }
+/* TOAST */
+#toast { position:fixed; bottom:24px; right:24px; border-radius:8px; padding:12px 18px; font-size:13px; font-weight:600; z-index:300; display:none; max-width:420px; box-shadow:0 4px 16px rgba(0,0,0,.15); }
+#toast.show { display:block; }
 </style>
 </head>
 <body>
@@ -193,272 +128,172 @@
       <a class="btn" href="index.html">🏠 Accueil</a>
       <a class="btn" href="index_bis.html">🌀 DreamTeam</a>
       <a class="btn" href="gestion_planning.html">⚙️ Admin</a>
-      <button class="btn btn-primary" onclick="openCreateForm()">➕ Proposer un atelier</button>
+      <button class="btn btn-primary" onclick="showTab('create')">➕ Proposer un atelier</button>
       <button class="btn" onclick="document.body.classList.toggle('dark')">🌙</button>
     </div>
   </header>
 
-  <!-- ── TABS ── -->
   <div class="tabs">
     <button class="tab active" id="tabList"   onclick="showTab('list')">📋 Liste des ateliers</button>
     <button class="tab"        id="tabCreate" onclick="showTab('create')">➕ Proposer un atelier</button>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════
-       ONGLET : LISTE
-  ═══════════════════════════════════════════════════════ -->
+  <!-- ══════════════ ONGLET LISTE ══════════════ -->
   <div class="tab-pane active" id="paneList">
 
-    <!-- Stats rapides -->
     <div class="stats-bar" id="statsBar"></div>
 
-    <!-- Filtres -->
     <div class="filters-bar">
-      <div class="filter-group">
-        <label>🔍 Recherche (nom)</label>
-        <input type="text" id="fSearch" placeholder="Rechercher un atelier…" oninput="applyFilters()" />
+      <div class="fg">
+        <label>🔍 Recherche</label>
+        <input type="text" id="fSearch" placeholder="Nom de l'atelier…" oninput="renderTable()" />
       </div>
-      <div class="filter-group">
+      <div class="fg">
         <label>👤 Animateur</label>
-        <select id="fAnimateur" onchange="applyFilters()">
-          <option value="">Tous les animateurs</option>
-        </select>
+        <select id="fAnim" onchange="renderTable()"><option value="">Tous</option></select>
       </div>
-      <div class="filter-group">
+      <div class="fg">
         <label>🏷️ Type</label>
-        <select id="fType" onchange="applyFilters()">
-          <option value="">Tous les types</option>
-        </select>
+        <select id="fType" onchange="renderTable()"><option value="">Tous les types</option></select>
       </div>
-      <div class="filter-group">
+      <div class="fg">
         <label>📌 Statut</label>
-        <select id="fStatut" onchange="applyFilters()">
+        <select id="fStatut" onchange="renderTable()">
           <option value="">Tous</option>
           <option value="NEW">NEW</option>
           <option value="APPROVED">APPROVED</option>
           <option value="REJECTED">REJECTED</option>
         </select>
       </div>
-      <button class="btn btn-sm filter-reset" onclick="resetFilters()">✕ Réinitialiser</button>
+      <button class="btn btn-sm" onclick="resetFilters()">✕ Réinitialiser</button>
     </div>
 
-    <!-- Tableau -->
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nom (FR / EN)</th>
-            <th>Animateur(s)</th>
-            <th>Type</th>
-            <th>Durée</th>
-            <th>Statut</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="ateliersBody"></tbody>
+        <thead><tr>
+          <th>ID</th><th>Nom (FR / EN)</th><th>Animateur(s)</th>
+          <th>Type</th><th>Durée</th><th>Statut</th><th>Action</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
       </table>
     </div>
-    <div id="noResults" class="no-results" style="display:none">
-      Aucun atelier ne correspond aux filtres sélectionnés.
-    </div>
+    <div id="emptyMsg" class="empty-msg" style="display:none">Aucun atelier trouvé.</div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════
-       ONGLET : CRÉER
-  ═══════════════════════════════════════════════════════ -->
+  <!-- ══════════════ ONGLET CRÉER ══════════════ -->
   <div class="tab-pane" id="paneCreate">
     <div class="form-card">
       <h2>🌱 Proposer un nouvel atelier</h2>
-      <div class="help-box">
-        💡 Remplissez les informations ci-dessous. L'atelier sera créé avec le statut <strong>NEW</strong> et devra être validé par un administrateur pour être approuvé.
-      </div>
+      <div class="help-box">💡 L'atelier sera créé avec le statut <strong>NEW</strong> en attente de validation.</div>
       <div class="form-grid">
-
-        <!-- Nom FR -->
         <div class="field">
-          <label class="field-label">🇫🇷 Nom de l'atelier (Français) *</label>
+          <label>🇫🇷 Nom français *</label>
           <input type="text" id="c_nomFr" placeholder="ex: L'éveil du cœur" />
         </div>
-        <!-- Nom EN -->
         <div class="field">
-          <label class="field-label">🇬🇧 Nom de l'atelier (Anglais)</label>
+          <label>🇬🇧 Nom anglais</label>
           <input type="text" id="c_nomEn" placeholder="ex: Heart Awakening" />
         </div>
-
-        <!-- Type -->
         <div class="field">
-          <label class="field-label">🏷️ Type d'atelier *</label>
-          <select id="c_type">
-            <option value="">— Sélectionner un type —</option>
-          </select>
+          <label>🏷️ Type *</label>
+          <select id="c_type"><option value="">— Sélectionner —</option></select>
         </div>
-
-        <!-- Durée -->
         <div class="field">
-          <label class="field-label">⏱ Durée *</label>
-          <div class="duration-row">
-            <select id="c_dureeH">
-              <option value="0">0h</option>
-              <option value="1">1h</option>
-              <option value="1" selected>1h</option>
-              <option value="2">2h</option>
-              <option value="3">3h</option>
-              <option value="4">4h</option>
-              <option value="5">5h</option>
-            </select>
-            <span class="duration-sep">h</span>
-            <select id="c_dureeMin">
-              <option value="0">00 min</option>
-              <option value="15">15 min</option>
-              <option value="30">30 min</option>
-              <option value="45">45 min</option>
-            </select>
+          <label>⏱ Durée *</label>
+          <div class="dur-row">
+            <select id="c_dH"><option value="0">0h</option><option value="1" selected>1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option></select>
+            <span>h</span>
+            <select id="c_dMin"><option value="0">00 min</option><option value="15">15 min</option><option value="30" selected>30 min</option><option value="45">45 min</option></select>
           </div>
         </div>
-
-        <!-- Animateurs (4 slots) -->
         <div class="field span2">
-          <label class="field-label">👤 Animateur(s) — jusqu'à 4</label>
-          <div class="animateurs-grid">
-            <div class="animateur-slot">
-              <label class="field-label">Animateur 1</label>
-              <select id="c_anim1" class="anim-select">
-                <option value="">— Aucun —</option>
-              </select>
-            </div>
-            <div class="animateur-slot">
-              <label class="field-label">Animateur 2</label>
-              <select id="c_anim2" class="anim-select">
-                <option value="">— Aucun —</option>
-              </select>
-            </div>
-            <div class="animateur-slot">
-              <label class="field-label">Animateur 3</label>
-              <select id="c_anim3" class="anim-select">
-                <option value="">— Aucun —</option>
-              </select>
-            </div>
-            <div class="animateur-slot">
-              <label class="field-label">Animateur 4</label>
-              <select id="c_anim4" class="anim-select">
-                <option value="">— Aucun —</option>
-              </select>
-            </div>
+          <label>👤 Animateur(s) — jusqu'à 4</label>
+          <div class="anim-grid">
+            <div><label style="font-size:11px;color:var(--muted)">Animateur 1</label><select id="c_a1"><option value="">— Aucun —</option></select></div>
+            <div><label style="font-size:11px;color:var(--muted)">Animateur 2</label><select id="c_a2"><option value="">— Aucun —</option></select></div>
+            <div><label style="font-size:11px;color:var(--muted)">Animateur 3</label><select id="c_a3"><option value="">— Aucun —</option></select></div>
+            <div><label style="font-size:11px;color:var(--muted)">Animateur 4</label><select id="c_a4"><option value="">— Aucun —</option></select></div>
           </div>
         </div>
-
-        <!-- Description FR -->
         <div class="field">
-          <label class="field-label">🇫🇷 Description (Français)</label>
-          <textarea id="c_descFr" placeholder="Description de l'atelier en français…" rows="4"></textarea>
+          <label>🇫🇷 Description française</label>
+          <textarea id="c_descFr" rows="4"></textarea>
         </div>
-        <!-- Description EN -->
         <div class="field">
-          <label class="field-label">🇬🇧 Description (Anglais)</label>
-          <textarea id="c_descEn" placeholder="Workshop description in English…" rows="4"></textarea>
+          <label>🇬🇧 Description anglaise</label>
+          <textarea id="c_descEn" rows="4"></textarea>
         </div>
-
       </div>
-
-      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
-        <button class="btn" onclick="resetCreateForm()">✕ Réinitialiser</button>
-        <button class="btn btn-primary" onclick="createAtelier()">💾 Enregistrer (statut NEW)</button>
+      <div class="form-actions">
+        <button class="btn" onclick="resetCreate()">✕ Réinitialiser</button>
+        <button class="btn btn-primary" onclick="createAtelier()">💾 Enregistrer</button>
       </div>
     </div>
   </div>
 
 </div><!-- /wrap -->
 
-<!-- ═══════════════════════════════════════════════════════
-     MODALE : ÉDITION
-═══════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="editOverlay" onclick="closeEditModal(event)">
+<!-- MODALE ÉDITION -->
+<div class="modal-overlay" id="editOverlay" onclick="if(event.target===this)closeEdit()">
   <div class="modal">
     <div class="modal-header">
       <h2>✏️ Éditer l'atelier</h2>
-      <button class="modal-close" onclick="closeEditModal()">✕</button>
+      <button class="modal-close" onclick="closeEdit()">✕</button>
     </div>
-    <div class="modal-id-display">🔒 ID (non modifiable) : <strong id="e_id_display"></strong></div>
+    <div class="modal-id" id="e_id_display"></div>
     <input type="hidden" id="e_id" />
-
     <div class="form-grid">
       <div class="field">
-        <label class="field-label">🇫🇷 Nom (Français) *</label>
+        <label>🇫🇷 Nom français *</label>
         <input type="text" id="e_nomFr" />
       </div>
       <div class="field">
-        <label class="field-label">🇬🇧 Nom (Anglais)</label>
+        <label>🇬🇧 Nom anglais</label>
         <input type="text" id="e_nomEn" />
       </div>
       <div class="field">
-        <label class="field-label">🏷️ Type *</label>
+        <label>🏷️ Type *</label>
         <select id="e_type"></select>
       </div>
       <div class="field">
-        <label class="field-label">⏱ Durée *</label>
-        <div class="duration-row">
-          <select id="e_dureeH">
-            <option value="0">0h</option>
-            <option value="1">1h</option>
-            <option value="2">2h</option>
-            <option value="3">3h</option>
-            <option value="4">4h</option>
-            <option value="5">5h</option>
-          </select>
-          <span class="duration-sep">h</span>
-          <select id="e_dureeMin">
-            <option value="0">00 min</option>
-            <option value="15">15 min</option>
-            <option value="30">30 min</option>
-            <option value="45">45 min</option>
-          </select>
+        <label>⏱ Durée *</label>
+        <div class="dur-row">
+          <select id="e_dH"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option></select>
+          <span>h</span>
+          <select id="e_dMin"><option value="0">00 min</option><option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option></select>
         </div>
       </div>
       <div class="field span2">
-        <label class="field-label">👤 Animateur(s) — jusqu'à 4</label>
-        <div class="animateurs-grid">
-          <div class="animateur-slot">
-            <label class="field-label">Animateur 1</label>
-            <select id="e_anim1" class="anim-select-edit"><option value="">— Aucun —</option></select>
-          </div>
-          <div class="animateur-slot">
-            <label class="field-label">Animateur 2</label>
-            <select id="e_anim2" class="anim-select-edit"><option value="">— Aucun —</option></select>
-          </div>
-          <div class="animateur-slot">
-            <label class="field-label">Animateur 3</label>
-            <select id="e_anim3" class="anim-select-edit"><option value="">— Aucun —</option></select>
-          </div>
-          <div class="animateur-slot">
-            <label class="field-label">Animateur 4</label>
-            <select id="e_anim4" class="anim-select-edit"><option value="">— Aucun —</option></select>
-          </div>
+        <label>👤 Animateur(s) — jusqu'à 4</label>
+        <div class="anim-grid">
+          <div><label style="font-size:11px;color:var(--muted)">Animateur 1</label><select id="e_a1"><option value="">— Aucun —</option></select></div>
+          <div><label style="font-size:11px;color:var(--muted)">Animateur 2</label><select id="e_a2"><option value="">— Aucun —</option></select></div>
+          <div><label style="font-size:11px;color:var(--muted)">Animateur 3</label><select id="e_a3"><option value="">— Aucun —</option></select></div>
+          <div><label style="font-size:11px;color:var(--muted)">Animateur 4</label><select id="e_a4"><option value="">— Aucun —</option></select></div>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">🇫🇷 Description (Français)</label>
+        <label>🇫🇷 Description française</label>
         <textarea id="e_descFr" rows="4"></textarea>
       </div>
       <div class="field">
-        <label class="field-label">🇬🇧 Description (Anglais)</label>
+        <label>🇬🇧 Description anglaise</label>
         <textarea id="e_descEn" rows="4"></textarea>
       </div>
       <div class="field">
-        <label class="field-label">📌 Statut</label>
+        <label>📌 Statut</label>
         <select id="e_statut">
-          <option value="NEW">NEW — En attente de validation</option>
-          <option value="APPROVED">APPROVED — Atelier retenu</option>
+          <option value="NEW">NEW — En attente</option>
+          <option value="APPROVED">APPROVED — Retenu</option>
           <option value="REJECTED">REJECTED — Non retenu</option>
         </select>
       </div>
     </div>
-
     <div class="modal-actions">
       <button class="btn btn-danger btn-sm" onclick="deleteAtelier()">🗑 Supprimer</button>
-      <div style="display:flex;gap:8px;">
-        <button class="btn" onclick="closeEditModal()">Annuler</button>
-        <button class="btn btn-success" onclick="saveEditAtelier()">💾 Enregistrer</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="closeEdit()">Annuler</button>
+        <button class="btn btn-success" onclick="saveEdit()">💾 Enregistrer</button>
       </div>
     </div>
   </div>
@@ -466,112 +301,56 @@
 
 <div id="toast"></div>
 
-<!-- Scripts de référence chargés synchroniquement ici, dans le body,
-     APRÈS le DOM et AVANT le script principal — identique au pattern
-     de Rapport_Editer_Atelier.html qui fonctionne. -->
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS DE RÉFÉRENCE — chargés synchroniquement dans le body,
+     AVANT github-api.js / loader.js / le script principal.
+     Pattern identique à Rapport_Editer_Atelier.html.
+     bustStaticScripts dans loader.js ne les touche PAS car ils sont
+     chargés APRÈS loader.js (il ne peut pas les supprimer).
+════════════════════════════════════════════════════════════ -->
 <script src="ref_resource_types.js"></script>
 <script src="ref_ressources.js"></script>
 <script src="ref_types.js"></script>
+<script src="github-api.js"></script>
+<script src="loader.js"></script>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// DONNÉES & UTILITAIRES
+// UTILITAIRES
 // ═══════════════════════════════════════════════════════════════
 
-// Collecte tous les IDs existants (data.js + data_2026.js) pour garantir l'unicité
-function getExistingIds() {
-  var ids = new Set();
-  if (typeof AGENDA !== 'undefined' && Array.isArray(AGENDA)) {
-    AGENDA.forEach(function(a) { if (a.id) ids.add(a.id); });
-  }
-  if (typeof ATELIERS !== 'undefined' && Array.isArray(ATELIERS)) {
-    ATELIERS.forEach(function(a) { if (a.id) ids.add(a.id); });
-  }
-  return ids;
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Génère un ID unique A_XXXX (4 chiffres) non présent dans les données existantes
-function generateUniqueId() {
-  var existing = getExistingIds();
-  var maxTries = 500;
-  while (maxTries-- > 0) {
-    var num = Math.floor(1000 + Math.random() * 9000);
-    var candidate = 'A_' + num;
-    if (!existing.has(candidate)) return candidate;
-  }
-  // Fallback 5 chiffres si tout est pris
-  while (true) {
-    var num5 = Math.floor(10000 + Math.random() * 90000);
-    var c5 = 'A_' + num5;
-    if (!existing.has(c5)) return c5;
-  }
+function escJs(v) {
+  return JSON.stringify(String(v == null ? '' : v)).slice(1,-1);
 }
 
-function nowISO() {
-  return new Date().toISOString();
+function fmtDuree(h, m) {
+  h = parseInt(h)||0; m = parseInt(m)||0;
+  if (!h && !m) return '—';
+  return (h ? h+'h' : '') + (m ? m+'min' : '');
 }
 
-function formatDuree(h, m) {
-  h = parseInt(h) || 0;
-  m = parseInt(m) || 0;
-  if (h === 0 && m === 0) return '—';
-  var s = '';
-  if (h > 0) s += h + 'h';
-  if (m > 0) s += (h > 0 ? '' : '') + m + 'min';
-  return s;
-}
-
-// Noms des animateurs à partir de leurs IDs
-function animateursLabel(ids) {
-  if (!ids || ids.length === 0) return '—';
-  return ids.filter(Boolean).map(function(id) {
-    var r = (REF_RESSOURCES || []).find(function(x) { return x.id === id; });
+function animLabel(ids) {
+  if (!ids || !ids.length) return '—';
+  return ids.filter(Boolean).map(function(id){
+    var r = REF_RESSOURCES.find(function(x){ return x.id === id; });
     return r ? r.value : id;
   }).join(', ');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// INITIALISATION DES SELECTS
-// ═══════════════════════════════════════════════════════════════
+function nowISO() { return new Date().toISOString(); }
 
-function populateTypeSelects() {
-  var types = (typeof REF_TYPES !== 'undefined') ? REF_TYPES : [];
-  var opts = types.map(function(t) {
-    return '<option value="' + escHtml(t.value) + '">' + escHtml(t.label) + '</option>';
-  }).join('');
-  ['c_type', 'e_type', 'fType'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    var first = el.options[0].outerHTML;
-    el.innerHTML = first + opts;
-  });
-}
-
-function populateAnimateurSelects() {
-  var animateurs = (typeof REF_RESSOURCES !== 'undefined')
-    ? REF_RESSOURCES.filter(function(r) { return r.roles && r.roles.indexOf('animateur') !== -1; })
-    : [];
-  animateurs.sort(function(a, b) { return a.value.localeCompare(b.value); });
-  var opts = animateurs.map(function(r) {
-    return '<option value="' + escHtml(r.id) + '">' + escHtml(r.value) + '</option>';
-  }).join('');
-  var base = '<option value="">— Aucun —</option>' + opts;
-
-  // Selects création
-  ['c_anim1','c_anim2','c_anim3','c_anim4'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.innerHTML = base;
-  });
-  // Selects édition
-  ['e_anim1','e_anim2','e_anim3','e_anim4'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.innerHTML = base;
-  });
-  // Filtre animateurs
-  var fEl = document.getElementById('fAnimateur');
-  if (fEl) {
-    fEl.innerHTML = '<option value="">Tous les animateurs</option>' + opts;
-  }
+function toast(msg, err) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.cssText = 'display:block;background:'+(err?'#fee2e2':'#dcfce7')+
+    ';color:'+(err?'#dc2626':'#166534')+';border:1px solid '+(err?'#fca5a5':'#86efac');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(function(){ t.style.display='none'; }, 4000);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -579,93 +358,120 @@ function populateAnimateurSelects() {
 // ═══════════════════════════════════════════════════════════════
 
 function showTab(name) {
-  ['list','create'].forEach(function(t) {
-    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === name);
-    document.getElementById('pane' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === name);
+  ['list','create'].forEach(function(t){
+    var cap = t.charAt(0).toUpperCase()+t.slice(1);
+    document.getElementById('tab'+cap).classList.toggle('active', t===name);
+    document.getElementById('pane'+cap).classList.toggle('active', t===name);
   });
 }
 
-function openCreateForm() {
-  showTab('create');
+// ═══════════════════════════════════════════════════════════════
+// PEUPLEMENT DES SELECTS — appelé une seule fois après loadData
+// ═══════════════════════════════════════════════════════════════
+
+function buildAnimOpts() {
+  var animateurs = REF_RESSOURCES.filter(function(r){
+    return r.roles && r.roles.indexOf('animateur') !== -1;
+  }).sort(function(a,b){ return a.value.localeCompare(b.value,'fr'); });
+
+  var opts = animateurs.map(function(r){
+    return '<option value="'+esc(r.id)+'">'+esc(r.value)+'</option>';
+  }).join('');
+
+  // Selects création
+  ['c_a1','c_a2','c_a3','c_a4'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = '<option value="">— Aucun —</option>'+opts;
+  });
+  // Selects édition
+  ['e_a1','e_a2','e_a3','e_a4'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = '<option value="">— Aucun —</option>'+opts;
+  });
+  // Filtre
+  var fEl = document.getElementById('fAnim');
+  if (fEl) fEl.innerHTML = '<option value="">Tous</option>'+opts;
+}
+
+function buildTypeOpts() {
+  var opts = REF_TYPES.map(function(t){
+    return '<option value="'+esc(t.value)+'">'+esc(t.label)+'</option>';
+  }).join('');
+  // Select création
+  var ce = document.getElementById('c_type');
+  if (ce) ce.innerHTML = '<option value="">— Sélectionner —</option>'+opts;
+  // Select édition
+  var ee = document.getElementById('e_type');
+  if (ee) ee.innerHTML = '<option value="">— Sélectionner —</option>'+opts;
+  // Filtre
+  var fe = document.getElementById('fType');
+  if (fe) fe.innerHTML = '<option value="">Tous les types</option>'+opts;
 }
 
 // ═══════════════════════════════════════════════════════════════
-// RENDU DE LA LISTE
+// LISTE / RENDU
 // ═══════════════════════════════════════════════════════════════
-
-var _filtered = [];
 
 function renderStats() {
-  var all = typeof ATELIERS !== 'undefined' ? ATELIERS : [];
-  var nNew = all.filter(function(a) { return a.statut === 'NEW'; }).length;
-  var nApp = all.filter(function(a) { return a.statut === 'APPROVED'; }).length;
-  var nRej = all.filter(function(a) { return a.statut === 'REJECTED'; }).length;
+  var all = ATELIERS;
+  var nN = all.filter(function(a){ return a.statut==='NEW'; }).length;
+  var nA = all.filter(function(a){ return a.statut==='APPROVED'; }).length;
+  var nR = all.filter(function(a){ return a.statut==='REJECTED'; }).length;
   document.getElementById('statsBar').innerHTML =
-    '<span class="stat-pill" onclick="resetFilters()">Tous <span class="count">' + all.length + '</span></span>' +
-    '<span class="stat-pill new-pill" onclick="filterByStatut(\'NEW\')">NEW <span class="count">' + nNew + '</span></span>' +
-    '<span class="stat-pill approved-pill" onclick="filterByStatut(\'APPROVED\')">APPROVED <span class="count">' + nApp + '</span></span>' +
-    '<span class="stat-pill rejected-pill" onclick="filterByStatut(\'REJECTED\')">REJECTED <span class="count">' + nRej + '</span></span>';
+    '<span class="stat-pill" onclick="resetFilters()">Tous <span class="n">'+all.length+'</span></span>'+
+    '<span class="stat-pill new-pill" onclick="filtreStatut(\'NEW\')">NEW <span class="n">'+nN+'</span></span>'+
+    '<span class="stat-pill approved-pill" onclick="filtreStatut(\'APPROVED\')">APPROVED <span class="n">'+nA+'</span></span>'+
+    '<span class="stat-pill rejected-pill" onclick="filtreStatut(\'REJECTED\')">REJECTED <span class="n">'+nR+'</span></span>';
 }
 
-function filterByStatut(s) {
+function filtreStatut(s) {
   document.getElementById('fStatut').value = s;
-  applyFilters();
-}
-
-function applyFilters() {
-  var search   = document.getElementById('fSearch').value.toLowerCase().trim();
-  var anim     = document.getElementById('fAnimateur').value;
-  var type     = document.getElementById('fType').value;
-  var statut   = document.getElementById('fStatut').value;
-  var all      = typeof ATELIERS !== 'undefined' ? ATELIERS : [];
-
-  _filtered = all.filter(function(a) {
-    if (search && (a.nomFr || '').toLowerCase().indexOf(search) === -1 &&
-                  (a.nomEn || '').toLowerCase().indexOf(search) === -1) return false;
-    if (anim && (!a.animateurs || a.animateurs.indexOf(anim) === -1)) return false;
-    if (type && a.type !== type) return false;
-    if (statut && a.statut !== statut) return false;
-    return true;
-  });
-
-  renderTable(_filtered);
+  renderTable();
 }
 
 function resetFilters() {
-  document.getElementById('fSearch').value = '';
-  document.getElementById('fAnimateur').value = '';
-  document.getElementById('fType').value = '';
-  document.getElementById('fStatut').value = '';
-  applyFilters();
+  ['fSearch','fAnim','fType','fStatut'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  renderTable();
 }
 
-function renderTable(list) {
-  var tbody = document.getElementById('ateliersBody');
-  var noRes = document.getElementById('noResults');
+function renderTable() {
+  var search = document.getElementById('fSearch').value.toLowerCase().trim();
+  var fAnim  = document.getElementById('fAnim').value;
+  var fType  = document.getElementById('fType').value;
+  var fStat  = document.getElementById('fStatut').value;
 
-  if (!list || list.length === 0) {
+  var list = ATELIERS.filter(function(a){
+    if (search && (a.nomFr||'').toLowerCase().indexOf(search)===-1 &&
+                  (a.nomEn||'').toLowerCase().indexOf(search)===-1) return false;
+    if (fAnim && (!a.animateurs || a.animateurs.indexOf(fAnim)===-1)) return false;
+    if (fType && a.type !== fType) return false;
+    if (fStat && a.statut !== fStat) return false;
+    return true;
+  });
+
+  var tbody = document.getElementById('tbody');
+  var empty = document.getElementById('emptyMsg');
+
+  if (!list.length) {
     tbody.innerHTML = '';
-    noRes.style.display = 'block';
+    empty.style.display = 'block';
     return;
   }
-  noRes.style.display = 'none';
+  empty.style.display = 'none';
 
-  tbody.innerHTML = list.map(function(a) {
-    var animLabel = animateursLabel(a.animateurs);
-    var dur = formatDuree(a.dureeH, a.dureeMin);
-    var badge = '<span class="badge badge-' + escHtml(a.statut || 'NEW') + '">' + escHtml(a.statut || 'NEW') + '</span>';
-    return '<tr>' +
-      '<td class="id-cell">' + escHtml(a.id) + '</td>' +
-      '<td class="name-cell">' + escHtml(a.nomFr || '—') +
-        (a.nomEn ? '<div class="name-en">' + escHtml(a.nomEn) + '</div>' : '') +
-      '</td>' +
-      '<td class="anim-cell">' + escHtml(animLabel) + '</td>' +
-      '<td class="type-cell">' + escHtml(a.type || '—') + '</td>' +
-      '<td class="dur-cell">' + escHtml(dur) + '</td>' +
-      '<td>' + badge + '</td>' +
-      '<td class="actions-cell">' +
-        '<button class="btn btn-sm" onclick="openEdit(\'' + escHtml(a.id) + '\')">✏️ Éditer</button>' +
-      '</td>' +
+  tbody.innerHTML = list.map(function(a){
+    return '<tr>'+
+      '<td class="cell-id">'+esc(a.id)+'</td>'+
+      '<td><div class="cell-name">'+esc(a.nomFr||'—')+'</div>'+
+        (a.nomEn ? '<div class="cell-sub">'+esc(a.nomEn)+'</div>' : '')+
+      '</td>'+
+      '<td style="font-size:12px">'+esc(animLabel(a.animateurs))+'</td>'+
+      '<td style="font-size:12px;color:var(--muted)">'+esc(a.type||'—')+'</td>'+
+      '<td style="font-size:12px;white-space:nowrap">'+esc(fmtDuree(a.dureeH,a.dureeMin))+'</td>'+
+      '<td><span class="badge badge-'+esc(a.statut||'NEW')+'">'+esc(a.statut||'NEW')+'</span></td>'+
+      '<td><button class="btn btn-sm" onclick="openEdit(\''+esc(a.id)+'\')">✏️ Éditer</button></td>'+
     '</tr>';
   }).join('');
 }
@@ -674,70 +480,70 @@ function renderTable(list) {
 // CRÉATION
 // ═══════════════════════════════════════════════════════════════
 
-function getAnimateursFromSlots(prefix) {
+function getAnims(prefix) {
   var ids = [];
-  for (var i = 1; i <= 4; i++) {
-    var el = document.getElementById(prefix + '_anim' + i);
+  [1,2,3,4].forEach(function(i){
+    var el = document.getElementById(prefix+'_a'+i);
     if (el && el.value) ids.push(el.value);
-  }
+  });
   return ids;
+}
+
+function resetCreate() {
+  ['c_nomFr','c_nomEn','c_descFr','c_descEn'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('c_type').value = '';
+  document.getElementById('c_dH').value   = '1';
+  document.getElementById('c_dMin').value = '30';
+  ['c_a1','c_a2','c_a3','c_a4'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+}
+
+function generateId() {
+  var used = new Set(ATELIERS.map(function(a){ return a.id; }));
+  for (var i=0; i<1000; i++) {
+    var id = 'A_'+(Math.floor(1000+Math.random()*9000));
+    if (!used.has(id)) return id;
+  }
+  return 'A_'+(Date.now()%100000);
 }
 
 function createAtelier() {
   var nomFr = document.getElementById('c_nomFr').value.trim();
-  var nomEn = document.getElementById('c_nomEn').value.trim();
   var type  = document.getElementById('c_type').value;
-  var dH    = parseInt(document.getElementById('c_dureeH').value) || 0;
-  var dMin  = parseInt(document.getElementById('c_dureeMin').value) || 0;
-  var anims = getAnimateursFromSlots('c');
-  var descFr= document.getElementById('c_descFr').value.trim();
-  var descEn= document.getElementById('c_descEn').value.trim();
+  var dH    = parseInt(document.getElementById('c_dH').value)||0;
+  var dMin  = parseInt(document.getElementById('c_dMin').value)||0;
 
-  if (!nomFr) { showToast('❌ Le nom en français est obligatoire.', true); return; }
-  if (!type)  { showToast('❌ Veuillez sélectionner un type d\'atelier.', true); return; }
-  if (dH === 0 && dMin === 0) { showToast('❌ Veuillez indiquer une durée.', true); return; }
+  if (!nomFr) { toast('❌ Le nom en français est obligatoire.', true); return; }
+  if (!type)  { toast('❌ Veuillez sélectionner un type.', true); return; }
+  if (!dH && !dMin) { toast('❌ Veuillez indiquer une durée.', true); return; }
 
-  var newId = generateUniqueId();
-  var now   = nowISO();
-
-  var atelier = {
-    id:         newId,
+  var now = nowISO();
+  ATELIERS.push({
+    id:         generateId(),
     nomFr:      nomFr,
-    nomEn:      nomEn,
-    animateurs: anims,
+    nomEn:      document.getElementById('c_nomEn').value.trim(),
+    animateurs: getAnims('c'),
     type:       type,
     dureeH:     dH,
     dureeMin:   dMin,
-    descFr:     descFr,
-    descEn:     descEn,
+    descFr:     document.getElementById('c_descFr').value.trim(),
+    descEn:     document.getElementById('c_descEn').value.trim(),
     statut:     'NEW',
     createdAt:  now,
     updatedAt:  now
-  };
+  });
 
-  if (typeof ATELIERS === 'undefined') window.ATELIERS = [];
-  ATELIERS.push(atelier);
-
-  saveAteliers(function(ok) {
+  saveAteliers(function(ok){
     if (ok) {
-      showToast('✅ Atelier créé avec l\'ID ' + newId + ' — statut NEW', false);
-      resetCreateForm();
+      toast('✅ Atelier créé — statut NEW');
+      resetCreate();
       renderStats();
-      applyFilters();
+      renderTable();
       showTab('list');
     }
-  });
-}
-
-function resetCreateForm() {
-  ['c_nomFr','c_nomEn','c_descFr','c_descEn'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.value = '';
-  });
-  document.getElementById('c_type').value    = '';
-  document.getElementById('c_dureeH').value  = '1';
-  document.getElementById('c_dureeMin').value = '0';
-  ['c_anim1','c_anim2','c_anim3','c_anim4'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.value = '';
   });
 }
 
@@ -746,66 +552,60 @@ function resetCreateForm() {
 // ═══════════════════════════════════════════════════════════════
 
 function openEdit(id) {
-  var a = (ATELIERS || []).find(function(x) { return x.id === id; });
+  var a = ATELIERS.find(function(x){ return x.id===id; });
   if (!a) return;
 
-  document.getElementById('e_id').value         = a.id;
-  document.getElementById('e_id_display').textContent = a.id;
-  document.getElementById('e_nomFr').value       = a.nomFr  || '';
-  document.getElementById('e_nomEn').value       = a.nomEn  || '';
-  document.getElementById('e_type').value        = a.type   || '';
-  document.getElementById('e_dureeH').value      = String(a.dureeH  || 0);
-  document.getElementById('e_dureeMin').value    = String(a.dureeMin || 0);
-  document.getElementById('e_descFr').value      = a.descFr || '';
-  document.getElementById('e_descEn').value      = a.descEn || '';
-  document.getElementById('e_statut').value      = a.statut || 'NEW';
+  document.getElementById('e_id').value          = a.id;
+  document.getElementById('e_id_display').textContent = '🔒 ID : ' + a.id;
+  document.getElementById('e_nomFr').value        = a.nomFr  || '';
+  document.getElementById('e_nomEn').value        = a.nomEn  || '';
+  document.getElementById('e_type').value         = a.type   || '';
+  document.getElementById('e_dH').value           = String(a.dureeH  || 0);
+  document.getElementById('e_dMin').value         = String(a.dureeMin || 0);
+  document.getElementById('e_descFr').value       = a.descFr || '';
+  document.getElementById('e_descEn').value       = a.descEn || '';
+  document.getElementById('e_statut').value       = a.statut || 'NEW';
 
   var anims = a.animateurs || [];
-  ['e_anim1','e_anim2','e_anim3','e_anim4'].forEach(function(elId, i) {
-    var el = document.getElementById(elId);
-    if (el) el.value = anims[i] || '';
+  [1,2,3,4].forEach(function(i){
+    var el = document.getElementById('e_a'+i);
+    if (el) el.value = anims[i-1] || '';
   });
 
   document.getElementById('editOverlay').classList.add('open');
 }
 
-function closeEditModal(e) {
-  if (e && e.target !== document.getElementById('editOverlay')) return;
+function closeEdit() {
   document.getElementById('editOverlay').classList.remove('open');
 }
 
-function saveEditAtelier() {
-  var id = document.getElementById('e_id').value;
-  var idx = (ATELIERS || []).findIndex(function(x) { return x.id === id; });
-  if (idx === -1) { showToast('❌ Atelier introuvable.', true); return; }
+function saveEdit() {
+  var id  = document.getElementById('e_id').value;
+  var idx = ATELIERS.findIndex(function(x){ return x.id===id; });
+  if (idx===-1) { toast('❌ Atelier introuvable.', true); return; }
 
   var nomFr = document.getElementById('e_nomFr').value.trim();
   var type  = document.getElementById('e_type').value;
-  var dH    = parseInt(document.getElementById('e_dureeH').value) || 0;
-  var dMin  = parseInt(document.getElementById('e_dureeMin').value) || 0;
-
-  if (!nomFr) { showToast('❌ Le nom en français est obligatoire.', true); return; }
-  if (!type)  { showToast('❌ Veuillez sélectionner un type.', true); return; }
-
-  var anims = getAnimateursFromSlots('e');
+  if (!nomFr) { toast('❌ Le nom en français est obligatoire.', true); return; }
+  if (!type)  { toast('❌ Veuillez sélectionner un type.', true); return; }
 
   ATELIERS[idx].nomFr      = nomFr;
   ATELIERS[idx].nomEn      = document.getElementById('e_nomEn').value.trim();
-  ATELIERS[idx].animateurs = anims;
+  ATELIERS[idx].animateurs = getAnims('e');
   ATELIERS[idx].type       = type;
-  ATELIERS[idx].dureeH     = dH;
-  ATELIERS[idx].dureeMin   = dMin;
+  ATELIERS[idx].dureeH     = parseInt(document.getElementById('e_dH').value)||0;
+  ATELIERS[idx].dureeMin   = parseInt(document.getElementById('e_dMin').value)||0;
   ATELIERS[idx].descFr     = document.getElementById('e_descFr').value.trim();
   ATELIERS[idx].descEn     = document.getElementById('e_descEn').value.trim();
   ATELIERS[idx].statut     = document.getElementById('e_statut').value;
   ATELIERS[idx].updatedAt  = nowISO();
 
-  saveAteliers(function(ok) {
+  saveAteliers(function(ok){
     if (ok) {
-      document.getElementById('editOverlay').classList.remove('open');
-      showToast('✅ Atelier mis à jour !', false);
+      closeEdit();
+      toast('✅ Atelier mis à jour !');
       renderStats();
-      applyFilters();
+      renderTable();
     }
   });
 }
@@ -813,124 +613,67 @@ function saveEditAtelier() {
 function deleteAtelier() {
   var id = document.getElementById('e_id').value;
   if (!confirm('Supprimer définitivement l\'atelier ' + id + ' ?')) return;
-  var idx = (ATELIERS || []).findIndex(function(x) { return x.id === id; });
-  if (idx === -1) return;
+  var idx = ATELIERS.findIndex(function(x){ return x.id===id; });
+  if (idx===-1) return;
   ATELIERS.splice(idx, 1);
-  saveAteliers(function(ok) {
+  saveAteliers(function(ok){
     if (ok) {
-      document.getElementById('editOverlay').classList.remove('open');
-      showToast('🗑 Atelier supprimé.', false);
+      closeEdit();
+      toast('🗑 Atelier supprimé.');
       renderStats();
-      applyFilters();
+      renderTable();
     }
   });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// SAUVEGARDE → Ateliers.js
+// SAUVEGARDE → Ateliers.js via API GitHub
 // ═══════════════════════════════════════════════════════════════
 
-function escJs(v) {
-  // JSON.stringify gère tous les cas : guillemets, backslashes, caractères spéciaux
-  return JSON.stringify(String(v == null ? '' : v)).slice(1, -1);
-}
-
-function generateAteliersContent() {
-  var lines = (ATELIERS || []).map(function(a) {
-    var anims = JSON.stringify(a.animateurs || []);
-    return '  {' +
-      'id:"'        + escJs(a.id)        + '",' +
-      'nomFr:"'     + escJs(a.nomFr)     + '",' +
-      'nomEn:"'     + escJs(a.nomEn)     + '",' +
-      'animateurs:' + anims              + ',' +
-      'type:"'      + escJs(a.type)      + '",' +
-      'dureeH:'     + (parseInt(a.dureeH)||0)   + ',' +
-      'dureeMin:'   + (parseInt(a.dureeMin)||0) + ',' +
-      'descFr:"'    + escJs(a.descFr)    + '",' +
-      'descEn:"'    + escJs(a.descEn)    + '",' +
-      'statut:"'    + escJs(a.statut)    + '",' +
-      'createdAt:"' + escJs(a.createdAt) + '",' +
-      'updatedAt:"' + escJs(a.updatedAt) + '"' +
-      '}';
-  }).join(',\n');
-
-  return '/**\n' +
+function buildAteliersJs() {
+  var header = '/**\n' +
     ' * TANTRAMOUR 2027 — Référentiel : Ateliers Proposés\n' +
-    ' *\n' +
-    ' * Ce fichier est géré via Rapport_Ateliers_Proposes.html\n' +
-    ' *\n' +
-    ' * Chaque entrée :\n' +
-    ' *   id          : identifiant unique fixe de la forme "A_XXXX"\n' +
-    ' *   nomFr       : nom de l\'atelier en français\n' +
-    ' *   nomEn       : nom de l\'atelier en anglais\n' +
-    ' *   animateurs  : tableau d\'IDs de ressources (max 4)\n' +
-    ' *   type        : type d\'atelier\n' +
-    ' *   dureeH      : durée — heures\n' +
-    ' *   dureeMin    : durée — minutes (0, 15, 30, 45)\n' +
-    ' *   descFr      : description en français\n' +
-    ' *   descEn      : description en anglais\n' +
-    ' *   statut      : "NEW" | "APPROVED" | "REJECTED"\n' +
-    ' *   createdAt   : date ISO de création\n' +
-    ' *   updatedAt   : date ISO de dernière modification\n' +
+    ' * Fichier géré via Rapport_Ateliers_Proposes.html\n' +
     ' */\n' +
-    'var ATELIERS = [\n' + lines + '\n];\n';
+    'var ATELIERS = [\n';
+
+  var lines = ATELIERS.map(function(a){
+    return '  {id:"'+escJs(a.id)+'",nomFr:"'+escJs(a.nomFr)+'",nomEn:"'+escJs(a.nomEn)+
+      '",animateurs:'+JSON.stringify(a.animateurs||[])+
+      ',type:"'+escJs(a.type)+'",dureeH:'+(parseInt(a.dureeH)||0)+
+      ',dureeMin:'+(parseInt(a.dureeMin)||0)+
+      ',descFr:"'+escJs(a.descFr)+'",descEn:"'+escJs(a.descEn)+
+      '",statut:"'+escJs(a.statut)+'",createdAt:"'+escJs(a.createdAt)+
+      '",updatedAt:"'+escJs(a.updatedAt)+'"}';
+  });
+
+  return header + lines.join(',\n') + '\n];\n';
 }
 
 function saveAteliers(callback) {
-  try {
-    var content = generateAteliersContent();
-    saveFile('Ateliers.js', content).then(function() {
-      if (callback) callback(true);
-    }).catch(function(err) {
-      showToast('❌ Erreur sauvegarde : ' + err.message, true);
+  saveFile('Ateliers.js', buildAteliersJs())
+    .then(function(){ if (callback) callback(true); })
+    .catch(function(err){
+      toast('❌ Erreur sauvegarde : ' + err.message, true);
       if (callback) callback(false);
     });
-  } catch(err) {
-    showToast('❌ Erreur : ' + err.message, true);
-    if (callback) callback(false);
-  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// UTILITAIRES DOM
+// BOOT
+// Même pattern que Rapport_Editer_Atelier.html :
+//   - ref_ressources.js et ref_types.js déjà chargés synchroniquement
+//     via les <script src> au-dessus (dans le body, après le DOM)
+//   - loadData charge uniquement les données variables (Ateliers.js, data.js)
 // ═══════════════════════════════════════════════════════════════
 
-function escHtml(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
-
-function showToast(msg, isError) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = isError ? '#fee2e2' : '#dcfce7';
-  t.style.color      = isError ? '#dc2626' : '#166534';
-  t.style.border     = '1px solid ' + (isError ? '#fca5a5' : '#86efac');
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 4500);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// BOOT — même pattern que Rapport_Editer_Atelier.html
-// Tout le rendu est dans le callback loadData, garantissant que
-// ref_types.js, ref_ressources.js et Ateliers.js sont chargés
-// depuis l'API GitHub avant tout affichage.
-// ═══════════════════════════════════════════════════════════════
-
-// ref_types.js et ref_ressources.js sont déjà chargés synchroniquement
-// via les <script src> dans le body juste au-dessus.
-// loadData charge uniquement Ateliers.js (données variables) et data.js
-// via l'API GitHub pour avoir les versions fraîches.
 loadData(['Ateliers.js', 'data.js'], function() {
-  populateTypeSelects();
-  populateAnimateurSelects();
+  buildTypeOpts();
+  buildAnimOpts();
   renderStats();
-  applyFilters();
-  document.getElementById('c_dureeH').value   = '1';
-  document.getElementById('c_dureeMin').value = '30';
+  renderTable();
 });
-</script>
 
+</script>
 </body>
 </html>
