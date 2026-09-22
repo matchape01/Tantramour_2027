@@ -7,7 +7,6 @@
 <script src="ref_translations.js"></script>
 <script src="ref_types.js?v=1"></script>
 <script src="ref_ressources.js?v=1"></script>
-<script src="Ateliers.js?v=1"></script>
 <script src="i18n.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
@@ -241,6 +240,11 @@
         </select>
       </div>
       <button class="btn btn-sm filter-reset" onclick="resetFilters()">✕ Réinitialiser</button>
+    </div>
+
+    <!-- Chargement en cours -->
+    <div id="loadingState" style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">
+      ⏳ Chargement des ateliers…
     </div>
 
     <!-- Tableau -->
@@ -636,6 +640,8 @@ function resetFilters() {
 function renderTable(list) {
   var tbody = document.getElementById('ateliersBody');
   var noRes = document.getElementById('noResults');
+  var loading = document.getElementById('loadingState');
+  if (loading) loading.style.display = 'none';
 
   if (!list || list.length === 0) {
     tbody.innerHTML = '';
@@ -912,28 +918,15 @@ function showToast(msg, isError) {
 // BOOT
 // ═══════════════════════════════════════════════════════════════
 
-// Rendu initial immédiat avec les données déjà chargées en <head> (synchrone).
-// Cela garantit que la liste et les selects s'affichent même si l'API GitHub
-// tarde ou échoue. loadData rafraîchit ensuite en arrière-plan.
-function bootUI() {
+// ref_types.js et ref_ressources.js sont déjà chargés synchroniquement via <head>.
+// Ateliers.js est chargé via loadData (API GitHub) pour avoir les données toujours fraîches.
+loadData(['Ateliers.js', 'data.js', 'data_2026.js'], function() {
   populateTypeSelects();
   populateAnimateurSelects();
   renderStats();
   applyFilters();
   document.getElementById('c_dureeH').value   = '1';
   document.getElementById('c_dureeMin').value = '30';
-}
-
-// Rendu immédiat dès que le DOM est prêt (données <head> déjà disponibles)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootUI);
-} else {
-  bootUI();
-}
-
-// Refresh API GitHub en arrière-plan → re-rendu avec données fraîches
-loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js', 'data_2026.js'], function() {
-  bootUI();
 });
 </script>
 
