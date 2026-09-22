@@ -18,5 +18,6 @@
  *   updatedAt   : date ISO de dernière modification
  */
 var ATELIERS = [
-  {id:"A_1337",nomFr:"Atelier TEST 1",nomEn:"",animateurs:[],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,descFr:"Description en Francais",descEn:"English description",statut:"NEW",createdAt:"2026-09-22T08:08:26.268Z",updatedAt:"2026-09-22T08:08:26.268Z"}
+  {id:"A_1337",nomFr:"Atelier TEST 1",nomEn:"",animateurs:[],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,descFr:"Description en Francais",descEn:"English description",statut:"NEW",createdAt:"2026-09-22T08:08:26.268Z",updatedAt:"2026-09-22T08:08:26.268Z"},
+  {id:"A_5826",nomFr:"TEST atelier 1",nomEn:"",animateurs:[],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,descFr:"",descEn:"",statut:"NEW",createdAt:"2026-09-22T08:38:13.509Z",updatedAt:"2026-09-22T08:38:13.509Z"}
 ];
