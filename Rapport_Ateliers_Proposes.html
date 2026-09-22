@@ -825,11 +825,8 @@ function deleteAtelier() {
 // ═══════════════════════════════════════════════════════════════
 
 function escJs(v) {
-  return String(v == null ? '' : v)
-    .replace(/\\/g, '\\\\')
-    .replace(/"/g, '\\"')
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '');
+  // JSON.stringify gère tous les cas : guillemets, backslashes, caractères spéciaux
+  return JSON.stringify(String(v == null ? '' : v)).slice(1, -1);
 }
 
 function generateAteliersContent() {
