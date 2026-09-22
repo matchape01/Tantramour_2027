@@ -26,6 +26,7 @@ ROOT = Path(__file__).parent.resolve()
 ALLOWED = {
     'data.js',
     'Ateliers.js',
+    'template_config.js',
     'logistics.js',
     'logistics.special.js',
     'logistics.helpers.js',

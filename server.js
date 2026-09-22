@@ -34,6 +34,7 @@ const MIME = {
 const ALLOWED = new Set([
   'data.js',
   'Ateliers.js',
+  'template_config.js',
   'logistics.js',
   'logistics.special.js',
   'logistics.helpers.js',

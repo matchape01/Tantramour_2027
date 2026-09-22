@@ -137,14 +137,19 @@
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
     z-index: 200;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    opacity: 1;
+    opacity: 0;
     transition: opacity 0.2s;
   }
+  .config-modal-backdrop.open {
+    display: flex;
+    opacity: 1;
+  }
   .config-modal-backdrop.hidden {
+    display: none;
     opacity: 0;
     pointer-events: none;
   }
@@ -821,6 +826,7 @@
   <script src="ref_resource_types.js"></script>
   <script src="ref_types.js"></script>
   <script src="ref_jours.js"></script>
+  <script src="template_config.js"></script>
   <script src="github-api.js"></script>
   <script src="loader.js"></script>
 
@@ -949,7 +955,9 @@
       document.getElementById('cfgHourStart').value = CONFIG.hStart;
       document.getElementById('cfgHourEnd').value = CONFIG.hEnd;
       populateLieuxConfig();
-      document.getElementById('configBackdrop').classList.remove('hidden');
+      const backdrop = document.getElementById('configBackdrop');
+      backdrop.classList.remove('hidden');
+      backdrop.classList.add('open');
     }
 
     function closeConfigModal(force) {
@@ -957,10 +965,20 @@
         toast('Veuillez configurer et générer le template pour commencer.', true);
         return;
       }
-      document.getElementById('configBackdrop').classList.add('hidden');
+      const backdrop = document.getElementById('configBackdrop');
+      backdrop.classList.remove('open');
+      backdrop.classList.add('hidden');
     }
 
-    function applyTemplateConfig() {
+    function buildTemplateConfigJs() {
+      return '/**\n' +
+        ' * TANTRAMOUR ' + CONFIG.year + ' — Configuration Template Festival\n' +
+        ' * Fichier géré via Creation_Planning.html\n' +
+        ' */\n' +
+        'var TEMPLATE_CONFIG = ' + JSON.stringify(CONFIG, null, 2) + ';\n';
+    }
+
+    async function applyTemplateConfig() {
       const year = parseInt(document.getElementById('cfgYear').value, 10) || 2027;
       const dStartStr = document.getElementById('cfgDateStart').value;
       const dEndStr = document.getElementById('cfgDateEnd').value;
@@ -1014,10 +1032,20 @@
         dayIdx++;
       }
 
+      CONFIG.isConfigured = true;
+      CONFIG.updatedAt = new Date().toISOString();
+
       // Sauvegarder dans localStorage pour persistance de la config locale
       try {
         localStorage.setItem('tm_festival_template_config', JSON.stringify(CONFIG));
       } catch(e){}
+
+      // Sauvegarder dans template_config.js sur le serveur / GitHub
+      try {
+        await saveFile('template_config.js', buildTemplateConfigJs());
+      } catch(err) {
+        console.warn('Sauvegarde template_config.js:', err);
+      }
 
       // Mise à jour de l'affichage
       document.getElementById('displayYearBadge').textContent = CONFIG.year;
@@ -1469,17 +1497,25 @@
     // ═══════════════════════════════════════════════════════════════
     // INITIALISATION DE LA PAGE
     // ═══════════════════════════════════════════════════════════════
-    loadData(['Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
-      // Charger config sauvegardée si disponible
+    loadData(['template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+      // 1. Charger config depuis template_config.js s'il existe
+      if (typeof TEMPLATE_CONFIG !== 'undefined' && TEMPLATE_CONFIG && typeof TEMPLATE_CONFIG === 'object') {
+        Object.assign(CONFIG, TEMPLATE_CONFIG);
+      }
+
+      // 2. Fallback / priorité localStorage si plus récent
       try {
         const savedCfg = localStorage.getItem('tm_festival_template_config');
-        if (savedCfg) Object.assign(CONFIG, JSON.parse(savedCfg));
+        if (savedCfg) {
+          const parsed = JSON.parse(savedCfg);
+          if (parsed && parsed.dateStart) Object.assign(CONFIG, parsed);
+        }
       } catch(e){}
 
       populateFilterSelects();
       populateLieuxConfig();
 
-      // Génération automatique des jours par défaut
+      // 3. Génération des jours à partir des dates configurées
       const dStart = new Date(CONFIG.dateStart + 'T00:00:00');
       const dEnd = new Date(CONFIG.dateEnd + 'T00:00:00');
       FESTIVAL_DAYS = [];
@@ -1500,10 +1536,20 @@
       document.getElementById('displayDatesSummary').textContent =
         `${FESTIVAL_DAYS[0].dateLabel} au ${FESTIVAL_DAYS[FESTIVAL_DAYS.length - 1].dateLabel} (${FESTIVAL_DAYS.length} jours — ${CONFIG.selectedLieux.length} lieux)`;
 
+      // 4. Construire la grille agenda existante et charger les données
       buildAgendaTemplate();
       syncFromAgenda();
       renderPlacedEvents();
       renderAteliersSidebar();
+
+      // 5. Ne pas afficher le popup si le template est déjà configuré
+      const backdrop = document.getElementById('configBackdrop');
+      if (CONFIG.isConfigured || (FESTIVAL_DAYS.length > 0 && CONFIG.selectedLieux.length > 0)) {
+        backdrop.classList.remove('open');
+        backdrop.classList.add('hidden');
+      } else {
+        openConfigModal();
+      }
     });
   </script>
 </body>

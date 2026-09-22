@@ -39,6 +39,7 @@ var _LDR_GH_BRANCH = 'main';
 var REFRESHABLE = [
   'data.js',
   'Ateliers.js',
+  'template_config.js',
   'ref_ressources.js',
   'ref_descriptions.js',
   'ref_consignes_type.js',
