@@ -912,14 +912,28 @@ function showToast(msg, isError) {
 // BOOT
 // ═══════════════════════════════════════════════════════════════
 
-loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js', 'data_2026.js'], function() {
+// Rendu initial immédiat avec les données déjà chargées en <head> (synchrone).
+// Cela garantit que la liste et les selects s'affichent même si l'API GitHub
+// tarde ou échoue. loadData rafraîchit ensuite en arrière-plan.
+function bootUI() {
   populateTypeSelects();
   populateAnimateurSelects();
   renderStats();
   applyFilters();
-  // Valeur par défaut durée création
   document.getElementById('c_dureeH').value   = '1';
   document.getElementById('c_dureeMin').value = '30';
+}
+
+// Rendu immédiat dès que le DOM est prêt (données <head> déjà disponibles)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootUI);
+} else {
+  bootUI();
+}
+
+// Refresh API GitHub en arrière-plan → re-rendu avec données fraîches
+loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js', 'data_2026.js'], function() {
+  bootUI();
 });
 </script>
 
