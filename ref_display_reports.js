@@ -611,5 +611,24 @@ var REF_DISPLAY_REPORTS = [
     "arrowStyle": "",
     "isProtected": false,
     "order": 8
+  },
+  {
+    "id": "rep_ateliers_proposes",
+    "title": "Ateliers Proposés",
+    "titleKey": "card_ateliers_proposes_title",
+    "desc": "Gérer les ateliers proposés — créer, valider (NEW / APPROVED / REJECTED)",
+    "descKey": "card_ateliers_proposes_desc",
+    "icon": "🌱",
+    "url": "Rapport_Ateliers_Proposes.html",
+    "section": "Gestion planning",
+    "showInDreamTeam": false,
+    "active": true,
+    "cardStyle": "background:#166534;border-color:#166534;color:#fff;",
+    "iconStyle": "background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);",
+    "titleStyle": "color:#fff;",
+    "descStyle": "color:rgba(255,255,255,.8);",
+    "arrowStyle": "color:rgba(255,255,255,.7);",
+    "isProtected": false,
+    "order": 7
   }
 ];
