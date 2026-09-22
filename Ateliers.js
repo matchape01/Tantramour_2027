@@ -23,5 +23,6 @@ var ATELIERS = [
   {id:"A_3974",nomFr:"dgssdg",nomEn:"",animateurs:[],type:"ATELIERS TANTRA",dureeH:1,dureeMin:0,descFr:"",descEn:"",statut:"NEW",createdAt:"2026-09-22T09:18:43.486Z",updatedAt:"2026-09-22T09:18:43.486Z"},
   {id:"A_5692",nomFr:"TEST-(éè')",nomEn:"",animateurs:[],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"",descEn:"",statut:"NEW",createdAt:"2026-09-22T10:01:27.960Z",updatedAt:"2026-09-22T10:01:27.960Z"},
   {id:"A_4797",nomFr:"fgfdsgs",nomEn:"dgsdg",animateurs:[],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"dsgsdg",descEn:"sgdsgds",statut:"NEW",createdAt:"2026-09-22T10:12:35.270Z",updatedAt:"2026-09-22T10:12:35.270Z"},
-  {id:"A_1936",nomFr:"dsgfdsg",nomEn:"",animateurs:[],type:"DJ Set",dureeH:1,dureeMin:0,descFr:"dgds",descEn:"",statut:"NEW",createdAt:"2026-09-22T10:44:28.757Z",updatedAt:"2026-09-22T10:44:28.757Z"}
+  {id:"A_1936",nomFr:"dsgfdsg",nomEn:"",animateurs:[],type:"DJ Set",dureeH:1,dureeMin:0,descFr:"dgds",descEn:"",statut:"NEW",createdAt:"2026-09-22T10:44:28.757Z",updatedAt:"2026-09-22T10:44:28.757Z"},
+  {id:"A_5094",nomFr:"sdfdsf",nomEn:"dsfdsf",animateurs:[],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"sdfds",descEn:"sfd",statut:"NEW",createdAt:"2026-09-22T12:04:22.194Z",updatedAt:"2026-09-22T12:04:22.194Z"}
 ];
