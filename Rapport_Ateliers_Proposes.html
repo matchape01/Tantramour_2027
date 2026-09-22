@@ -8,6 +8,8 @@
 <script src="i18n.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
+<!-- ref_types et ref_ressources chargés statiquement AVANT le script principal,
+     sans passer par bustStaticScripts (même pattern que Rapport_Editer_Atelier) -->
 <style>
   :root {
     --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
@@ -464,6 +466,13 @@
 
 <div id="toast"></div>
 
+<!-- Scripts de référence chargés synchroniquement ici, dans le body,
+     APRÈS le DOM et AVANT le script principal — identique au pattern
+     de Rapport_Editer_Atelier.html qui fonctionne. -->
+<script src="ref_resource_types.js"></script>
+<script src="ref_ressources.js"></script>
+<script src="ref_types.js"></script>
+
 <script>
 // ═══════════════════════════════════════════════════════════════
 // DONNÉES & UTILITAIRES
@@ -909,7 +918,11 @@ function showToast(msg, isError) {
 // depuis l'API GitHub avant tout affichage.
 // ═══════════════════════════════════════════════════════════════
 
-loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js'], function() {
+// ref_types.js et ref_ressources.js sont déjà chargés synchroniquement
+// via les <script src> dans le body juste au-dessus.
+// loadData charge uniquement Ateliers.js (données variables) et data.js
+// via l'API GitHub pour avoir les versions fraîches.
+loadData(['Ateliers.js', 'data.js'], function() {
   populateTypeSelects();
   populateAnimateurSelects();
   renderStats();
