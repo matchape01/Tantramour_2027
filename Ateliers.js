@@ -4,13 +4,12 @@
  * Ce fichier est géré via Rapport_Ateliers_Proposes.html
  *
  * Chaque entrée :
- *   id          : identifiant unique fixe de la forme "A_XXXX" (4 chiffres aléatoires)
- *                 ⚠ Cet ID doit être différent de tous les IDs présents dans data.js et data_2026.js
+ *   id          : identifiant unique fixe de la forme "A_XXXX"
  *   nomFr       : nom de l'atelier en français
  *   nomEn       : nom de l'atelier en anglais
- *   animateurs  : tableau d'IDs de ressources (max 4), ex: ["R_SCOTT", "R_AMANA"]
- *   type        : type d'atelier (valeur issue de REF_TYPES)
- *   dureeH      : durée — heures (entier)
+ *   animateurs  : tableau d'IDs de ressources (max 4)
+ *   type        : type d'atelier
+ *   dureeH      : durée — heures
  *   dureeMin    : durée — minutes (0, 15, 30, 45)
  *   descFr      : description en français
  *   descEn      : description en anglais
@@ -19,4 +18,5 @@
  *   updatedAt   : date ISO de dernière modification
  */
 var ATELIERS = [
+  {id:"A_1337",nomFr:"Atelier TEST 1",nomEn:"",animateurs:[],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,descFr:"Description en Francais",descEn:"English description",statut:"NEW",createdAt:"2026-09-22T08:08:26.268Z",updatedAt:"2026-09-22T08:08:26.268Z"}
 ];
