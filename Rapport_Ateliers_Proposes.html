@@ -243,11 +243,6 @@
       <button class="btn btn-sm filter-reset" onclick="resetFilters()">✕ Réinitialiser</button>
     </div>
 
-    <!-- Chargement en cours -->
-    <div id="loadingState" style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">
-      ⏳ Chargement des ateliers…
-    </div>
-
     <!-- Tableau -->
     <div class="table-wrap">
       <table>
@@ -641,8 +636,6 @@ function resetFilters() {
 function renderTable(list) {
   var tbody = document.getElementById('ateliersBody');
   var noRes = document.getElementById('noResults');
-  var loading = document.getElementById('loadingState');
-  if (loading) loading.style.display = 'none';
 
   if (!list || list.length === 0) {
     tbody.innerHTML = '';
@@ -916,12 +909,8 @@ function showToast(msg, isError) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// BOOT — rendu synchrone garanti
+// BOOT
 // ═══════════════════════════════════════════════════════════════
-// ref_types.js, ref_ressources.js et Ateliers.js sont chargés synchroniquement
-// en <head> avec ?v=1 (contourne bustStaticScripts).
-// Le rendu initial est donc 100% synchrone — aucune dépendance asynchrone.
-// loadData tourne en arrière-plan uniquement pour les SHA (sauvegarde).
 
 function bootUI() {
   populateTypeSelects();
@@ -932,13 +921,12 @@ function bootUI() {
   document.getElementById('c_dureeMin').value = '30';
 }
 
-// DOM est complet (script en fin de body) — appel direct, pas de DOMContentLoaded
+// 1. Rendu immédiat avec les données déjà en mémoire (scripts <head>)
 bootUI();
 
-// Refresh en arrière-plan via API GitHub → SHA pour saveFile + données fraîches
-loadData(['Ateliers.js', 'data.js'], function() {
-  renderStats();
-  applyFilters();
+// 2. Rechargement frais via API GitHub → re-rendu avec données à jour
+loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js'], function() {
+  bootUI();
 });
 </script>
 
