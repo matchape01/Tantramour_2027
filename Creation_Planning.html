@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tantramour — Création du Planning du Festival</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-subtle: #f1f5f9;
+    --text: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-light: #eff6ff;
+    --danger: #ef4444;
+    --danger-light: #fef2f2;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+
+    /* Hauteur par heure (60 min) : 60px -> 1px / min */
+    --hour-h: 64px;
+    --slot-15: 16px;
+    --hour-col-w: 60px;
+    --sidebar-w: 340px;
+  }
+
+  .dark {
+    --bg: #0b0f19;
+    --surface: #131b2e;
+    --border: #1e293b;
+    --border-subtle: #172033;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --accent-light: #172554;
+    --danger: #f87171;
+    --danger-light: #450a0a;
+    --success: #4ade80;
+    --success-light: #052e16;
+    --warning: #fbbf24;
+    --warning-light: #451a03;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── BARRE SUPÉRIEURE ── */
+  .top-navbar {
+    height: 54px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .brand-block { display: flex; align-items: center; gap: 12px; }
+  .brand-badge {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #fff;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+  }
+  .brand-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .brand-sub { font-size: 12px; color: var(--muted); }
+
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+  .btn {
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .btn:hover { background: var(--bg); border-color: var(--muted); }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+  }
+  .btn-success:hover { opacity: 0.9; }
+  .btn-outline {
+    background: transparent;
+    border-color: var(--border);
+  }
+  .btn-sm { padding: 4px 8px; font-size: 11px; }
+
+  /* ── CONTENEUR PRINCIPAL ── */
+  .app-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── ÉCRAN ÉTAPE 1 : CONFIGURATION DU TEMPLATE ── */
+  .config-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+  .config-modal-backdrop.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .config-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 680px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+  }
+  .config-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .config-header h2 { font-size: 17px; font-weight: 700; color: var(--text); }
+  .config-header p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .config-body {
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .config-step {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    background: var(--bg);
+  }
+  .step-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .form-group input, .form-group select {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    font-family: inherit;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+
+  /* Lieux checkboxes */
+  .lieux-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .lieu-chk-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .lieu-chk-item:hover { border-color: var(--accent); }
+  .lieu-chk-item.checked {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .lieu-chk-item input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+  .lieu-chk-name { font-weight: 600; font-size: 12px; }
+  .lieu-chk-sub { font-size: 10px; color: var(--muted); }
+
+  .config-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+  }
+
+  /* ── SIDEBAR ATELIERS (DRAG & DROP) ── */
+  .sidebar-ateliers {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    z-index: 50;
+  }
+  .sidebar-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .sidebar-title {
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .approved-counter {
+    background: var(--success-light);
+    color: var(--success);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(22, 163, 74, 0.2);
+  }
+  .sidebar-filters {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 12px;
+    outline: none;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .filter-select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 11px;
+    outline: none;
+  }
+
+  .ateliers-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .atelier-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.1s, box-shadow 0.1s, border-color 0.15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .atelier-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+    border-color: var(--accent);
+  }
+  .atelier-card:active { cursor: grabbing; }
+  .atelier-card.is-placed {
+    opacity: 0.65;
+    border-left-color: var(--muted);
+    background: var(--bg);
+  }
+  .atelier-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .atelier-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .badge-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    background: var(--border-subtle);
+    color: var(--muted);
+  }
+  .badge-duree {
+    background: #e0e7ff;
+    color: #3730a3;
+    font-weight: 700;
+  }
+  .badge-placed-tag {
+    background: #dcfce7;
+    color: #166534;
+    font-weight: 700;
+  }
+
+  /* ── ZONE DE L'AGENDA OUTLOOK ── */
+  .agenda-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* Toolbar de vue (Zoom, jour actif, etc.) */
+  .agenda-toolbar {
+    height: 42px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+  .days-pill-list { display: flex; gap: 4px; }
+  .day-pill {
+    padding: 3px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .day-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Grille scrollable */
+  .agenda-scroll {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Entêtes Jours & Lieux */
+  .agenda-header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  }
+  .header-corner {
+    width: var(--hour-col-w);
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .header-days-container {
+    display: flex;
+    flex: 1;
+  }
+  .header-day-col {
+    display: flex;
+    flex-direction: column;
+    border-right: 2px solid var(--border);
+    min-width: 0;
+    flex: 1;
+  }
+  .day-title-row {
+    background: #1e293b;
+    color: #fff;
+    padding: 6px 10px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .day-title-date { font-size: 11px; opacity: 0.8; font-weight: normal; }
+  .day-lieux-row {
+    display: flex;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    background: var(--surface);
+  }
+  .lieu-header-cell {
+    flex: 1;
+    min-width: 140px;
+    padding: 6px 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--surface);
+  }
+  .lieu-header-cell:last-child { border-right: none; }
+
+  /* Corps de grille avec les heures */
+  .agenda-body {
+    display: flex;
+    position: relative;
+    min-height: 1000px;
+  }
+  .time-col {
+    width: var(--hour-col-w);
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    user-select: none;
+  }
+  .time-hour-label {
+    position: absolute;
+    right: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    transform: translateY(-50%);
+    font-variant-numeric: tabular-nums;
+  }
+  .time-sub-label {
+    position: absolute;
+    right: 6px;
+    font-size: 9px;
+    color: var(--muted);
+    opacity: 0.6;
+    transform: translateY(-50%);
+  }
+
+  .grid-days-container {
+    display: flex;
+    flex: 1;
+    position: relative;
+  }
+  .grid-day-col {
+    display: flex;
+    flex: 1;
+    border-right: 2px solid var(--border);
+    position: relative;
+  }
+  .grid-lieu-col {
+    flex: 1;
+    min-width: 140px;
+    border-right: 1px solid var(--border);
+    position: relative;
+    background: var(--bg);
+    transition: background 0.15s;
+  }
+  .grid-lieu-col:last-child { border-right: none; }
+  .grid-lieu-col.drag-over {
+    background: rgba(37, 99, 235, 0.08);
+  }
+
+  /* Lignes horizontales des heures et des 15 min */
+  .grid-line-hour {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--border);
+    pointer-events: none;
+  }
+  .grid-line-15 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dashed rgba(203, 213, 225, 0.4);
+    pointer-events: none;
+  }
+  .grid-line-30 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid rgba(203, 213, 225, 0.7);
+    pointer-events: none;
+  }
+
+  /* ── BLOC ATELIER PLACÉ SUR LA GRILLE ── */
+  .placed-event {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #93c5fd;
+    border-left: 4px solid #2563eb;
+    padding: 3px 6px;
+    overflow: hidden;
+    cursor: move;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    z-index: 10;
+    transition: box-shadow 0.15s, border-color 0.15s;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .placed-event:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 25;
+    border-color: #2563eb;
+  }
+  .event-time-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #1e40af;
+    line-height: 1.1;
+  }
+  .event-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-anim {
+    font-size: 10px;
+    color: #475569;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-del-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .placed-event:hover .event-del-btn { display: flex; }
+  .event-del-btn:hover { background: #dc2626; color: #fff; }
+
+  /* ── INDICATEUR DE DROP PREVIEW ── */
+  .drop-preview {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    background: rgba(37, 99, 235, 0.2);
+    border: 2px dashed #2563eb;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 20;
+    display: none;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 999;
+    display: none;
+    max-width: 420px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  /* Responsive simple */
+  @media (max-width: 900px) {
+    .sidebar-ateliers { width: 260px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- BARRE SUPÉRIEURE -->
+  <header class="top-navbar">
+    <div class="brand-block">
+      <span class="brand-badge" id="displayYearBadge">2027</span>
+      <div>
+        <div class="brand-title">Création & Édition du Planning</div>
+        <div class="brand-sub" id="displayDatesSummary">Configuration en cours…</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-outline" onclick="openConfigModal()">⚙️ Configurer template</button>
+      <button class="btn btn-success" onclick="savePlanningToAgenda()">💾 Enregistrer Planning</button>
+      <a class="btn" href="Rapport_Ateliers_Proposes.html">🌱 Ateliers Proposés</a>
+      <a class="btn" href="gestion_planning.html">⚙️ Admin</a>
+      <a class="btn" href="index.html">🏠 Accueil</a>
+    </div>
+  </header>
+
+  <!-- CONTENEUR PRINCIPAL -->
+  <div class="app-container">
+
+    <!-- SIDEBAR ÉTAPE 2 : ATELIERS APPROVED (DRAGGABLE) -->
+    <aside class="sidebar-ateliers">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span>Ateliers "Approved"</span>
+          <span class="approved-counter" id="approvedCount">0</span>
+        </div>
+      </div>
+      <div class="sidebar-filters">
+        <input type="text" class="search-input" id="searchAtelier" placeholder="🔍 Rechercher atelier ou facilitateur…" oninput="filterAteliersList()" />
+        <select class="filter-select" id="filterType" onchange="filterAteliersList()">
+          <option value="">Tous les types</option>
+        </select>
+        <select class="filter-select" id="filterAnim" onchange="filterAteliersList()">
+          <option value="">Tous les facilitateurs</option>
+        </select>
+      </div>
+      <div class="ateliers-list" id="ateliersDraggableList">
+        <!-- Rempli en JS -->
+      </div>
+    </aside>
+
+    <!-- AGENDA MAIN -->
+    <main class="agenda-main">
+      <div class="agenda-toolbar">
+        <div class="days-pill-list" id="daysFilterPills">
+          <!-- Pilules de jours -->
+        </div>
+        <div style="color:var(--muted); font-size:11px;">
+          💡 Glissez un atelier sur une salle et une heure (alignement automatique 15 min).
+        </div>
+      </div>
+
+      <div class="agenda-scroll" id="agendaScroll">
+        <!-- En-têtes Jours & Lieux -->
+        <div class="agenda-header" id="agendaHeader">
+          <div class="header-corner">Heure</div>
+          <div class="header-days-container" id="headerDaysContainer"></div>
+        </div>
+
+        <!-- Corps avec Colonne Heures & Colonnes Grilles Lieux -->
+        <div class="agenda-body" id="agendaBody">
+          <div class="time-col" id="timeColumn"></div>
+          <div class="grid-days-container" id="gridDaysContainer"></div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MODAL CONFIGURATION TEMPLATE (ÉTAPE 1) -->
+  <div class="config-modal-backdrop" id="configBackdrop">
+    <div class="config-card">
+      <div class="config-header">
+        <h2>🛠 Étape 1 — Configuration du Template Festival</h2>
+        <p>Définissez l'année, les dates de début / fin et sélectionnez les lieux qui composeront la grille de l'agenda.</p>
+      </div>
+      <div class="config-body">
+
+        <!-- Choix Année & Dates -->
+        <div class="config-step">
+          <div class="step-label">📅 1 & 2. Année & Période du festival</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Année</label>
+              <input type="number" id="cfgYear" value="2027" min="2024" max="2035" />
+            </div>
+            <div class="form-group">
+              <label>Plage horaire journalière</label>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <select id="cfgHourStart" style="flex:1;">
+                  <option value="6">06:00</option>
+                  <option value="7" selected>07:00</option>
+                  <option value="8">08:00</option>
+                </select>
+                <span>à</span>
+                <select id="cfgHourEnd" style="flex:1;">
+                  <option value="23">23:00</option>
+                  <option value="24" selected>00:00 (Minuit)</option>
+                  <option value="25">01:00 (+1)</option>
+                  <option value="26">02:00 (+1)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:10px;">
+            <div class="form-group">
+              <label>Date de début</label>
+              <input type="date" id="cfgDateStart" value="2027-08-28" />
+            </div>
+            <div class="form-group">
+              <label>Date de fin</label>
+              <input type="date" id="cfgDateEnd" value="2027-09-03" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Choix des Lieux -->
+        <div class="config-step">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="step-label" style="margin-bottom:0;">🏛 3. Lieux & Salles (Choix multiple)</div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-sm" onclick="selectAllLieux(true)">Tous</button>
+              <button class="btn btn-sm" onclick="selectAllLieux(false)">Aucun</button>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin:6px 0 10px;">Cochez les lieux dans lesquels des ateliers seront planifiés :</p>
+          <div class="lieux-selection-grid" id="lieuxCheckboxes">
+            <!-- Rempli depuis REF_LIEUX -->
+          </div>
+        </div>
+
+      </div>
+      <div class="config-footer">
+        <button class="btn btn-outline" onclick="closeConfigModal(true)">Annuler</button>
+        <button class="btn btn-primary" onclick="applyTemplateConfig()">🚀 Générer le Template Agenda</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- CHARGEMENT DES RÉFÉRENTIELS ET LIBRAIRIES -->
+  <script src="ref_lieux.js"></script>
+  <script src="ref_ressources.js"></script>
+  <script src="ref_resource_types.js"></script>
+  <script src="ref_types.js"></script>
+  <script src="ref_jours.js"></script>
+  <script src="github-api.js"></script>
+  <script src="loader.js"></script>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // ÉTAT GLOBAL DE L'APPLICATION
+    // ═══════════════════════════════════════════════════════════════
+    let CONFIG = {
+      year: 2027,
+      dateStart: '2027-08-28',
+      dateEnd: '2027-09-03',
+      hStart: 7,   // 07:00
+      hEnd: 24,    // 00:00 (24h)
+      selectedLieux: ['SHIVA', 'CHENREZIG', 'SHAKTI', 'TARA', 'GANESH', 'PISCINE', 'EXTERIEUR']
+    };
+
+    // Liste des jours générés entre dateStart et dateEnd
+    let FESTIVAL_DAYS = [];
+
+    // Stockage des événements placés sur la grille
+    // Format : { id, atelierId, nom, jourValue, dateLabel, lieu, startMin, endMin, dureeMin, animateurs, type, descFr, descEn }
+    let PLACED_EVENTS = [];
+
+    // Données de drag en cours
+    let currentDragAtelier = null;
+
+    const PX_PER_MIN = 1.05; // 1.05px par minute -> ~63px par heure
+    const STEP_MIN = 15;     // Magnétisme par pas de 15 minutes
+
+    // ═══════════════════════════════════════════════════════════════
+    // UTILITAIRES DE DATES ET HEURES
+    // ═══════════════════════════════════════════════════════════════
+    const JOURS_FR = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+    function formatDateFr(d) {
+      return JOURS_FR[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS_FR[d.getMonth()];
+    }
+
+    function minToTimeStr(m) {
+      let h = Math.floor(m / 60);
+      let mins = m % 60;
+      let hStr = h < 10 ? '0' + h : '' + h;
+      let mStr = mins < 10 ? '0' + mins : '' + mins;
+      return hStr + ':' + mStr;
+    }
+
+    function timeStrToMin(s) {
+      if (!s) return 0;
+      let parts = s.split(':');
+      return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    }
+
+    function parseIntervalStr(hStr) {
+      if (!hStr) return null;
+      let norm = String(hStr).replace(/\./g, ':').replace(/[–—]/g, '-').trim();
+      let parts = norm.split(/\s*-+\s*/);
+      if (parts.length < 2) return null;
+      let s = timeStrToMin(parts[0]);
+      let e = timeStrToMin(parts[1]);
+      if (e <= s) e += 24 * 60;
+      return { s, e };
+    }
+
+    function toast(msg, isErr) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      t.style.background = isErr ? '#fee2e2' : '#dcfce7';
+      t.style.color = isErr ? '#dc2626' : '#166534';
+      t.style.border = '1px solid ' + (isErr ? '#fca5a5' : '#86efac');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => { t.style.display = 'none'; }, 4000);
+    }
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function escJs(v) {
+      return JSON.stringify(String(v == null ? '' : v)).slice(1, -1);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ÉTAPE 1 : GESTION DE LA CONFIGURATION (TEMPLATE)
+    // ═══════════════════════════════════════════════════════════════
+    function populateLieuxConfig() {
+      const cont = document.getElementById('lieuxCheckboxes');
+      if (!cont || typeof REF_LIEUX === 'undefined') return;
+
+      cont.innerHTML = REF_LIEUX.map(l => {
+        const isChecked = CONFIG.selectedLieux.includes(l.value);
+        return `
+          <label class="lieu-chk-item ${isChecked ? 'checked' : ''}" id="lbl-lieu-${esc(l.value)}">
+            <input type="checkbox" value="${esc(l.value)}" ${isChecked ? 'checked' : ''} onchange="toggleLieuChk('${esc(l.value)}')" />
+            <div>
+              <div class="lieu-chk-name">${esc(l.label || l.value)}</div>
+              ${l.nomOfficiel ? `<div class="lieu-chk-sub">${esc(l.nomOfficiel)}</div>` : ''}
+            </div>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function toggleLieuChk(val) {
+      const lbl = document.getElementById('lbl-lieu-' + val);
+      const chk = lbl ? lbl.querySelector('input') : null;
+      if (lbl && chk) {
+        lbl.classList.toggle('checked', chk.checked);
+      }
+    }
+
+    function selectAllLieux(checkAll) {
+      document.querySelectorAll('#lieuxCheckboxes input[type="checkbox"]').forEach(chk => {
+        chk.checked = checkAll;
+        const lbl = document.getElementById('lbl-lieu-' + chk.value);
+        if (lbl) lbl.classList.toggle('checked', checkAll);
+      });
+    }
+
+    function openConfigModal() {
+      document.getElementById('cfgYear').value = CONFIG.year;
+      document.getElementById('cfgDateStart').value = CONFIG.dateStart;
+      document.getElementById('cfgDateEnd').value = CONFIG.dateEnd;
+      document.getElementById('cfgHourStart').value = CONFIG.hStart;
+      document.getElementById('cfgHourEnd').value = CONFIG.hEnd;
+      populateLieuxConfig();
+      document.getElementById('configBackdrop').classList.remove('hidden');
+    }
+
+    function closeConfigModal(force) {
+      if (!force && FESTIVAL_DAYS.length === 0) {
+        toast('Veuillez configurer et générer le template pour commencer.', true);
+        return;
+      }
+      document.getElementById('configBackdrop').classList.add('hidden');
+    }
+
+    function applyTemplateConfig() {
+      const year = parseInt(document.getElementById('cfgYear').value, 10) || 2027;
+      const dStartStr = document.getElementById('cfgDateStart').value;
+      const dEndStr = document.getElementById('cfgDateEnd').value;
+      const hStart = parseInt(document.getElementById('cfgHourStart').value, 10) || 7;
+      const hEnd = parseInt(document.getElementById('cfgHourEnd').value, 10) || 24;
+
+      if (!dStartStr || !dEndStr) {
+        toast('Veuillez renseigner les dates de début et de fin.', true);
+        return;
+      }
+
+      const dStart = new Date(dStartStr + 'T00:00:00');
+      const dEnd = new Date(dEndStr + 'T00:00:00');
+      if (dEnd < dStart) {
+        toast('La date de fin ne peut pas être antérieure à la date de début.', true);
+        return;
+      }
+
+      // Collecter les lieux cochés
+      const checkedLieux = [];
+      document.querySelectorAll('#lieuxCheckboxes input[type="checkbox"]:checked').forEach(c => {
+        checkedLieux.push(c.value);
+      });
+
+      if (checkedLieux.length === 0) {
+        toast('Veuillez sélectionner au moins un lieu pour le festival.', true);
+        return;
+      }
+
+      CONFIG.year = year;
+      CONFIG.dateStart = dStartStr;
+      CONFIG.dateEnd = dEndStr;
+      CONFIG.hStart = hStart;
+      CONFIG.hEnd = hEnd;
+      CONFIG.selectedLieux = checkedLieux;
+
+      // Générer la liste des jours
+      FESTIVAL_DAYS = [];
+      let cur = new Date(dStart);
+      let dayIdx = 1;
+      while (cur <= dEnd) {
+        let val = 'Jour ' + dayIdx;
+        let dateLabel = formatDateFr(cur);
+        FESTIVAL_DAYS.push({
+          jour: val,
+          dateLabel: dateLabel,
+          isoDate: cur.toISOString().slice(0, 10),
+          dayNumber: dayIdx
+        });
+        cur.setDate(cur.getDate() + 1);
+        dayIdx++;
+      }
+
+      // Sauvegarder dans localStorage pour persistance de la config locale
+      try {
+        localStorage.setItem('tm_festival_template_config', JSON.stringify(CONFIG));
+      } catch(e){}
+
+      // Mise à jour de l'affichage
+      document.getElementById('displayYearBadge').textContent = CONFIG.year;
+      document.getElementById('displayDatesSummary').textContent =
+        `${FESTIVAL_DAYS[0].dateLabel} au ${FESTIVAL_DAYS[FESTIVAL_DAYS.length - 1].dateLabel} (${FESTIVAL_DAYS.length} jours — ${CONFIG.selectedLieux.length} lieux)`;
+
+      closeConfigModal(true);
+      buildAgendaTemplate();
+      renderPlacedEvents();
+      toast('✅ Template généré avec succès !');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // CRÉATION DE LA GRILLE AGENDA (VUE OUTLOOK)
+    // ═══════════════════════════════════════════════════════════════
+    function buildAgendaTemplate() {
+      const headerContainer = document.getElementById('headerDaysContainer');
+      const gridContainer = document.getElementById('gridDaysContainer');
+      const timeCol = document.getElementById('timeColumn');
+      const pillsContainer = document.getElementById('daysFilterPills');
+
+      if (!headerContainer || !gridContainer || !timeCol) return;
+
+      const totalHours = CONFIG.hEnd - CONFIG.hStart;
+      const totalMinutes = totalHours * 60;
+      const totalHeightPx = totalMinutes * PX_PER_MIN;
+
+      // 1. Colonne des heures
+      let timeHtml = '';
+      for (let h = CONFIG.hStart; h <= CONFIG.hEnd; h++) {
+        let topPx = (h - CONFIG.hStart) * 60 * PX_PER_MIN;
+        let displayH = h >= 24 ? (h - 24) : h;
+        let labelH = (displayH < 10 ? '0' : '') + displayH + ':00';
+        timeHtml += `<div class="time-hour-label" style="top:${topPx}px;">${labelH}</div>`;
+      }
+      timeCol.style.height = totalHeightPx + 'px';
+      timeCol.innerHTML = timeHtml;
+
+      // 2. En-têtes des jours et des lieux
+      let headerHtml = '';
+      let gridDaysHtml = '';
+      let pillsHtml = `<button class="day-pill active" onclick="filterAgendaDay('ALL')">Tous les jours</button>`;
+
+      FESTIVAL_DAYS.forEach(day => {
+        pillsHtml += `<button class="day-pill" id="pill-${day.jour.replace(/\s+/g, '')}" onclick="filterAgendaDay('${day.jour}')">${day.jour}</button>`;
+
+        // En-tête du jour
+        headerHtml += `
+          <div class="header-day-col" id="head-day-${day.jour.replace(/\s+/g, '')}">
+            <div class="day-title-row">
+              <span>${day.jour}</span>
+              <span class="day-title-date">(${day.dateLabel})</span>
+            </div>
+            <div class="day-lieux-row">
+              ${CONFIG.selectedLieux.map(lCode => {
+                const lObj = (typeof REF_LIEUX !== 'undefined') ? REF_LIEUX.find(x => x.value === lCode) : null;
+                const name = lObj ? (lObj.nomOfficiel || lObj.label || lCode) : lCode;
+                return `<div class="lieu-header-cell" title="${esc(name)}">${esc(name)}</div>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+        // Colonne de grille pour le jour
+        let lieuxColsHtml = CONFIG.selectedLieux.map(lCode => {
+          // Lignes de repère 15 min & heures
+          let linesHtml = '';
+          for (let m = 0; m < totalMinutes; m += STEP_MIN) {
+            let top = m * PX_PER_MIN;
+            if (m % 60 === 0) {
+              linesHtml += `<div class="grid-line-hour" style="top:${top}px;"></div>`;
+            } else if (m % 30 === 0) {
+              linesHtml += `<div class="grid-line-30" style="top:${top}px;"></div>`;
+            } else {
+              linesHtml += `<div class="grid-line-15" style="top:${top}px;"></div>`;
+            }
+          }
+
+          return `
+            <div class="grid-lieu-col"
+                 id="col-${day.jour.replace(/\s+/g, '')}-${lCode}"
+                 data-jour="${day.jour}"
+                 data-date="${day.dateLabel}"
+                 data-lieu="${lCode}"
+                 style="height:${totalHeightPx}px;"
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)"
+                 ondrop="handleDrop(event)">
+              ${linesHtml}
+            </div>
+          `;
+        }).join('');
+
+        gridDaysHtml += `
+          <div class="grid-day-col" id="grid-day-${day.jour.replace(/\s+/g, '')}">
+            ${lieuxColsHtml}
+          </div>
+        `;
+      });
+
+      headerContainer.innerHTML = headerHtml;
+      gridContainer.innerHTML = gridDaysHtml;
+      pillsContainer.innerHTML = pillsHtml;
+      gridContainer.style.height = totalHeightPx + 'px';
+    }
+
+    function filterAgendaDay(dayVal) {
+      document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
+      if (dayVal === 'ALL') {
+        event.target.classList.add('active');
+        FESTIVAL_DAYS.forEach(d => {
+          const c1 = document.getElementById('head-day-' + d.jour.replace(/\s+/g, ''));
+          const c2 = document.getElementById('grid-day-' + d.jour.replace(/\s+/g, ''));
+          if (c1) c1.style.display = '';
+          if (c2) c2.style.display = '';
+        });
+      } else {
+        event.target.classList.add('active');
+        FESTIVAL_DAYS.forEach(d => {
+          const c1 = document.getElementById('head-day-' + d.jour.replace(/\s+/g, ''));
+          const c2 = document.getElementById('grid-day-' + d.jour.replace(/\s+/g, ''));
+          const match = (d.jour === dayVal);
+          if (c1) c1.style.display = match ? '' : 'none';
+          if (c2) c2.style.display = match ? '' : 'none';
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ÉTAPE 2 : LISTE DES ATELIERS "APPROVED" & FILTRES
+    // ═══════════════════════════════════════════════════════════════
+    function getApprovedAteliers() {
+      if (typeof ATELIERS === 'undefined' || !Array.isArray(ATELIERS)) return [];
+      return ATELIERS.filter(a => a.statut === 'APPROVED');
+    }
+
+    function populateFilterSelects() {
+      const typeSelect = document.getElementById('filterType');
+      const animSelect = document.getElementById('filterAnim');
+
+      if (typeSelect && typeof REF_TYPES !== 'undefined') {
+        typeSelect.innerHTML = '<option value="">Tous les types</option>' +
+          REF_TYPES.map(t => `<option value="${esc(t.value)}">${esc(t.label)}</option>`).join('');
+      }
+
+      if (animSelect && typeof REF_RESSOURCES !== 'undefined') {
+        const anims = REF_RESSOURCES.filter(r => r.roles && r.roles.includes('animateur'))
+          .sort((a,b) => a.value.localeCompare(b.value, 'fr'));
+        animSelect.innerHTML = '<option value="">Tous les facilitateurs</option>' +
+          anims.map(r => `<option value="${esc(r.id)}">${esc(r.value)}</option>`).join('');
+      }
+    }
+
+    function renderAteliersSidebar() {
+      const listCont = document.getElementById('ateliersDraggableList');
+      const countBadge = document.getElementById('approvedCount');
+      if (!listCont) return;
+
+      const qSearch = document.getElementById('searchAtelier').value.toLowerCase().trim();
+      const qType = document.getElementById('filterType').value;
+      const qAnim = document.getElementById('filterAnim').value;
+
+      const allApproved = getApprovedAteliers();
+      countBadge.textContent = allApproved.length;
+
+      const filtered = allApproved.filter(a => {
+        if (qSearch) {
+          const inFr = (a.nomFr || '').toLowerCase().includes(qSearch);
+          const inEn = (a.nomEn || '').toLowerCase().includes(qSearch);
+          const inAnim = (a.animateurs || []).some(id => {
+            const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.id === id) : null;
+            return r && r.value.toLowerCase().includes(qSearch);
+          });
+          if (!inFr && !inEn && !inAnim) return false;
+        }
+        if (qType && a.type !== qType) return false;
+        if (qAnim && (!a.animateurs || !a.animateurs.includes(qAnim))) return false;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        listCont.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px 10px;">Aucun atelier correspondant</div>';
+        return;
+      }
+
+      listCont.innerHTML = filtered.map(a => {
+        // Durée
+        const dH = parseInt(a.dureeH, 10) || 0;
+        const dMin = parseInt(a.dureeMin, 10) || 0;
+        const totalMin = dH * 60 + dMin;
+        const durLabel = (dH > 0 ? dH + 'h' : '') + (dMin > 0 ? (dMin < 10 ? '0' : '') + dMin : (dH === 0 ? '00' : ''));
+
+        // Animateurs
+        const animNames = (a.animateurs || []).map(id => {
+          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.id === id) : null;
+          return r ? r.value : id;
+        }).join(', ') || '—';
+
+        // Est-il déjà placé ?
+        const isPlaced = PLACED_EVENTS.some(ev => ev.atelierId === a.id);
+
+        return `
+          <div class="atelier-card ${isPlaced ? 'is-placed' : ''}"
+               draggable="true"
+               ondragstart="handleDragStart(event, '${esc(a.id)}')"
+               data-id="${esc(a.id)}">
+            <div class="atelier-card-title">${esc(a.nomFr || 'Sans titre')}</div>
+            <div class="atelier-card-meta">
+              <span class="badge-tag badge-duree">⏱ ${durLabel}</span>
+              <span class="badge-tag">${esc(a.type || 'Standard')}</span>
+              ${isPlaced ? '<span class="badge-tag badge-placed-tag">✓ Placé</span>' : ''}
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">👤 ${esc(animNames)}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterAteliersList() {
+      renderAteliersSidebar();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // GESTION DU DRAG & DROP
+    // ═══════════════════════════════════════════════════════════════
+    function handleDragStart(evt, atelierId) {
+      const atelier = getApprovedAteliers().find(a => a.id === atelierId);
+      if (!atelier) return;
+      currentDragAtelier = atelier;
+      evt.dataTransfer.setData('text/plain', atelier.id);
+      evt.dataTransfer.effectAllowed = 'copyMove';
+    }
+
+    function handleDragOver(evt) {
+      evt.preventDefault();
+      evt.dataTransfer.dropEffect = 'copy';
+      const col = evt.currentTarget;
+      col.classList.add('drag-over');
+    }
+
+    function handleDragLeave(evt) {
+      evt.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(evt) {
+      evt.preventDefault();
+      const col = evt.currentTarget;
+      col.classList.remove('drag-over');
+
+      if (!currentDragAtelier) return;
+
+      const jourVal = col.getAttribute('data-jour');
+      const dateLabel = col.getAttribute('data-date');
+      const lieuCode = col.getAttribute('data-lieu');
+
+      // Calcul de l'heure en fonction de la position Y relative dans la colonne
+      const rect = col.getBoundingClientRect();
+      const relY = evt.clientY - rect.top;
+      let rawMin = relY / PX_PER_MIN;
+
+      // Arrondi au pas STEP_MIN (15 minutes)
+      let snappedMin = Math.round(rawMin / STEP_MIN) * STEP_MIN;
+      let startAbsMin = (CONFIG.hStart * 60) + snappedMin;
+
+      // Durée de l'atelier
+      let dH = parseInt(currentDragAtelier.dureeH, 10) || 0;
+      let dM = parseInt(currentDragAtelier.dureeMin, 10) || 0;
+      let durTotalMin = dH * 60 + dM;
+      if (durTotalMin <= 0) durTotalMin = 90; // Fallback 1h30
+
+      let endAbsMin = startAbsMin + durTotalMin;
+
+      // Création de l'événement planifié
+      const newPlaced = {
+        id: 'EV_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+        atelierId: currentDragAtelier.id,
+        nom: currentDragAtelier.nomFr,
+        nomEn: currentDragAtelier.nomEn || '',
+        jour: jourVal,
+        date: dateLabel,
+        lieu: lieuCode,
+        startMin: startAbsMin,
+        endMin: endAbsMin,
+        dureeMin: durTotalMin,
+        type: currentDragAtelier.type || 'ATELIERS TANTRA',
+        animateurs: currentDragAtelier.animateurs || [],
+        descFr: currentDragAtelier.descFr || '',
+        descEn: currentDragAtelier.descEn || ''
+      };
+
+      PLACED_EVENTS.push(newPlaced);
+      renderPlacedEvents();
+      renderAteliersSidebar();
+      toast(`✅ "${currentDragAtelier.nomFr}" placé à ${minToTimeStr(startAbsMin)} sur ${lieuCode}`);
+      currentDragAtelier = null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // RENDU DES ATELIERS SUR LA GRILLE
+    // ═══════════════════════════════════════════════════════════════
+    function renderPlacedEvents() {
+      // Nettoyer les anciens blocs
+      document.querySelectorAll('.placed-event').forEach(el => el.remove());
+
+      const startOffset = CONFIG.hStart * 60;
+
+      PLACED_EVENTS.forEach(ev => {
+        const colId = 'col-' + ev.jour.replace(/\s+/g, '') + '-' + ev.lieu;
+        const col = document.getElementById(colId);
+        if (!col) return;
+
+        const topPx = (ev.startMin - startOffset) * PX_PER_MIN;
+        const heightPx = (ev.endMin - ev.startMin) * PX_PER_MIN;
+
+        const timeLabel = minToTimeStr(ev.startMin) + ' - ' + minToTimeStr(ev.endMin);
+
+        const animNames = (ev.animateurs || []).map(id => {
+          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.id === id) : null;
+          return r ? r.value : id;
+        }).join(', ') || '';
+
+        const card = document.createElement('div');
+        card.className = 'placed-event';
+        card.style.top = topPx + 'px';
+        card.style.height = heightPx + 'px';
+        card.setAttribute('data-ev-id', ev.id);
+
+        card.innerHTML = `
+          <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
+          <div class="event-time-badge">${timeLabel}</div>
+          <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
+          ${animNames ? `<div class="event-anim">👤 ${esc(animNames)}</div>` : ''}
+        `;
+
+        // Permettre le déplacement sur la grille
+        card.draggable = true;
+        card.ondragstart = (e) => {
+          const at = getApprovedAteliers().find(a => a.id === ev.atelierId) || {
+            id: ev.atelierId,
+            nomFr: ev.nom,
+            dureeH: Math.floor(ev.dureeMin / 60),
+            dureeMin: ev.dureeMin % 60,
+            type: ev.type,
+            animateurs: ev.animateurs,
+            descFr: ev.descFr,
+            descEn: ev.descEn
+          };
+          currentDragAtelier = at;
+          e.dataTransfer.setData('text/plain', at.id);
+          // Retirer l'ancien emplacement lors du re-drop
+          setTimeout(() => {
+            removePlacedEvent(ev.id, null, true);
+          }, 0);
+        };
+
+        col.appendChild(card);
+      });
+    }
+
+    function removePlacedEvent(evId, clickEv, silent) {
+      if (clickEv) clickEv.stopPropagation();
+      const idx = PLACED_EVENTS.findIndex(e => e.id === evId);
+      if (idx !== -1) {
+        const removed = PLACED_EVENTS.splice(idx, 1)[0];
+        renderPlacedEvents();
+        renderAteliersSidebar();
+        if (!silent) toast(`🗑 Atelier "${removed.nom}" retiré de la grille.`);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // SYNCHRONISATION AVEC AGENDA (data.js) & SAUVEGARDE
+    // ═══════════════════════════════════════════════════════════════
+    function syncFromAgenda() {
+      if (typeof AGENDA === 'undefined' || !Array.isArray(AGENDA)) return;
+
+      PLACED_EVENTS = [];
+      AGENDA.forEach(item => {
+        if (!item.jour || !item.heure) return;
+        const iv = parseIntervalStr(item.heure);
+        if (!iv) return;
+
+        // Retrouver animateurs
+        const anims = [];
+        [item.fac1Id, item.fac2Id, item.fac3Id, item.fac4Id].filter(Boolean).forEach(id => anims.push(id));
+        if (anims.length === 0 && (item.fac1 || item.fac2)) {
+          // Fallback par nom si ID absent
+          [item.fac1, item.fac2].filter(Boolean).forEach(name => {
+            const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.value === name) : null;
+            if (r) anims.push(r.id);
+          });
+        }
+
+        PLACED_EVENTS.push({
+          id: item.id || ('EV_' + Math.random()),
+          atelierId: item.id,
+          nom: item.atelier,
+          nomEn: '',
+          jour: item.jour,
+          date: item.date,
+          lieu: item.lieu || '',
+          startMin: iv.s,
+          endMin: iv.e,
+          dureeMin: iv.e - iv.s,
+          type: item.type || 'ATELIERS TANTRA',
+          animateurs: anims,
+          descFr: '',
+          descEn: ''
+        });
+      });
+    }
+
+    function buildDataJsContent() {
+      const header = `/**\n * TANTRAMOUR ${CONFIG.year} — Données AGENDA\n * Généré via Creation_Planning.html\n */\nvar AGENDA = [\n`;
+
+      const lines = PLACED_EVENTS.map(ev => {
+        const heureStr = minToTimeStr(ev.startMin) + ' - ' + minToTimeStr(ev.endMin);
+
+        // Récupérer animateurs
+        const anim1 = ev.animateurs[0] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[0])) || {}).value || '' : '';
+        const anim1Id = ev.animateurs[0] || '';
+        const anim2 = ev.animateurs[1] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[1])) || {}).value || '' : '';
+        const anim2Id = ev.animateurs[1] || '';
+        const anim3 = ev.animateurs[2] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[2])) || {}).value || '' : '';
+        const anim3Id = ev.animateurs[2] || '';
+        const anim4 = ev.animateurs[3] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[3])) || {}).value || '' : '';
+        const anim4Id = ev.animateurs[3] || '';
+
+        return `  {id:"${escJs(ev.atelierId || ev.id)}",jour:"${escJs(ev.jour)}",date:"${escJs(ev.date)}",heure:"${escJs(heureStr)}",type:"${escJs(ev.type)}",atelier:"${escJs(ev.nom)}",lieu:"${escJs(ev.lieu)}",fac1:"${escJs(anim1)}",fac1Id:"${escJs(anim1Id)}",fac2:"${escJs(anim2)}",fac2Id:"${escJs(anim2Id)}",fac3:"${escJs(anim3)}",fac3Id:"${escJs(anim3Id)}",fac4:"${escJs(anim4)}",fac4Id:"${escJs(anim4Id)}",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:""}`;
+      });
+
+      return header + lines.join(',\n') + '\n];\n';
+    }
+
+    async function savePlanningToAgenda() {
+      if (PLACED_EVENTS.length === 0) {
+        if (!confirm('Aucun atelier n\'est présent sur la grille. Voulez-vous vraiment enregistrer un planning vide ?')) return;
+      }
+
+      try {
+        const jsContent = buildDataJsContent();
+        await saveFile('data.js', jsContent);
+        toast('✅ Planning enregistré avec succès dans data.js !');
+      } catch (err) {
+        toast('❌ Erreur lors de la sauvegarde : ' + err.message, true);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // INITIALISATION DE LA PAGE
+    // ═══════════════════════════════════════════════════════════════
+    loadData(['Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+      // Charger config sauvegardée si disponible
+      try {
+        const savedCfg = localStorage.getItem('tm_festival_template_config');
+        if (savedCfg) Object.assign(CONFIG, JSON.parse(savedCfg));
+      } catch(e){}
+
+      populateFilterSelects();
+      populateLieuxConfig();
+
+      // Génération automatique des jours par défaut
+      const dStart = new Date(CONFIG.dateStart + 'T00:00:00');
+      const dEnd = new Date(CONFIG.dateEnd + 'T00:00:00');
+      FESTIVAL_DAYS = [];
+      let cur = new Date(dStart);
+      let dayIdx = 1;
+      while (cur <= dEnd) {
+        FESTIVAL_DAYS.push({
+          jour: 'Jour ' + dayIdx,
+          dateLabel: formatDateFr(cur),
+          isoDate: cur.toISOString().slice(0, 10),
+          dayNumber: dayIdx
+        });
+        cur.setDate(cur.getDate() + 1);
+        dayIdx++;
+      }
+
+      document.getElementById('displayYearBadge').textContent = CONFIG.year;
+      document.getElementById('displayDatesSummary').textContent =
+        `${FESTIVAL_DAYS[0].dateLabel} au ${FESTIVAL_DAYS[FESTIVAL_DAYS.length - 1].dateLabel} (${FESTIVAL_DAYS.length} jours — ${CONFIG.selectedLieux.length} lieux)`;
+
+      buildAgendaTemplate();
+      syncFromAgenda();
+      renderPlacedEvents();
+      renderAteliersSidebar();
+    });
+  </script>
+</body>
+</html>

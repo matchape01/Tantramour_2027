@@ -630,5 +630,24 @@ var REF_DISPLAY_REPORTS = [
     "arrowStyle": "color:rgba(255,255,255,.7);",
     "isProtected": false,
     "order": 7
+  },
+  {
+    "id": "rep_creation_planning",
+    "title": "Création du Planning",
+    "titleKey": "card_creation_planning_title",
+    "desc": "Module visuel de conception du planning — template Outlook & drag and drop des ateliers retenus",
+    "descKey": "card_creation_planning_desc",
+    "icon": "🗓️",
+    "url": "Creation_Planning.html",
+    "section": "Gestion planning",
+    "showInDreamTeam": false,
+    "active": true,
+    "cardStyle": "background:#2563eb;border-color:#2563eb;color:#fff;",
+    "iconStyle": "background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);",
+    "titleStyle": "color:#fff;",
+    "descStyle": "color:rgba(255,255,255,.8);",
+    "arrowStyle": "color:rgba(255,255,255,.7);",
+    "isProtected": false,
+    "order": 8
   }
 ];
