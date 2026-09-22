@@ -7,6 +7,7 @@
 <script src="ref_translations.js"></script>
 <script src="ref_types.js?v=1"></script>
 <script src="ref_ressources.js?v=1"></script>
+<script src="Ateliers.js?v=1"></script>
 <script src="i18n.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
@@ -915,12 +916,12 @@ function showToast(msg, isError) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// BOOT
+// BOOT — rendu synchrone garanti
 // ═══════════════════════════════════════════════════════════════
-
-// ref_types.js et ref_ressources.js sont chargés synchroniquement via <head> (?v=1).
-// Ateliers.js est récupéré via fetch API GitHub (toujours frais), avec fallback CDN.
-// On utilise fetch direct plutôt que loadData pour contrôler précisément le rendu.
+// ref_types.js, ref_ressources.js et Ateliers.js sont chargés synchroniquement
+// en <head> avec ?v=1 (contourne bustStaticScripts).
+// Le rendu initial est donc 100% synchrone — aucune dépendance asynchrone.
+// loadData tourne en arrière-plan uniquement pour les SHA (sauvegarde).
 
 function bootUI() {
   populateTypeSelects();
@@ -931,45 +932,14 @@ function bootUI() {
   document.getElementById('c_dureeMin').value = '30';
 }
 
-function loadAteliersAndBoot() {
-  var token = (typeof localStorage !== 'undefined') ? localStorage.getItem('tm_gh_token') : null;
-  var apiUrl = 'https://api.github.com/repos/matchape01/Tantramour_2027/contents/Ateliers.js?ref=main&_t=' + Date.now();
-  var headers = { 'Accept': 'application/vnd.github+json', 'If-None-Match': '' };
-  if (token) headers['Authorization'] = 'token ' + token;
+// DOM est complet (script en fin de body) — appel direct, pas de DOMContentLoaded
+bootUI();
 
-  fetch(apiUrl, { headers: headers, cache: 'no-store' })
-    .then(function(res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then(function(data) {
-      var code = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
-      if (data.sha && typeof githubRegisterLoadedSha === 'function') {
-        githubRegisterLoadedSha('Ateliers.js', data.sha);
-      }
-      try { eval(code); } catch(e) { console.warn('[boot] eval Ateliers.js:', e); }
-      bootUI();
-    })
-    .catch(function() {
-      // Fallback : charger depuis le CDN GitHub Pages
-      var s = document.createElement('script');
-      s.src = 'Ateliers.js?_=' + Date.now();
-      s.onload  = function() { bootUI(); };
-      s.onerror = function() { bootUI(); }; // on affiche quand même (liste vide)
-      document.head.appendChild(s);
-    });
-}
-
-// Démarrer dès que le DOM est prêt
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadAteliersAndBoot);
-} else {
-  loadAteliersAndBoot();
-}
-
-// loadData est appelé en arrière-plan uniquement pour enregistrer les SHA
-// nécessaires à la sauvegarde via github-api.js (saveFile)
-loadData(['Ateliers.js', 'data.js'], function() {});
+// Refresh en arrière-plan via API GitHub → SHA pour saveFile + données fraîches
+loadData(['Ateliers.js', 'data.js'], function() {
+  renderStats();
+  applyFilters();
+});
 </script>
 
 </body>
