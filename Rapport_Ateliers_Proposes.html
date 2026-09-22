@@ -918,16 +918,58 @@ function showToast(msg, isError) {
 // BOOT
 // ═══════════════════════════════════════════════════════════════
 
-// ref_types.js et ref_ressources.js sont déjà chargés synchroniquement via <head>.
-// Ateliers.js est chargé via loadData (API GitHub) pour avoir les données toujours fraîches.
-loadData(['Ateliers.js', 'data.js', 'data_2026.js'], function() {
+// ref_types.js et ref_ressources.js sont chargés synchroniquement via <head> (?v=1).
+// Ateliers.js est récupéré via fetch API GitHub (toujours frais), avec fallback CDN.
+// On utilise fetch direct plutôt que loadData pour contrôler précisément le rendu.
+
+function bootUI() {
   populateTypeSelects();
   populateAnimateurSelects();
   renderStats();
   applyFilters();
   document.getElementById('c_dureeH').value   = '1';
   document.getElementById('c_dureeMin').value = '30';
-});
+}
+
+function loadAteliersAndBoot() {
+  var token = (typeof localStorage !== 'undefined') ? localStorage.getItem('tm_gh_token') : null;
+  var apiUrl = 'https://api.github.com/repos/matchape01/Tantramour_2027/contents/Ateliers.js?ref=main&_t=' + Date.now();
+  var headers = { 'Accept': 'application/vnd.github+json', 'If-None-Match': '' };
+  if (token) headers['Authorization'] = 'token ' + token;
+
+  fetch(apiUrl, { headers: headers, cache: 'no-store' })
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      var code = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+      if (data.sha && typeof githubRegisterLoadedSha === 'function') {
+        githubRegisterLoadedSha('Ateliers.js', data.sha);
+      }
+      try { eval(code); } catch(e) { console.warn('[boot] eval Ateliers.js:', e); }
+      bootUI();
+    })
+    .catch(function() {
+      // Fallback : charger depuis le CDN GitHub Pages
+      var s = document.createElement('script');
+      s.src = 'Ateliers.js?_=' + Date.now();
+      s.onload  = function() { bootUI(); };
+      s.onerror = function() { bootUI(); }; // on affiche quand même (liste vide)
+      document.head.appendChild(s);
+    });
+}
+
+// Démarrer dès que le DOM est prêt
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadAteliersAndBoot);
+} else {
+  loadAteliersAndBoot();
+}
+
+// loadData est appelé en arrière-plan uniquement pour enregistrer les SHA
+// nécessaires à la sauvegarde via github-api.js (saveFile)
+loadData(['Ateliers.js', 'data.js'], function() {});
 </script>
 
 </body>
