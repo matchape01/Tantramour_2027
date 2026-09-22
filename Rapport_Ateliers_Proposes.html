@@ -5,11 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tantramour 2027 — Ateliers Proposés</title>
 <script src="ref_translations.js"></script>
-<script src="ref_types.js"></script>
-<script src="ref_ressources.js"></script>
-<script src="Ateliers.js"></script>
-<script src="data.js"></script>
-<script src="data_2026.js"></script>
 <script src="i18n.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
@@ -912,7 +907,7 @@ function showToast(msg, isError) {
 // BOOT
 // ═══════════════════════════════════════════════════════════════
 
-loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js'], function() {
+loadData(['ref_types.js', 'ref_ressources.js', 'Ateliers.js', 'data.js', 'data_2026.js'], function() {
   populateTypeSelects();
   populateAnimateurSelects();
   renderStats();
