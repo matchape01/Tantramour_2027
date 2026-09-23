@@ -340,6 +340,30 @@
     outline: none;
   }
 
+  /* ── LÉGENDE COULEURS (bas de sidebar) ── */
+  .sidebar-legend {
+    padding: 8px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
   .ateliers-list {
     flex: 1;
     overflow-y: auto;
@@ -403,13 +427,14 @@
     background: var(--tbg); color: var(--tc); border: 1px solid var(--tbd);
   }
 
-  /* Bloc placé sur la grille coloré */
+  /* Bloc placé sur la grille coloré — même logique que .r-animateur / .r-helper dans Mon Agenda Simplifié */
   .placed-event.has-type {
     background: var(--tbg);
     border-color: var(--tbd);
     border-left-color: var(--tc);
+    border-left-width: 4px;
   }
-  .placed-event.has-type:hover { border-color: var(--tc); }
+  .placed-event.has-type:hover { border-color: var(--tc); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
   .placed-event.has-type .event-time-badge { color: var(--tc); }
   .placed-event.has-type .event-title      { color: var(--tc); }
   .placed-event.has-type .event-anim       { color: var(--tc); opacity: .75; }
@@ -634,7 +659,9 @@
     right: 2px;
     background: #ffffff;
     border-radius: 5px;
-    border: 1px solid #93c5fd;
+    border-top: 1px solid #93c5fd;
+    border-right: 1px solid #93c5fd;
+    border-bottom: 1px solid #93c5fd;
     border-left: 4px solid #2563eb;
     padding: 3px 6px;
     overflow: hidden;
@@ -770,6 +797,19 @@
       </div>
       <div class="ateliers-list" id="ateliersDraggableList">
         <!-- Rempli en JS -->
+      </div>
+      <!-- Légende couleurs par type -->
+      <div class="sidebar-legend">
+        <strong style="font-size:10px;color:var(--text);width:100%;margin-bottom:2px;">Légende :</strong>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-tantra);"></div>Tantra</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-art);"></div>Artistique</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-yoga);"></div>Yoga / Médi.</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-cere);"></div>Cérémonie</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-love);"></div>Love Temple</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-pool);"></div>Pool / DJ</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-support);"></div>Support</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-cafe);"></div>Café / Conf.</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--c-rass);"></div>Rassemblement</div>
       </div>
     </aside>
 
@@ -1228,15 +1268,19 @@
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // CODE COULEUR PAR TYPE
+    // CODE COULEUR PAR TYPE — même palette que Rapport_Mon_Agenda_Simplifie
     // ═══════════════════════════════════════════════════════════════
     const TYPE_CSS = {
       'ATELIERS TANTRA (Matin)':         't-tantra',
       'ATELIERS TANTRA (Apres-Midi)':    't-tantra',
+      'ATELIERS TANTRA':                 't-tantra',
       'ATELIER ARTISTIQUE (Matin)':      't-art',
       'ATELIER ARTISTIQUE (Apres-Midi)': 't-art',
+      'ATELIER ARTISTIQUE':              't-art',
       'MEDITATION / YOGA':               't-yoga',
       'CEREMONIE & CONCERT':             't-cere',
+      'CEREMONIE':                       't-cere',
+      'CONCERT':                         't-cere',
       'DJ Set':                          't-pool',
       'POOL PARTY':                      't-pool',
       'LOVE TEMPLE':                     't-love',
@@ -1244,6 +1288,9 @@
       'TANTRA CAFE':                     't-cafe',
       'CONFERENCE':                      't-cafe',
       'RASSEMBLEMENT':                   't-rass',
+      'REUNION':                         't-rass',
+      'SHIFT ANGEL':                     't-support',
+      'PREPA & LOGISTICS':               't-cafe',
     };
     function typeCssClass(type) {
       return (type && TYPE_CSS[type]) ? TYPE_CSS[type] : '';
