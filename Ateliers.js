@@ -11,5 +11,5 @@ var ATELIERS = [
   {id:"A_1936",nomFr:"Dj Set",nomEn:"",animateurs:["R_SURPRISE"],type:"DJ Set",dureeH:1,dureeMin:0,descFr:"dgds",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T10:44:28.757Z",updatedAt:"2026-09-23T08:22:49.131Z"},
   {id:"A_5094",nomFr:"sdfdsf",nomEn:"dsfdsf",animateurs:["R_AUDREY","R_MATTHIEU"],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"sdfds",descEn:"sfd",statut:"NEW",createdAt:"2026-09-22T12:04:22.194Z",updatedAt:"2026-09-22T12:47:51.990Z"},
   {id:"A_8383",nomFr:"Meditation du matin",nomEn:"",animateurs:["R_SEVDA"],type:"MEDITATION / YOGA",dureeH:1,dureeMin:30,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T12:46:49.349Z",updatedAt:"2026-09-23T08:23:11.061Z"},
-  {id:"A_3781",nomFr:"NEW test online V1",nomEn:"",animateurs:["R_MATTHIEU"],type:"CEREMONIE & CONCERT",dureeH:3,dureeMin:30,descFr:"",descEn:"",statut:"NEW",createdAt:"2026-09-22T12:53:57.941Z",updatedAt:"2026-09-22T12:53:57.941Z"}
+  {id:"A_3781",nomFr:"Céremonie 1",nomEn:"",animateurs:["R_AMANA"],type:"CEREMONIE & CONCERT",dureeH:2,dureeMin:30,descFr:"",descEn:"",statut:"NEW",createdAt:"2026-09-22T12:53:57.941Z",updatedAt:"2026-09-23T08:23:31.309Z"}
 ];
