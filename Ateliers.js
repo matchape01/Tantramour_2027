@@ -3,7 +3,7 @@
  * Fichier géré via Rapport_Ateliers_Proposes.html
  */
 var ATELIERS = [
-  {id:"A_1337",nomFr:"Atelier TEST 1",nomEn:"",animateurs:["R_AMANA"],type:"ATELIER ARTISTIQUE",dureeH:2,dureeMin:0,descFr:"Description en Francais",descEn:"English description",statut:"APPROVED",createdAt:"2026-09-22T08:08:26.268Z",updatedAt:"2026-09-22T12:48:50.320Z"},
+  {id:"A_1337",nomFr:"Artistique 1",nomEn:"",animateurs:["R_LINDA"],type:"ATELIER ARTISTIQUE",dureeH:2,dureeMin:0,descFr:"Description en Francais",descEn:"English description",statut:"APPROVED",createdAt:"2026-09-22T08:08:26.268Z",updatedAt:"2026-09-23T08:21:39.511Z"},
   {id:"A_5826",nomFr:"TEST atelier 1",nomEn:"",animateurs:["R_AUDREY"],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,descFr:"",descEn:"",statut:"REJECTED",createdAt:"2026-09-22T08:38:13.509Z",updatedAt:"2026-09-22T12:48:34.041Z"},
   {id:"A_3974",nomFr:"dgssdg",nomEn:"",animateurs:["R_CEDRIC"],type:"ATELIERS TANTRA",dureeH:1,dureeMin:0,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T09:18:43.486Z",updatedAt:"2026-09-22T12:48:39.639Z"},
   {id:"A_5692",nomFr:"TEST-(éè')",nomEn:"",animateurs:["R_LINDA"],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T10:01:27.960Z",updatedAt:"2026-09-22T12:48:43.673Z"},
