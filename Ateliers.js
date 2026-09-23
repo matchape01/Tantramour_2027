@@ -10,6 +10,6 @@ var ATELIERS = [
   {id:"A_4797",nomFr:"fgfdsgs",nomEn:"dgsdg",animateurs:["R_DANIEL"],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"dsgsdg",descEn:"sgdsgds",statut:"NEW",createdAt:"2026-09-22T10:12:35.270Z",updatedAt:"2026-09-22T12:47:41.455Z"},
   {id:"A_1936",nomFr:"Dj Set",nomEn:"",animateurs:["R_SURPRISE"],type:"DJ Set",dureeH:1,dureeMin:0,descFr:"dgds",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T10:44:28.757Z",updatedAt:"2026-09-23T08:22:49.131Z"},
   {id:"A_5094",nomFr:"sdfdsf",nomEn:"dsfdsf",animateurs:["R_AUDREY","R_MATTHIEU"],type:"TANTRA CAFE",dureeH:1,dureeMin:0,descFr:"sdfds",descEn:"sfd",statut:"NEW",createdAt:"2026-09-22T12:04:22.194Z",updatedAt:"2026-09-22T12:47:51.990Z"},
-  {id:"A_8383",nomFr:"TEST NEW1",nomEn:"",animateurs:["R_DAMIEN"],type:"MEDITATION / YOGA",dureeH:1,dureeMin:30,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T12:46:49.349Z",updatedAt:"2026-09-22T12:49:08.081Z"},
+  {id:"A_8383",nomFr:"Meditation du matin",nomEn:"",animateurs:["R_SEVDA"],type:"MEDITATION / YOGA",dureeH:1,dureeMin:30,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T12:46:49.349Z",updatedAt:"2026-09-23T08:23:11.061Z"},
   {id:"A_3781",nomFr:"NEW test online V1",nomEn:"",animateurs:["R_MATTHIEU"],type:"CEREMONIE & CONCERT",dureeH:3,dureeMin:30,descFr:"",descEn:"",statut:"NEW",createdAt:"2026-09-22T12:53:57.941Z",updatedAt:"2026-09-22T12:53:57.941Z"}
 ];
