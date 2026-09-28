@@ -4,7 +4,7 @@
  */
 var ATELIERS = [
   {id:"A_1337",nomFr:"Artistique 1",nomEn:"",animateurs:["R_LINDA"],type:"ATELIER ARTISTIQUE",dureeH:1,dureeMin:30,prepDuration:20,rangeDuration:15,descFr:"Description en Francais",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T08:08:26.268Z",updatedAt:"2026-09-28T20:33:00.802Z"},
-  {id:"A_5826",nomFr:"TEST atelier 1",nomEn:"",animateurs:["R_MATTHIEU"],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,prepDuration:0,rangeDuration:0,descFr:"",descEn:"",statut:"REJECTED",createdAt:"2026-09-22T08:38:13.509Z",updatedAt:"2026-09-23T08:25:45.948Z"},
+  {id:"A_5826",nomFr:"TEST atelier 1",nomEn:"TEST Workshop 1",animateurs:["R_MATTHIEU"],type:"ATELIERS TANTRA",dureeH:2,dureeMin:0,prepDuration:0,rangeDuration:0,descFr:"TEst de la description de l'atelier",descEn:"Test of the workshop description",statut:"REJECTED",createdAt:"2026-09-22T08:38:13.509Z",updatedAt:"2026-09-28T21:03:24.022Z"},
   {id:"A_3974",nomFr:"TANTRA 1",nomEn:"",animateurs:["R_AUDREY"],type:"ATELIERS TANTRA",dureeH:1,dureeMin:0,prepDuration:0,rangeDuration:0,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T09:18:43.486Z",updatedAt:"2026-09-23T08:21:56.407Z"},
   {id:"A_5692",nomFr:"Tantra Café",nomEn:"",animateurs:["R_SANDRINE"],type:"TANTRA CAFE",dureeH:2,dureeMin:0,prepDuration:0,rangeDuration:0,descFr:"",descEn:"",statut:"APPROVED",createdAt:"2026-09-22T10:01:27.960Z",updatedAt:"2026-09-23T08:26:06.462Z"},
   {id:"A_4797",nomFr:"Love Temple 1",nomEn:"dgsdg",animateurs:["R_CLEMENT"],type:"LOVE TEMPLE",dureeH:3,dureeMin:0,prepDuration:0,rangeDuration:0,descFr:"dsgsdg",descEn:"sgdsgds",statut:"APPROVED",createdAt:"2026-09-22T10:12:35.270Z",updatedAt:"2026-09-23T08:26:43.343Z"},
