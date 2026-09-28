@@ -431,29 +431,40 @@ function _doDeepLTranslate(prefix, mode, text, btnId, apiKey) {
   var btn = document.getElementById(btnId);
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="tl-spinner"></span> Traduction…'; }
 
-  // DeepL bloque les appels directs depuis le navigateur (CORS).
-  // En local, on passe par le proxy /deepl du serveur Node.
+  var destId  = mode === 'nom' ? (prefix + '_nomEn') : (prefix + '_descEn');
   var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  if (!isLocal) {
-    if (btn) { btn.disabled = false; btn.innerHTML = '🌐 Traduire EN'; }
-    toast('❌ La traduction automatique nécessite le serveur local (start.bat).', true);
-    return;
+  var isFree  = apiKey.indexOf(':fx') !== -1;
+  var deeplHost = isFree ? 'https://api-free.deepl.com' : 'https://api.deepl.com';
+
+  // En local : proxy Node (/deepl).
+  // Sur GitHub Pages : corsproxy.io contourne le blocage CORS de DeepL.
+  var fetchCall;
+  if (isLocal) {
+    fetchCall = fetch('http://localhost:3000/deepl', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts: [text], apiKey: apiKey })
+    });
+  } else {
+    var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(deeplHost + '/v2/translate');
+    fetchCall = fetch(proxyUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'DeepL-Auth-Key ' + apiKey,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'text=' + encodeURIComponent(text) + '&source_lang=FR&target_lang=EN-US'
+    });
   }
 
-  var destId = mode === 'nom' ? (prefix + '_nomEn') : (prefix + '_descEn');
-
-  fetch('http://localhost:3000/deepl', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ texts: [text], apiKey: apiKey })
-  })
+  fetchCall
   .then(function(res) {
     if (res.status === 403) {
       localStorage.removeItem('tm_deepl_key');
       throw new Error('Clé API DeepL invalide ou expirée.');
     }
     if (res.status === 456) throw new Error('Quota DeepL dépassé ce mois-ci.');
-    if (!res.ok) throw new Error('Erreur proxy DeepL : ' + res.status);
+    if (!res.ok) throw new Error('Erreur DeepL : ' + res.status);
     return res.json();
   })
   .then(function(data) {
