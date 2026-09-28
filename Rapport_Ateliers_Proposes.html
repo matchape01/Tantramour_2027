@@ -394,6 +394,42 @@ function _ensureDeepLBanner(onSave) {
 }
 
 /**
+ * Bandeau de saisie de l'URL du Cloudflare Worker (GitHub Pages uniquement).
+ */
+function _ensureWorkerBanner(onSave) {
+  if (document.getElementById('deepl-worker-banner')) return;
+  var banner = document.createElement('div');
+  banner.id = 'deepl-worker-banner';
+  banner.style.cssText = [
+    'position:fixed','top:0','left:0','right:0','z-index:99998',
+    'background:#fefce8','border-bottom:2px solid #fde047',
+    'padding:10px 20px','display:flex','align-items:center',
+    'gap:10px','flex-wrap:wrap',
+    'font-family:-apple-system,"Segoe UI",sans-serif',
+    'font-size:13px','color:#713f12'
+  ].join(';');
+  banner.innerHTML =
+    '<span style="font-weight:700">⚙️ URL du Cloudflare Worker DeepL requise :</span>' +
+    '<input id="deepl-worker-input" type="text" placeholder="https://deepl-proxy.VOTRE-COMPTE.workers.dev"' +
+      ' style="flex:1;min-width:300px;padding:6px 10px;border:1px solid #fde047;border-radius:6px;font-size:13px;font-family:inherit;background:#fff;color:#1f2328;"' +
+      ' value="'+(localStorage.getItem('tm_deepl_worker')||'')+'">' +
+    '<button id="deepl-worker-save" style="cursor:pointer;background:#ca8a04;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:700;font-family:inherit;">Enregistrer</button>' +
+    '<button id="deepl-worker-close" style="cursor:pointer;background:transparent;border:none;font-size:18px;color:#713f12;line-height:1;padding:0 4px;">✕</button>' +
+    '<span style="font-size:11px;color:#92400e;">Déployez <strong>deepl-worker.js</strong> sur <a href="https://workers.cloudflare.com" target="_blank" style="color:#92400e;">workers.cloudflare.com</a> (gratuit) puis collez l\'URL ici.</span>';
+  document.body.prepend(banner);
+  document.getElementById('deepl-worker-save').addEventListener('click', function() {
+    var val = document.getElementById('deepl-worker-input').value.trim();
+    if (!val) return;
+    localStorage.setItem('tm_deepl_worker', val);
+    banner.remove();
+    if (onSave) onSave();
+  });
+  document.getElementById('deepl-worker-close').addEventListener('click', function() {
+    banner.remove();
+  });
+}
+
+/**
  * Permet de modifier la clé API DeepL depuis le header.
  * Efface la clé courante et affiche le bandeau de saisie.
  */
@@ -433,11 +469,9 @@ function _doDeepLTranslate(prefix, mode, text, btnId, apiKey) {
 
   var destId  = mode === 'nom' ? (prefix + '_nomEn') : (prefix + '_descEn');
   var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  var isFree  = apiKey.indexOf(':fx') !== -1;
-  var deeplHost = isFree ? 'https://api-free.deepl.com' : 'https://api.deepl.com';
 
   // En local : proxy Node (/deepl).
-  // Sur GitHub Pages : corsproxy.io contourne le blocage CORS de DeepL.
+  // Sur GitHub Pages : Cloudflare Worker (URL stockée dans localStorage sous tm_deepl_worker).
   var fetchCall;
   if (isLocal) {
     fetchCall = fetch('http://localhost:3000/deepl', {
@@ -446,14 +480,16 @@ function _doDeepLTranslate(prefix, mode, text, btnId, apiKey) {
       body: JSON.stringify({ texts: [text], apiKey: apiKey })
     });
   } else {
-    var proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(deeplHost + '/v2/translate');
-    fetchCall = fetch(proxyUrl, {
+    var workerUrl = localStorage.getItem('tm_deepl_worker') || '';
+    if (!workerUrl) {
+      if (btn) { btn.disabled = false; btn.innerHTML = '🌐 Traduire EN'; }
+      _ensureWorkerBanner(function() { _doDeepLTranslate(prefix, mode, text, btnId, apiKey); });
+      return;
+    }
+    fetchCall = fetch(workerUrl, {
       method: 'POST',
-      headers: {
-        'Authorization': 'DeepL-Auth-Key ' + apiKey,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: 'text=' + encodeURIComponent(text) + '&source_lang=FR&target_lang=EN-US'
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts: [text], apiKey: apiKey })
     });
   }
 
