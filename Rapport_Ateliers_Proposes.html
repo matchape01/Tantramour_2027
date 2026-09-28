@@ -139,6 +139,7 @@ tbody td { padding:10px 12px; vertical-align:middle; }
       <a class="btn" href="index_bis.html">🌀 DreamTeam</a>
       <a class="btn" href="gestion_planning.html">⚙️ Admin</a>
       <button class="btn btn-primary" onclick="showTab('create')">➕ Proposer un atelier</button>
+      <button class="btn" onclick="changeDeepLKey()" title="Modifier la clé API DeepL">🌐 Clé DeepL</button>
       <button class="btn" onclick="document.body.classList.toggle('dark')">🌙</button>
     </div>
   </header>
@@ -390,6 +391,17 @@ function _ensureDeepLBanner(onSave) {
   document.getElementById('deepl-key-close').addEventListener('click', function() {
     banner.remove();
   });
+}
+
+/**
+ * Permet de modifier la clé API DeepL depuis le header.
+ * Efface la clé courante et affiche le bandeau de saisie.
+ */
+function changeDeepLKey() {
+  localStorage.removeItem('tm_deepl_key');
+  var old = document.getElementById('deepl-config-banner');
+  if (old) old.remove();
+  _ensureDeepLBanner(null);
 }
 
 /**

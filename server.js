@@ -11,9 +11,10 @@
  *   GET  /*            → sert les fichiers statiques du dossier
  */
 
-const http = require('http');
-const fs   = require('fs');
-const path = require('path');
+const http  = require('http');
+const https = require('https');
+const fs    = require('fs');
+const path  = require('path');
 const { execFile } = require('child_process');
 
 const PORT = 3000;
@@ -93,6 +94,66 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ ok: true, file: base }));
       } catch (err) {
         console.error('[SAVE ERROR]', err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // ── POST /deepl  (proxy anti-CORS vers l'API DeepL) ───────
+  if (req.method === 'POST' && req.url === '/deepl') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { texts, apiKey } = JSON.parse(body);
+        if (!apiKey) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: 'apiKey manquante' }));
+          return;
+        }
+
+        // Construire le body pour DeepL (form-urlencoded)
+        const params = texts.map(t => 'text=' + encodeURIComponent(t)).join('&')
+          + '&source_lang=FR&target_lang=EN';
+        const encoded = Buffer.from(params, 'utf-8');
+
+        const isFree = apiKey.indexOf(':fx') !== -1;
+        const hostname = isFree ? 'api-free.deepl.com' : 'api.deepl.com';
+
+        const options = {
+          hostname,
+          port: 443,
+          path: '/v2/translate',
+          method: 'POST',
+          headers: {
+            'Authorization': 'DeepL-Auth-Key ' + apiKey,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': encoded.length
+          }
+        };
+
+        const proxyReq = https.request(options, proxyRes => {
+          let data = '';
+          proxyRes.on('data', chunk => data += chunk);
+          proxyRes.on('end', () => {
+            res.writeHead(proxyRes.statusCode, { 'Content-Type': 'application/json' });
+            res.end(data);
+          });
+        });
+
+        proxyReq.on('error', err => {
+          console.error('[DEEPL PROXY ERROR]', err.message);
+          res.writeHead(502, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, error: err.message }));
+        });
+
+        proxyReq.write(encoded);
+        proxyReq.end();
+        console.log(`[DEEPL] proxy ${texts.length} texte(s) → ${hostname}`);
+      } catch (err) {
+        console.error('[DEEPL ERROR]', err.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: false, error: err.message }));
       }
