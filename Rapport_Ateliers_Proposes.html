@@ -115,6 +115,15 @@ tbody td { padding:10px 12px; vertical-align:middle; }
 /* TOAST */
 #toast { position:fixed; bottom:24px; right:24px; border-radius:8px; padding:12px 18px; font-size:13px; font-weight:600; z-index:300; display:none; max-width:420px; box-shadow:0 4px 16px rgba(0,0,0,.15); }
 #toast.show { display:block; }
+
+/* TRADUCTION DEEPL */
+.field-label-row { display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:5px; }
+.field-label-row label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); margin-bottom:0; }
+.btn-translate { cursor:pointer; background:#0f172a; color:#fff; border:none; border-radius:5px; padding:3px 9px; font-size:11px; font-weight:700; font-family:inherit; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; transition:opacity .15s; }
+.btn-translate:hover { opacity:.85; }
+.btn-translate:disabled { opacity:.5; cursor:not-allowed; }
+.btn-translate .tl-spinner { display:inline-block; width:10px; height:10px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:tlspin .6s linear infinite; }
+@keyframes tlspin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -188,7 +197,10 @@ tbody td { padding:10px 12px; vertical-align:middle; }
       <div class="help-box">💡 L'atelier sera créé avec le statut <strong>NEW</strong> en attente de validation.</div>
       <div class="form-grid">
         <div class="field">
-          <label>🇫🇷 Nom français *</label>
+          <div class="field-label-row">
+            <label>🇫🇷 Nom français *</label>
+            <button type="button" class="btn-translate" id="c_btnTranslate" onclick="deepLTranslate('c')">🌐 Traduire EN</button>
+          </div>
           <input type="text" id="c_nomFr" placeholder="ex: L'éveil du cœur" />
         </div>
         <div class="field">
@@ -232,6 +244,12 @@ tbody td { padding:10px 12px; vertical-align:middle; }
           <label>🇬🇧 Description anglaise</label>
           <textarea id="c_descEn" rows="4"></textarea>
         </div>
+        <div class="field span2" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px;">
+          <div style="font-size:11px;color:var(--muted);">
+            💡 Le bouton <strong>🌐 Traduire EN</strong> traduit simultanément le Nom et la Description via DeepL.
+            La traduction peut ensuite être modifiée librement.
+          </div>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn" onclick="resetCreate()">✕ Réinitialiser</button>
@@ -253,7 +271,10 @@ tbody td { padding:10px 12px; vertical-align:middle; }
     <input type="hidden" id="e_id" />
     <div class="form-grid">
       <div class="field">
-        <label>🇫🇷 Nom français *</label>
+        <div class="field-label-row">
+          <label>🇫🇷 Nom français *</label>
+          <button type="button" class="btn-translate" id="e_btnTranslate" onclick="deepLTranslate('e')">🌐 Traduire EN</button>
+        </div>
         <input type="text" id="e_nomFr" />
       </div>
       <div class="field">
@@ -332,6 +353,125 @@ tbody td { padding:10px 12px; vertical-align:middle; }
 <script src="loader.js"></script>
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+// TRADUCTION DEEPL
+// ═══════════════════════════════════════════════════════════════
+
+function _ensureDeepLBanner(onSave) {
+  if (document.getElementById('deepl-config-banner')) return;
+  var banner = document.createElement('div');
+  banner.id = 'deepl-config-banner';
+  banner.style.cssText = [
+    'position:fixed','top:0','left:0','right:0','z-index:99999',
+    'background:#f0f9ff','border-bottom:2px solid #7dd3fc',
+    'padding:10px 20px','display:flex','align-items:center',
+    'gap:10px','flex-wrap:wrap',
+    'font-family:-apple-system,"Segoe UI",sans-serif',
+    'font-size:13px','color:#0c4a6e'
+  ].join(';');
+  banner.innerHTML =
+    '<span style="font-weight:700">🌐 Clé API DeepL requise pour la traduction :</span>' +
+    '<input id="deepl-key-input" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx"' +
+      ' style="flex:1;min-width:260px;padding:6px 10px;border:1px solid #7dd3fc;border-radius:6px;font-size:13px;font-family:inherit;background:#fff;color:#1f2328;"' +
+      ' value="'+(localStorage.getItem('tm_deepl_key')||'')+'">' +
+    '<button id="deepl-key-save" style="cursor:pointer;background:#0369a1;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:700;font-family:inherit;">Enregistrer</button>' +
+    '<button id="deepl-key-close" style="cursor:pointer;background:transparent;border:none;font-size:18px;color:#0c4a6e;line-height:1;padding:0 4px;">✕</button>' +
+    '<span style="font-size:11px;color:#0369a1;">' +
+      '(Compte <strong>DeepL Free</strong> → Settings → Authentication Key — se termine par <code>:fx</code>)' +
+    '</span>';
+  document.body.prepend(banner);
+  document.getElementById('deepl-key-save').addEventListener('click', function() {
+    var val = document.getElementById('deepl-key-input').value.trim();
+    if (!val) return;
+    localStorage.setItem('tm_deepl_key', val);
+    banner.remove();
+    if (onSave) onSave(val);
+  });
+  document.getElementById('deepl-key-close').addEventListener('click', function() {
+    banner.remove();
+  });
+}
+
+/**
+ * Traduit le Nom FR et la Description FR vers l'anglais via l'API DeepL Free.
+ * @param {string} prefix  'c' pour le formulaire Créer, 'e' pour la modale Éditer
+ */
+function deepLTranslate(prefix) {
+  var nomFr  = document.getElementById(prefix + '_nomFr').value.trim();
+  var descFr = document.getElementById(prefix + '_descFr').value.trim();
+
+  if (!nomFr && !descFr) {
+    toast('⚠️ Renseignez d\'abord le Nom ou la Description française.', true);
+    return;
+  }
+
+  var apiKey = localStorage.getItem('tm_deepl_key');
+  if (!apiKey) {
+    _ensureDeepLBanner(function(key) { _doDeepLTranslate(prefix, nomFr, descFr, key); });
+    return;
+  }
+  _doDeepLTranslate(prefix, nomFr, descFr, apiKey);
+}
+
+function _doDeepLTranslate(prefix, nomFr, descFr, apiKey) {
+  var btn = document.getElementById(prefix + '_btnTranslate');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="tl-spinner"></span> Traduction…'; }
+
+  // On envoie les textes non vides dans un seul appel (tableau de textes)
+  var texts = [];
+  if (nomFr)  texts.push(nomFr);
+  if (descFr) texts.push(descFr);
+
+  // Détecter si on est sur l'API Free (:fx) ou Pro
+  var isFree = apiKey.indexOf(':fx') !== -1;
+  var apiUrl = isFree
+    ? 'https://api-free.deepl.com/v2/translate'
+    : 'https://api.deepl.com/v2/translate';
+
+  var body = new URLSearchParams();
+  texts.forEach(function(t) { body.append('text', t); });
+  body.append('source_lang', 'FR');
+  body.append('target_lang', 'EN');
+
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'DeepL-Auth-Key ' + apiKey,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: body.toString()
+  })
+  .then(function(res) {
+    if (res.status === 403) {
+      localStorage.removeItem('tm_deepl_key');
+      throw new Error('Clé API DeepL invalide ou expirée.');
+    }
+    if (res.status === 456) throw new Error('Quota DeepL dépassé ce mois-ci.');
+    if (!res.ok) throw new Error('Erreur DeepL : ' + res.status);
+    return res.json();
+  })
+  .then(function(data) {
+    var translations = (data.translations || []).map(function(t) { return t.text; });
+    var idx = 0;
+    if (nomFr  && translations[idx] !== undefined) {
+      document.getElementById(prefix + '_nomEn').value  = translations[idx++];
+    }
+    if (descFr && translations[idx] !== undefined) {
+      document.getElementById(prefix + '_descEn').value = translations[idx];
+    }
+    toast('✅ Traduction DeepL appliquée — modifiable librement.');
+  })
+  .catch(function(err) {
+    toast('❌ ' + err.message, true);
+    if (err.message.indexOf('invalide') !== -1 || err.message.indexOf('expirée') !== -1) {
+      _ensureDeepLBanner(function(key) { _doDeepLTranslate(prefix, nomFr, descFr, key); });
+    }
+  })
+  .finally(function() {
+    if (btn) { btn.disabled = false; btn.innerHTML = '🌐 Traduire EN'; }
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════
 // UTILITAIRES
 // ═══════════════════════════════════════════════════════════════
