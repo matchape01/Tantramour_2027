@@ -200,7 +200,7 @@ tbody td { padding:10px 12px; vertical-align:middle; }
         <div class="field">
           <div class="field-label-row">
             <label>🇫🇷 Nom français *</label>
-            <button type="button" class="btn-translate" id="c_btnTranslate" onclick="deepLTranslate('c')">🌐 Traduire EN</button>
+            <button type="button" class="btn-translate" id="c_btnTranslateName" onclick="deepLTranslate('c','nom')">🌐 Traduire EN</button>
           </div>
           <input type="text" id="c_nomFr" placeholder="ex: L'éveil du cœur" />
         </div>
@@ -238,18 +238,15 @@ tbody td { padding:10px 12px; vertical-align:middle; }
           </div>
         </div>
         <div class="field">
-          <label>🇫🇷 Description française</label>
+          <div class="field-label-row">
+            <label>🇫🇷 Description française</label>
+            <button type="button" class="btn-translate" id="c_btnTranslateDesc" onclick="deepLTranslate('c','desc')">🌐 Traduire EN</button>
+          </div>
           <textarea id="c_descFr" rows="4"></textarea>
         </div>
         <div class="field">
           <label>🇬🇧 Description anglaise</label>
           <textarea id="c_descEn" rows="4"></textarea>
-        </div>
-        <div class="field span2" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px;">
-          <div style="font-size:11px;color:var(--muted);">
-            💡 Le bouton <strong>🌐 Traduire EN</strong> traduit simultanément le Nom et la Description via DeepL.
-            La traduction peut ensuite être modifiée librement.
-          </div>
         </div>
       </div>
       <div class="form-actions">
@@ -274,7 +271,7 @@ tbody td { padding:10px 12px; vertical-align:middle; }
       <div class="field">
         <div class="field-label-row">
           <label>🇫🇷 Nom français *</label>
-          <button type="button" class="btn-translate" id="e_btnTranslate" onclick="deepLTranslate('e')">🌐 Traduire EN</button>
+          <button type="button" class="btn-translate" id="e_btnTranslateName" onclick="deepLTranslate('e','nom')">🌐 Traduire EN</button>
         </div>
         <input type="text" id="e_nomFr" />
       </div>
@@ -312,7 +309,10 @@ tbody td { padding:10px 12px; vertical-align:middle; }
         </div>
       </div>
       <div class="field">
-        <label>🇫🇷 Description française</label>
+        <div class="field-label-row">
+          <label>🇫🇷 Description française</label>
+          <button type="button" class="btn-translate" id="e_btnTranslateDesc" onclick="deepLTranslate('e','desc')">🌐 Traduire EN</button>
+        </div>
         <textarea id="e_descFr" rows="4"></textarea>
       </div>
       <div class="field">
@@ -405,33 +405,34 @@ function changeDeepLKey() {
 }
 
 /**
- * Traduit le Nom FR et la Description FR vers l'anglais via l'API DeepL Free.
- * @param {string} prefix  'c' pour le formulaire Créer, 'e' pour la modale Éditer
+ * Traduit soit le Nom, soit la Description FR → EN via DeepL.
+ * @param {string} prefix  'c' (formulaire Créer) ou 'e' (modale Éditer)
+ * @param {string} mode    'nom' ou 'desc'
  */
-function deepLTranslate(prefix) {
-  var nomFr  = document.getElementById(prefix + '_nomFr').value.trim();
-  var descFr = document.getElementById(prefix + '_descFr').value.trim();
+function deepLTranslate(prefix, mode) {
+  var srcId  = mode === 'nom' ? (prefix + '_nomFr')  : (prefix + '_descFr');
+  var btnId  = mode === 'nom' ? (prefix + '_btnTranslateName') : (prefix + '_btnTranslateDesc');
+  var text   = document.getElementById(srcId).value.trim();
 
-  if (!nomFr && !descFr) {
-    toast('⚠️ Renseignez d\'abord le Nom ou la Description française.', true);
+  if (!text) {
+    toast('⚠️ Le champ ' + (mode === 'nom' ? 'Nom français' : 'Description française') + ' est vide.', true);
     return;
   }
 
   var apiKey = localStorage.getItem('tm_deepl_key');
   if (!apiKey) {
-    _ensureDeepLBanner(function(key) { _doDeepLTranslate(prefix, nomFr, descFr, key); });
+    _ensureDeepLBanner(function(key) { _doDeepLTranslate(prefix, mode, text, btnId, key); });
     return;
   }
-  _doDeepLTranslate(prefix, nomFr, descFr, apiKey);
+  _doDeepLTranslate(prefix, mode, text, btnId, apiKey);
 }
 
-function _doDeepLTranslate(prefix, nomFr, descFr, apiKey) {
-  var btn = document.getElementById(prefix + '_btnTranslate');
+function _doDeepLTranslate(prefix, mode, text, btnId, apiKey) {
+  var btn = document.getElementById(btnId);
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="tl-spinner"></span> Traduction…'; }
 
   // DeepL bloque les appels directs depuis le navigateur (CORS).
   // En local, on passe par le proxy /deepl du serveur Node.
-  // En dehors de localhost, la traduction automatique n'est pas disponible.
   var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
   if (!isLocal) {
     if (btn) { btn.disabled = false; btn.innerHTML = '🌐 Traduire EN'; }
@@ -439,14 +440,12 @@ function _doDeepLTranslate(prefix, nomFr, descFr, apiKey) {
     return;
   }
 
-  var texts = [];
-  if (nomFr)  texts.push(nomFr);
-  if (descFr) texts.push(descFr);
+  var destId = mode === 'nom' ? (prefix + '_nomEn') : (prefix + '_descEn');
 
   fetch('http://localhost:3000/deepl', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ texts: texts, apiKey: apiKey })
+    body: JSON.stringify({ texts: [text], apiKey: apiKey })
   })
   .then(function(res) {
     if (res.status === 403) {
@@ -458,20 +457,16 @@ function _doDeepLTranslate(prefix, nomFr, descFr, apiKey) {
     return res.json();
   })
   .then(function(data) {
-    var translations = (data.translations || []).map(function(t) { return t.text; });
-    var idx = 0;
-    if (nomFr  && translations[idx] !== undefined) {
-      document.getElementById(prefix + '_nomEn').value  = translations[idx++];
+    var result = (data.translations || [])[0];
+    if (result) {
+      document.getElementById(destId).value = result.text;
+      toast('✅ ' + (mode === 'nom' ? 'Nom traduit' : 'Description traduite') + ' — modifiable librement.');
     }
-    if (descFr && translations[idx] !== undefined) {
-      document.getElementById(prefix + '_descEn').value = translations[idx];
-    }
-    toast('✅ Traduction DeepL appliquée — modifiable librement.');
   })
   .catch(function(err) {
     toast('❌ ' + err.message, true);
     if (err.message.indexOf('invalide') !== -1 || err.message.indexOf('expirée') !== -1) {
-      _ensureDeepLBanner(function(key) { _doDeepLTranslate(prefix, nomFr, descFr, key); });
+      _ensureDeepLBanner(function(key) { _doDeepLTranslate(prefix, mode, text, btnId, key); });
     }
   })
   .finally(function() {
