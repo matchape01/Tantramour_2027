@@ -515,7 +515,7 @@
 <script src="ref_consignes_type.js"></script>
 <script src="ref_consignes_recurrentes.js"></script>
 <script>
-loadData(['ref_translations.js', 'data.js', 'ref_descriptions.js', 'ref_ressources.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
+loadData(['ref_translations.js', 'ref_types.js', 'data.js', 'ref_descriptions.js', 'ref_ressources.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
 
 // ════════════════════════════════════════════
 // CONFIG
@@ -578,22 +578,31 @@ function jourLabel(jour) {
 }
 
 // Types affichés au festivalier
-var TYPES_PUBLICS = [
-  'MEDITATION / YOGA',               // 1
-  'RASSEMBLEMENT',                   // 2
-  'ATELIERS TANTRA (Matin)',         // 3
-  'ATELIER ARTISTIQUE (Matin)',      // 4
-  // TANTRA CAFE / CONFERENCE : position dynamique selon heure (voir typeOrder())
-  'TANTRA CAFE',
-  'CONFERENCE',
-  'SUPPORT EMOTIONNEL',              // 5
-  'POOL PARTY',                      // 6 (après-midi)
-  'DJ Set',                          // 6b
-  'ATELIERS TANTRA (Apres-Midi)',    // 7
-  'ATELIER ARTISTIQUE (Apres-Midi)', // 8
-  'CEREMONIE & CONCERT',             // 9
-  'LOVE TEMPLE',                     // 10
-];
+// Liste dynamique des types affichés dans le programme,
+// construite depuis REF_TYPES.showInProgramme === 1.
+// Les variantes Matin/Apres-Midi sont ajoutées automatiquement si le type de base est activé.
+var TYPES_PUBLICS = (function() {
+  if (typeof REF_TYPES === 'undefined') {
+    // Fallback statique si ref_types.js non chargé
+    return ['MEDITATION / YOGA','RASSEMBLEMENT','ATELIERS TANTRA','ATELIER ARTISTIQUE','TANTRA CAFE','CONFERENCE','POOL PARTY','DJ Set','CEREMONIE & CONCERT','LOVE TEMPLE'];
+  }
+  var list = [];
+  REF_TYPES.forEach(function(t) {
+    if (t.showInProgramme == 1 || t.showInProgramme === true) {
+      list.push(t.value);
+      // Ajouter les variantes Matin/Apres-Midi utilisées par le rapport pour les types tantra/artistique
+      if (t.value === 'ATELIERS TANTRA') {
+        list.push('ATELIERS TANTRA (Matin)');
+        list.push('ATELIERS TANTRA (Apres-Midi)');
+      }
+      if (t.value === 'ATELIER ARTISTIQUE') {
+        list.push('ATELIER ARTISTIQUE (Matin)');
+        list.push('ATELIER ARTISTIQUE (Apres-Midi)');
+      }
+    }
+  });
+  return list;
+})();
 
 // Ordre dynamique des types pour un jour donné.
 // TANTRA CAFE est inséré :

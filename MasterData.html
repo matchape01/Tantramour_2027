@@ -787,8 +787,9 @@ var CFG = {
     varName:  'REF_TYPES',
     fileName: 'ref_types.js',
     prefix:   'T_',
-    cols:     ['id','value','label','minRes','minHelpers','minTrad','tradCounts'],
+    cols:     ['id','value','label','minRes','minHelpers','minTrad','tradCounts','showInProgramme'],
     numericCols: ['minRes','minHelpers','minTrad','tradCounts'],
+    booleanCols: ['showInProgramme'],
     dataField: ['type'],
   },
   notes: {
@@ -953,6 +954,11 @@ function _renderTableInner(key) {
     var cells = cfg.cols.map(function(col) {
       var cls = (key === 'equipements' && EQ_COL_CLASS[col]) ? EQ_COL_CLASS[col] : (col === 'id' ? 'td-id' : 'td-val');
       var v = item[col] !== undefined ? item[col] : '';
+      // Colonnes booléennes : afficher une checkbox en lecture seule
+      if (cfg.booleanCols && cfg.booleanCols.indexOf(col) !== -1) {
+        var checked = v == 1 || v === true ? 'checked' : '';
+        return '<td class="' + cls + '" style="text-align:center"><input type="checkbox" ' + checked + ' disabled style="pointer-events:none;width:16px;height:16px;cursor:default;"></td>';
+      }
       // Colonnes textarea : tronquer l'affichage en lecture
       if (cfg.textareaCols && cfg.textareaCols.indexOf(col) !== -1) {
         var short = String(v).length > 60 ? String(v).slice(0, 60) + '…' : v;
@@ -1538,6 +1544,11 @@ function editRow(key, i) {
       }
       return '<td style="width:60px"><select class="inp" id="inp-' + key + '-' + i + '-' + col + '" style="width:56px">' + ordreOpts + '</select></td>';
     }
+    // Colonnes booléennes : checkbox interactive
+    if (cfg.booleanCols && cfg.booleanCols.indexOf(col) !== -1) {
+      var isChecked = (v == 1 || v === true) ? 'checked' : '';
+      return '<td style="text-align:center;width:80px"><input type="checkbox" id="inp-' + key + '-' + i + '-' + col + '" ' + isChecked + ' style="width:18px;height:18px;cursor:pointer;"></td>';
+    }
     // Colonne stock : input texte (nombre 0-1000 ou "N/A")
     if (cfg.stockCol && cfg.stockCol === col) {
       return '<td style="width:70px"><input class="inp" id="inp-' + key + '-' + i + '-' + col + '" value="' + esc(v) + '" ' +
@@ -1607,6 +1618,11 @@ function saveEdit(key, i) {
       if (!RENAMES[key][i]) RENAMES[key][i] = item.value;
     }
 
+    // Colonnes booléennes : lire la valeur de la checkbox
+    if (cfg.booleanCols && cfg.booleanCols.indexOf(col) !== -1) {
+      item[col] = el.checked ? 1 : 0;
+      return;
+    }
     // Conversion numérique si nécessaire (inclut la colonne ordre)
     var isNum = (col === 'value' && cfg.numericValue)
              || (cfg.numericCols && cfg.numericCols.indexOf(col) !== -1)
@@ -1746,7 +1762,7 @@ function escJs(v) { return String(v||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"
 
 var FILE_COMMENTS = {
   lieux:          'Référentiel : Lieux / Salles\n * Chaque entrée : { id, value, label, nomOfficiel, description, capacite }\n *   value       : identifiant technique utilisé dans data.js\n *   label       : libellé court affiché dans les rapports\n *   nomOfficiel : nom complet / officiel du lieu\n *   description : description du lieu (équipements, usage...)\n *   capacite    : capacité d\'accueil (nombre de personnes)',
-  types:          'Référentiel : Types d\'ateliers\n * Chaque entrée : { id, value, label, minRes, minHelpers, minTrad, tradCounts }\n *   minRes     : nb total minimum de ressources\n *   minHelpers : nb minimum de helpers\n *   minTrad    : 1 = traducteur requis si anglophone\n *   tradCounts : 1 = le traducteur compte dans minRes',
+  types:          'Référentiel : Types d\'ateliers\n * Chaque entrée : { id, value, label, minRes, minHelpers, minTrad, tradCounts, showInProgramme }\n *   minRes          : nb total minimum de ressources\n *   minHelpers      : nb minimum de helpers\n *   minTrad         : 1 = traducteur requis si anglophone\n *   tradCounts      : 1 = le traducteur compte dans minRes\n *   showInProgramme : 1 = les ateliers de ce type apparaissent dans Rapport_Programme.html',
   notes:          'Référentiel : Notes\n * Chaque entrée : { id, value, valueEn }\n *   value   : libellé français (référence)\n *   valueEn : traduction anglaise',
   jours:          'Référentiel : Jours\n * Chaque entrée : { id, value, label, date }',
   piment:         'Référentiel : Piment\n * Chaque entrée : { id, value (number), label }',
@@ -1762,6 +1778,10 @@ function genRefFile(key) {
   var lines = items.map(function(item) {
     var parts = cfg.cols.map(function(col) {
       var v = item[col] !== undefined ? item[col] : '';
+      // Colonnes booléennes : sérialiser en 0 ou 1
+      if (cfg.booleanCols && cfg.booleanCols.indexOf(col) !== -1) {
+        return col + ': ' + (v == 1 || v === true ? 1 : 0);
+      }
       var isNum = (col === 'value' && cfg.numericValue)
                || (cfg.numericCols && cfg.numericCols.indexOf(col) !== -1)
                || (cfg.ordreCol && cfg.ordreCol === col);
