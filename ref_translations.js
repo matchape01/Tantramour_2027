@@ -438,6 +438,7 @@ var REF_TRANSLATIONS = [
   { key: "rp_choisir_jour_sub", fr: "Sélectionnez le jour du festival pour voir le programme des ateliers.", en: "Select the festival day to see the workshop schedule." },
   { key: "rp_back_btn", fr: "← Choisir un autre jour", en: "← Choose another day" },
   { key: "rp_footer", fr: "Tantramour 2026 — Programme festivaliers", en: "Tantramour 2026 — Festival Schedule" },
+  { key: "rp_footer_sub", fr: "Programme festivaliers", en: "Festival Schedule" },
   { key: "rp_mode_nuit", fr: "🌙 Mode Nuit", en: "🌙 Dark Mode" },
   { key: "rp_mode_jour", fr: "☀️ Mode Jour", en: "☀️ Light Mode" },
   { key: "rp_tous", fr: "Tous", en: "All" },
