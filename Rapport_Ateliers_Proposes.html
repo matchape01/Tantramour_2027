@@ -1032,10 +1032,11 @@ function getTypesRef() {
 }
 
 function getDureesRef() {
+  // 0 min à 5h00 par pas de 15 min
   var vals = [];
   for (var h = 0; h <= 5; h++) {
     for (var m = 0; m <= 45; m += 15) {
-      if (h === 0 && m === 0) continue;
+      if (h === 5 && m > 0) continue; // stopper à 5h00
       vals.push(fmtDureeLabel(h, m));
     }
   }
@@ -1056,18 +1057,21 @@ var STATUTS_REF = ['NEW', 'APPROVED', 'REJECTED'];
 function fmtDureeLabel(h, m) {
   h = parseInt(h)||0; m = parseInt(m)||0;
   if (!h && !m) return '0 min';
-  return (h ? h+'h' : '') + (m ? (h?'':(m+' min')) : '');
+  if (h && m)   return h + 'h' + (m < 10 ? '0' + m : m) + 'min'; // ex: 1h30min
+  if (h)        return h + 'h';                                     // ex: 2h
+  return m + ' min';                                                 // ex: 45 min
 }
 
 function dureeLabelToHM(label) {
-  // "1h30" → {h:1,m:30} ; "2h" → {h:2,m:0} ; "45 min" → {h:0,m:45}
+  // Accepte : "1h30min", "1h30", "2h", "45 min", "0 min"
   label = (label||'').toString().trim();
-  var matchH = label.match(/^(\d+)h(\d*)(?:min)?$/);
-  if (matchH) return { h: parseInt(matchH[1]), m: parseInt(matchH[2]||'0') };
-  var matchM = label.match(/^(\d+)\s*min$/);
-  if (matchM) return { h: 0, m: parseInt(matchM[1]) };
-  var matchHonly = label.match(/^(\d+)h$/);
-  if (matchHonly) return { h: parseInt(matchHonly[1]), m: 0 };
+  if (label === '0 min' || label === '0') return { h:0, m:0 };
+  var matchHM = label.match(/^(\d+)h(\d{1,2})(?:min)?$/);
+  if (matchHM) return { h: parseInt(matchHM[1]), m: parseInt(matchHM[2]) };
+  var matchH  = label.match(/^(\d+)h$/);
+  if (matchH)  return { h: parseInt(matchH[1]), m: 0 };
+  var matchM  = label.match(/^(\d+)\s*min$/);
+  if (matchM)  return { h: 0, m: parseInt(matchM[1]) };
   return null;
 }
 
