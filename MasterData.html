@@ -287,6 +287,7 @@
     <button class="tab"        onclick="showTab('consignes_recurrentes',this)">🔁 Consignes spécifiques</button>
     <button class="tab"        onclick="showTab('translations',this)">🌐 <span data-i18n="md_tab_translations">Traductions</span></button>
     <button class="tab"        onclick="showTab('pause_massage',this)">🌞 Pause Massage</button>
+    <button class="tab"        onclick="showTab('type_colors',this)">🎨 Couleurs Types</button>
   </div>
 
   <!-- ════════════════════════════════════════════════
@@ -716,6 +717,28 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════════
+       SECTION : COULEURS TYPES
+       Fichier : ref_type_colors.js  |  REF_TYPE_COLORS
+  ════════════════════════════════════════════════ -->
+  <div class="section" id="sec-type_colors">
+    <div class="sec-title">🎨 Couleurs Types</div>
+    <div class="sec-meta">ref_type_colors.js — REF_TYPE_COLORS — colonnes : cssClass, label, types, color, colorBg, colorBd, colorDark, colorBgDk, colorBdDk</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;line-height:1.6;">
+      Configurez ici les couleurs associées à chaque catégorie de type d'atelier.<br>
+      Ces couleurs sont utilisées dans tous les rapports (Programme, Agenda, Planning…).<br>
+      <strong>cssClass</strong> : classe CSS (ex: <code>t-tantra</code>) — <strong>types</strong> : valeurs REF_TYPES correspondantes (séparées par <code>|</code>).
+    </p>
+    <div id="tc-rows" style="display:flex;flex-direction:column;gap:12px;"></div>
+    <button class="btn-add" onclick="tcAddRow()" style="margin-top:12px;">+ Ajouter une entrée</button>
+    <div class="save-bar" id="bar-type_colors">
+      <span class="save-bar-msg">⚠️ Modifications non sauvegardées</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-save" onclick="tcSave()">💾 Sauvegarder ref_type_colors.js</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── DATA UPDATE ── -->
   <div style="margin-top:40px;padding:20px 22px;border:1px solid var(--border);border-radius:10px;background:var(--surface);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
     <div style="flex:1;min-width:180px;">
@@ -764,10 +787,11 @@
 <script src="ref_consignes_type.js"></script>
 <script src="ref_consignes_recurrentes.js"></script>
 <script src="ref_pause_massage.js"></script>
+<script src="ref_type_colors.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
 <script>
-loadData(['ref_id_mapping.js', 'ref_translations.js', 'data.js'], function() {
+loadData(['ref_id_mapping.js', 'ref_translations.js', 'ref_type_colors.js', 'data.js'], function() {
 
 // ════════════════════════════════════════════════════════════
 // CONFIGURATION DES RÉFÉRENTIELS
@@ -886,6 +910,7 @@ function showTab(key, btn) {
   if (key === 'consignes_recurrentes' && typeof renderConsignesRecurrentes === 'function') renderConsignesRecurrentes();
   if (key === 'translations' && typeof window.initTranslations === 'function') setTimeout(window.initTranslations, 0);
   if (key === 'pause_massage' && typeof renderPauseMassage === 'function') renderPauseMassage();
+  if (key === 'type_colors'   && typeof renderTypeColors   === 'function') renderTypeColors();
 }
 window.showTab = showTab;
 
@@ -4346,6 +4371,261 @@ async function pmSave() {
   }
 }
 window.pmSave = pmSave;
+
+
+// ════════════════════════════════════════════════════════════
+// ONGLET COULEURS TYPES
+// Fichier : ref_type_colors.js  |  REF_TYPE_COLORS
+// ════════════════════════════════════════════════════════════
+
+var TC_STORE = (typeof REF_TYPE_COLORS !== 'undefined' ? REF_TYPE_COLORS : [])
+  .map(function(e) { return Object.assign({}, e, { types: (e.types || []).slice() }); });
+var TC_DIRTY = false;
+var TC_EDIT_I = null;
+
+// ── Champ de prévisualisation couleur (cercles) ──────────────────
+function tcColorPreview(entry) {
+  var bg = entry.colorBg || '#f9fafb';
+  var c  = entry.color   || '#374151';
+  var bd = entry.colorBd || '#9ca3af';
+  return '<span style="display:inline-flex;align-items:center;gap:6px;">' +
+    '<span style="width:20px;height:20px;border-radius:50%;background:' + esc(c) + ';border:2px solid ' + esc(bd) + ';flex-shrink:0;" title="Couleur principale"></span>' +
+    '<span style="width:20px;height:20px;border-radius:4px;background:' + esc(bg) + ';border:2px solid ' + esc(bd) + ';flex-shrink:0;" title="Fond clair"></span>' +
+    '</span>';
+}
+
+function renderTypeColors() {
+  var cont = document.getElementById('tc-rows');
+  if (!cont) return;
+  if (!TC_STORE.length) {
+    cont.innerHTML = '<div style="color:var(--muted);padding:16px;">Aucune entrée.</div>';
+    return;
+  }
+  cont.innerHTML = TC_STORE.map(function(e, i) {
+    var typesStr = (e.types || []).join(' | ');
+    if (TC_EDIT_I === i) {
+      // Mode édition
+      return '<div id="tc-row-' + i + '" style="background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:14px 16px;">' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px 16px;">' +
+          // Ligne 1 : cssClass + label + types
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Classe CSS</label>' +
+          '<input class="inp" id="tc-cssClass-' + i + '" value="' + esc(e.cssClass||'') + '" placeholder="t-tantra" style="font-family:monospace;font-size:12px;width:100%;"></div>' +
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Label</label>' +
+          '<input class="inp" id="tc-label-' + i + '" value="' + esc(e.label||'') + '" style="width:100%;"></div>' +
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Types (séparés par |)</label>' +
+          '<input class="inp" id="tc-types-' + i + '" value="' + esc(typesStr) + '" style="width:100%;font-size:12px;"></div>' +
+          // Ligne 2 : couleurs claires
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Couleur principale</label>' +
+          '<div style="display:flex;gap:6px;align-items:center;"><input type="color" id="tc-color-' + i + '" value="' + esc(e.color||'#374151') + '" style="width:40px;height:32px;border-radius:4px;cursor:pointer;border:1px solid var(--border);">' +
+          '<input class="inp" id="tc-colorHex-' + i + '" value="' + esc(e.color||'#374151') + '" style="font-family:monospace;font-size:12px;width:90px;" maxlength="7"></div></div>' +
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Fond clair</label>' +
+          '<div style="display:flex;gap:6px;align-items:center;"><input type="color" id="tc-colorBg-' + i + '" value="' + esc(e.colorBg||'#f9fafb') + '" style="width:40px;height:32px;border-radius:4px;cursor:pointer;border:1px solid var(--border);">' +
+          '<input class="inp" id="tc-colorBgHex-' + i + '" value="' + esc(e.colorBg||'#f9fafb') + '" style="font-family:monospace;font-size:12px;width:90px;" maxlength="7"></div></div>' +
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Bordure claire</label>' +
+          '<div style="display:flex;gap:6px;align-items:center;"><input type="color" id="tc-colorBd-' + i + '" value="' + esc(e.colorBd||'#9ca3af') + '" style="width:40px;height:32px;border-radius:4px;cursor:pointer;border:1px solid var(--border);">' +
+          '<input class="inp" id="tc-colorBdHex-' + i + '" value="' + esc(e.colorBd||'#9ca3af') + '" style="font-family:monospace;font-size:12px;width:90px;" maxlength="7"></div></div>' +
+          // Ligne 3 : couleurs sombres
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Couleur principale (dark)</label>' +
+          '<div style="display:flex;gap:6px;align-items:center;"><input type="color" id="tc-colorDark-' + i + '" value="' + esc(e.colorDark||'#9ca3af') + '" style="width:40px;height:32px;border-radius:4px;cursor:pointer;border:1px solid var(--border);">' +
+          '<input class="inp" id="tc-colorDarkHex-' + i + '" value="' + esc(e.colorDark||'#9ca3af') + '" style="font-family:monospace;font-size:12px;width:90px;" maxlength="7"></div></div>' +
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Fond sombre</label>' +
+          '<div style="display:flex;gap:6px;align-items:center;"><input type="color" id="tc-colorBgDk-' + i + '" value="' + esc(e.colorBgDk||'#1a1d20') + '" style="width:40px;height:32px;border-radius:4px;cursor:pointer;border:1px solid var(--border);">' +
+          '<input class="inp" id="tc-colorBgDkHex-' + i + '" value="' + esc(e.colorBgDk||'#1a1d20') + '" style="font-family:monospace;font-size:12px;width:90px;" maxlength="7"></div></div>' +
+          '<div><label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:3px;">Bordure sombre</label>' +
+          '<div style="display:flex;gap:6px;align-items:center;"><input type="color" id="tc-colorBdDk-' + i + '" value="' + esc(e.colorBdDk||'#4b5563') + '" style="width:40px;height:32px;border-radius:4px;cursor:pointer;border:1px solid var(--border);">' +
+          '<input class="inp" id="tc-colorBdDkHex-' + i + '" value="' + esc(e.colorBdDk||'#4b5563') + '" style="font-family:monospace;font-size:12px;width:90px;" maxlength="7"></div></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px;">' +
+          '<button class="btn btn-ok" onclick="tcSaveEdit(' + i + ')">✔ Valider</button>' +
+          '<button class="btn" onclick="tcCancelEdit()">✖ Annuler</button>' +
+        '</div>' +
+      '</div>';
+    }
+    // Mode lecture
+    return '<div id="tc-row-' + i + '" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+      tcColorPreview(e) +
+      '<span style="font-family:monospace;font-size:12px;color:var(--muted);min-width:90px;">' + esc(e.cssClass||'') + '</span>' +
+      '<span style="font-weight:600;min-width:160px;">' + esc(e.label||'') + '</span>' +
+      '<span style="font-size:11px;color:var(--muted);flex:1;">' + esc(typesStr) + '</span>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<button class="btn" onclick="tcEditRow(' + i + ')">✏️</button>' +
+        '<button class="btn btn-del" onclick="tcDeleteRow(' + i + ')">🗑</button>' +
+        (i > 0 ? '<button class="btn" onclick="tcMoveUp(' + i + ')" title="Monter">▲</button>' : '') +
+        (i < TC_STORE.length - 1 ? '<button class="btn" onclick="tcMoveDown(' + i + ')" title="Descendre">▼</button>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Synchroniser color pickers ↔ champs hex
+  TC_STORE.forEach(function(e, i) {
+    if (TC_EDIT_I !== i) return;
+    var pairs = [
+      ['tc-color-' + i, 'tc-colorHex-' + i],
+      ['tc-colorBg-' + i, 'tc-colorBgHex-' + i],
+      ['tc-colorBd-' + i, 'tc-colorBdHex-' + i],
+      ['tc-colorDark-' + i, 'tc-colorDarkHex-' + i],
+      ['tc-colorBgDk-' + i, 'tc-colorBgDkHex-' + i],
+      ['tc-colorBdDk-' + i, 'tc-colorBdDkHex-' + i],
+    ];
+    pairs.forEach(function(p) {
+      var picker = document.getElementById(p[0]);
+      var hex    = document.getElementById(p[1]);
+      if (!picker || !hex) return;
+      picker.addEventListener('input', function() { hex.value = picker.value; });
+      hex.addEventListener('input', function() {
+        if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) picker.value = hex.value;
+      });
+    });
+  });
+}
+window.renderTypeColors = renderTypeColors;
+
+function tcEditRow(i) { TC_EDIT_I = i; renderTypeColors(); }
+window.tcEditRow = tcEditRow;
+
+function tcCancelEdit() { TC_EDIT_I = null; renderTypeColors(); }
+window.tcCancelEdit = tcCancelEdit;
+
+function tcSaveEdit(i) {
+  var get = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  var cssClass = get('tc-cssClass-' + i);
+  if (!cssClass) { showToast('❌ La classe CSS est obligatoire.', true); return; }
+  var typesRaw = get('tc-types-' + i);
+  var types    = typesRaw ? typesRaw.split('|').map(function(t){ return t.trim(); }).filter(Boolean) : [];
+  TC_STORE[i] = {
+    cssClass:   cssClass,
+    label:      get('tc-label-' + i),
+    types:      types,
+    color:      get('tc-colorHex-' + i) || get('tc-color-' + i),
+    colorBg:    get('tc-colorBgHex-' + i) || get('tc-colorBg-' + i),
+    colorBd:    get('tc-colorBdHex-' + i) || get('tc-colorBd-' + i),
+    colorDark:  get('tc-colorDarkHex-' + i) || get('tc-colorDark-' + i),
+    colorBgDk:  get('tc-colorBgDkHex-' + i) || get('tc-colorBgDk-' + i),
+    colorBdDk:  get('tc-colorBdDkHex-' + i) || get('tc-colorBdDk-' + i),
+  };
+  TC_EDIT_I = null;
+  tcMarkDirty();
+  renderTypeColors();
+}
+window.tcSaveEdit = tcSaveEdit;
+
+function tcDeleteRow(i) {
+  var e = TC_STORE[i];
+  if (!confirm('Supprimer "' + (e.cssClass||'') + '" — ' + (e.label||'') + ' ?')) return;
+  TC_STORE.splice(i, 1);
+  if (TC_EDIT_I === i) TC_EDIT_I = null;
+  tcMarkDirty();
+  renderTypeColors();
+  showToast('🗑 Entrée supprimée.');
+}
+window.tcDeleteRow = tcDeleteRow;
+
+function tcMoveUp(i) {
+  if (i < 1) return;
+  var tmp = TC_STORE[i-1]; TC_STORE[i-1] = TC_STORE[i]; TC_STORE[i] = tmp;
+  tcMarkDirty(); renderTypeColors();
+}
+window.tcMoveUp = tcMoveUp;
+
+function tcMoveDown(i) {
+  if (i >= TC_STORE.length - 1) return;
+  var tmp = TC_STORE[i+1]; TC_STORE[i+1] = TC_STORE[i]; TC_STORE[i] = tmp;
+  tcMarkDirty(); renderTypeColors();
+}
+window.tcMoveDown = tcMoveDown;
+
+function tcAddRow() {
+  TC_STORE.push({
+    cssClass:'t-new', label:'Nouveau type', types:[],
+    color:'#374151', colorBg:'#f9fafb', colorBd:'#9ca3af',
+    colorDark:'#9ca3af', colorBgDk:'#1a1d20', colorBdDk:'#4b5563'
+  });
+  TC_EDIT_I = TC_STORE.length - 1;
+  tcMarkDirty();
+  renderTypeColors();
+  var row = document.getElementById('tc-row-' + (TC_STORE.length - 1));
+  if (row) row.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+window.tcAddRow = tcAddRow;
+
+function tcMarkDirty() {
+  TC_DIRTY = true;
+  var bar = document.getElementById('bar-type_colors');
+  if (bar) bar.classList.add('on');
+}
+
+function genTypeColorsJs() {
+  var escJ = function(v) { return String(v||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"'); };
+  var lines = TC_STORE.map(function(e) {
+    var typesArr = '[' + (e.types||[]).map(function(t){ return '"' + escJ(t) + '"'; }).join(', ') + ']';
+    return '  {\n' +
+      '    cssClass: "' + escJ(e.cssClass||'') + '",\n' +
+      '    label:    "' + escJ(e.label||'') + '",\n' +
+      '    types:    ' + typesArr + ',\n' +
+      '    color:    "' + escJ(e.color||'') + '",  colorBg:   "' + escJ(e.colorBg||'') + '",  colorBd:   "' + escJ(e.colorBd||'') + '",\n' +
+      '    colorDark:"' + escJ(e.colorDark||'') + '",  colorBgDk: "' + escJ(e.colorBgDk||'') + '",  colorBdDk: "' + escJ(e.colorBdDk||'') + '"\n' +
+      '  }';
+  }).join(',\n');
+  return '/**\n * TANTRAMOUR — Référentiel : Couleurs par type d\'atelier\n' +
+    ' * Géré via MasterData.html — onglet "Couleurs Types"\n' +
+    ' *\n * Chaque entrée :\n' +
+    ' *   cssClass  : classe CSS appliquée sur les cartes/événements (ex: "t-tantra")\n' +
+    ' *   color     : couleur principale (texte/bordure gauche) — mode clair\n' +
+    ' *   colorBg   : couleur de fond — mode clair\n' +
+    ' *   colorBd   : couleur de bordure — mode clair\n' +
+    ' *   colorDark : couleur principale — mode sombre\n' +
+    ' *   colorBgDk : couleur de fond — mode sombre\n' +
+    ' *   colorBdDk : couleur de bordure — mode sombre\n' +
+    ' *\n * La propriété "types" liste les valeurs REF_TYPES.value qui utilisent cette couleur.\n' +
+    ' */\nvar REF_TYPE_COLORS = [\n' + lines + '\n];\n\n' +
+    '/**\n * Construit un bloc de variables CSS :root à injecter dynamiquement.\n' +
+    ' * Appelé au chargement de chaque rapport.\n */\n' +
+    'function buildTypeCssVars() {\n' +
+    '  var light = \'\', dark = \'\';\n' +
+    '  (REF_TYPE_COLORS || []).forEach(function(e) {\n' +
+    '    var n = e.cssClass.replace(\'t-\', \'\');\n' +
+    '    light += \'--c-\' + n + \':\' + e.color   + \';\';\n' +
+    '    light += \'--c-\' + n + \'-bg:\' + e.colorBg + \';\';\n' +
+    '    light += \'--c-\' + n + \'-bd:\' + e.colorBd + \';\';\n' +
+    '    dark  += \'--c-\' + n + \':\' + e.colorDark  + \';\';\n' +
+    '    dark  += \'--c-\' + n + \'-bg:\' + e.colorBgDk + \';\';\n' +
+    '    dark  += \'--c-\' + n + \'-bd:\' + e.colorBdDk + \';\';\n' +
+    '  });\n' +
+    '  return \':root{\' + light + \'} .dark{\' + dark + \'}\';\n' +
+    '}\n\n' +
+    '/**\n * Retourne la classe CSS pour un type donné (ex: "ATELIERS TANTRA" → "t-tantra").\n' +
+    ' * Fallback sur "t-other" si non trouvé.\n */\n' +
+    'function typeColorClass(type) {\n' +
+    '  if (!type || typeof REF_TYPE_COLORS === \'undefined\') return \'t-other\';\n' +
+    '  for (var i = 0; i < REF_TYPE_COLORS.length; i++) {\n' +
+    '    if (REF_TYPE_COLORS[i].types.indexOf(type) !== -1) return REF_TYPE_COLORS[i].cssClass;\n' +
+    '  }\n' +
+    '  return \'t-other\';\n' +
+    '}\n\n' +
+    '/**\n * Retourne la couleur principale (#hex) pour un type donné.\n */\n' +
+    'function typeColorHex(type, dark) {\n' +
+    '  if (!type || typeof REF_TYPE_COLORS === \'undefined\') return dark ? \'#9ca3af\' : \'#374151\';\n' +
+    '  for (var i = 0; i < REF_TYPE_COLORS.length; i++) {\n' +
+    '    var e = REF_TYPE_COLORS[i];\n' +
+    '    if (e.types.indexOf(type) !== -1) return dark ? e.colorDark : e.color;\n' +
+    '  }\n' +
+    '  return dark ? \'#9ca3af\' : \'#374151\';\n' +
+    '}\n';
+}
+
+async function tcSave() {
+  try {
+    await saveToServer('ref_type_colors.js', genTypeColorsJs());
+    TC_DIRTY = false;
+    var bar = document.getElementById('bar-type_colors');
+    if (bar) bar.classList.remove('on');
+    showToast('✅ ref_type_colors.js sauvegardé.', false);
+  } catch(err) {
+    showToast('❌ ' + err.message, true);
+  }
+}
+window.tcSave = tcSave;
+
 
 // ════════════════════════════════════════════════════════════
 // MIGRATION ONE-SHOT : noms → IDs dans AGENDA (data.js)

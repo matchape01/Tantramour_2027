@@ -12,33 +12,11 @@
     --text:#1f2328; --muted:#57606a; --accent:#3b82d4;
     --green:#16a34a; --green-bg:#dcfce7; --green-border:#86efac;
     --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-border:#c4b5fd;
-    /* ── COULEURS PAR TYPE ──────────────────────────────────────────
-       tantra  = ROSE         art     = ORANGE       yoga  = VERT
-       cere    = VIOLET       pool    = VERT FONCÉ   love  = ROUGE
-       support = BLEU CLAIR   cafe    = JAUNE FONCÉ  rass  = BLEU FONCÉ
-    ────────────────────────────────────────────────────────────────── */
-    --c-tantra:#be185d;    --c-tantra-bg:#fdf2f8;    --c-tantra-bd:#fbcfe8;
-    --c-art:#c2410c;       --c-art-bg:#fff7ed;       --c-art-bd:#fed7aa;
-    --c-yoga:#16a34a;      --c-yoga-bg:#f0fdf4;      --c-yoga-bd:#86efac;
-    --c-cere:#7c3aed;      --c-cere-bg:#f5f3ff;      --c-cere-bd:#c4b5fd;
-    --c-pool:#166534;      --c-pool-bg:#f0fdf4;      --c-pool-bd:#4ade80;
-    --c-love:#dc2626;      --c-love-bg:#fff1f2;      --c-love-bd:#fca5a5;
-    --c-support:#0891b2;   --c-support-bg:#ecfeff;   --c-support-bd:#67e8f9;
-    --c-cafe:#65a30d;      --c-cafe-bg:#ecfccb;      --c-cafe-bd:#a3e635;
-    --c-rass:#1e40af;      --c-rass-bg:#eff6ff;      --c-rass-bd:#93c5fd;
+    /* couleurs types — injectées dynamiquement depuis ref_type_colors.js */
   }
   .dark {
     --bg:#0d1117; --surface:#161b22; --border:#30363d;
     --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
-    --c-tantra-bg:#2d0a1e; --c-tantra-bd:#9d174d;
-    --c-art-bg:#2a1200; --c-art-bd:#c2410c;
-    --c-yoga-bg:#052e1a; --c-yoga-bd:#16a34a;
-    --c-cere-bg:#1a0a2e; --c-cere-bd:#7c3aed;
-    --c-pool-bg:#001a0a; --c-pool-bd:#166534;
-    --c-love-bg:#2d0000; --c-love-bd:#991b1b;
-    --c-support-bg:#00141a; --c-support-bd:#0e7490;
-    --c-cafe-bg:#1a2e05; --c-cafe-bd:#65a30d;
-    --c-rass-bg:#0c1a40; --c-rass-bd:#1e40af;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:-apple-system,"Segoe UI",system-ui,sans-serif; font-size:14px; line-height:1.6; background:var(--bg); color:var(--text); transition:background .2s,color .2s; }
@@ -515,7 +493,16 @@
 <script src="ref_consignes_type.js"></script>
 <script src="ref_consignes_recurrentes.js"></script>
 <script>
-loadData(['ref_translations.js', 'ref_types.js', 'data.js', 'ref_descriptions.js', 'ref_ressources.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
+loadData(['ref_type_colors.js', 'ref_translations.js', 'ref_types.js', 'data.js', 'ref_descriptions.js', 'ref_ressources.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
+// Injecter les variables CSS couleurs depuis ref_type_colors.js
+(function() {
+  if (typeof buildTypeCssVars === 'function') {
+    var s = document.createElement('style');
+    s.id = 'type-color-vars';
+    s.textContent = buildTypeCssVars();
+    document.head.appendChild(s);
+  }
+})();
 
 // ════════════════════════════════════════════
 // CONFIG
