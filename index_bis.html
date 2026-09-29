@@ -371,7 +371,7 @@ function esc(str) {
     .replace(/'/g, '&#39;');
 }
 
-loadData(['ref_display_reports.js'], function() {
+loadData(['ref_translations.js', 'ref_display_reports.js'], function() {
   renderDreamTeamReports();
   if (typeof I18n !== 'undefined') {
     I18n.apply();

@@ -280,7 +280,7 @@ function esc(str) {
 }
 
 // Charger et rendre dynamiquement
-loadData(['ref_display_reports.js'], function() {
+loadData(['ref_translations.js', 'ref_display_reports.js'], function() {
   renderDynamicSections();
   if (typeof I18n !== 'undefined') {
     I18n.apply();
