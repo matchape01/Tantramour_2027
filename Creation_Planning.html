@@ -1632,7 +1632,7 @@
     // ═══════════════════════════════════════════════════════════════
     // INITIALISATION DE LA PAGE
     // ═══════════════════════════════════════════════════════════════
-    loadData(['template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+    loadData(['ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
       // 1. Charger config depuis template_config.js s'il existe
       if (typeof TEMPLATE_CONFIG !== 'undefined' && TEMPLATE_CONFIG && typeof TEMPLATE_CONFIG === 'object') {
         Object.assign(CONFIG, TEMPLATE_CONFIG);
