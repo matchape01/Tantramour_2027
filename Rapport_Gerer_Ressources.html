@@ -213,7 +213,7 @@
 <div class="wrap">
   <header>
     <div class="logo">
-      <h1>Tantramour 2026</h1>
+      <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
       <p>Gérer les Ressources</p>
     </div>
     <div class="header-actions">
@@ -1445,7 +1445,7 @@ function toggleMode() {
 window.toggleMode = toggleMode;
 
 // ── Démarrage ─────────────────────────────────────────────
-loadData(['ref_resource_types.js', 'ref_ressources.js', 'data.js', 'ref_descriptions.js'], function() {
+loadData(['ref_translations.js', 'ref_resource_types.js', 'ref_ressources.js', 'data.js', 'ref_descriptions.js'], function() {
   if (typeof REF_RESSOURCES === 'undefined' || typeof REF_RESOURCE_TYPES === 'undefined') {
     document.getElementById('tableBody').innerHTML =
       '<tr class="empty-row"><td colspan="7">⚠️ Erreur de chargement des ressources — cliquez sur 🔄 Refresh.</td></tr>';

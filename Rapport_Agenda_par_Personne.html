@@ -154,7 +154,7 @@
 <div class="wrap">
   <header>
     <div class="logo">
-      <h1>Tantramour 2026</h1>
+      <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
       <p data-i18n="r2_title">Planning par Personne</p>
     </div>
     <div class="header-actions">
@@ -247,7 +247,7 @@
 </div>
 
 <script>
-loadData(['data.js', 'logistics.js', 'logistics.special.js'], function() {
+loadData(['ref_translations.js', 'data.js', 'logistics.js', 'logistics.special.js'], function() {
 const RAW = agendaToRaw(AGENDA);
 const DATA = RAW.map((r, i) => { while(r.length<19) r.push(""); r._agendaIdx = i; return r; });
 

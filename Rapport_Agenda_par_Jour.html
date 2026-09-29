@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -245,7 +245,7 @@
 <div class="wrap">
   <header>
     <div class="logo">
-      <h1>Tantramour 2026</h1>
+      <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
       <p data-i18n="r1_title">Planning par Jour</p>
     </div>
     <div class="header-actions">
@@ -376,7 +376,7 @@
 <script src="ref_equip_cat.js"></script>
 <script src="loader.js"></script>
 <script>
-loadData(['data.js', 'logistics.js', 'ref_descriptions.js', 'logistics.helpers.js', 'logistics.special.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
+loadData(['ref_translations.js', 'data.js', 'logistics.js', 'ref_descriptions.js', 'logistics.helpers.js', 'logistics.special.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
 // RAW : chaque entrée est augmentée d'une propriété _idx = index dans AGENDA
 const RAW = AGENDA.map((e, i) => {
   const r = [

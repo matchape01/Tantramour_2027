@@ -97,7 +97,7 @@
 <div class="wrap">
   <header>
     <div class="logo">
-      <h1>Tantramour 2026</h1>
+      <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
       <p data-i18n="r4_title">Logistique par Atelier</p>
     </div>
     <div class="header-actions">
@@ -160,7 +160,7 @@
 <script src="ref_notes.js"></script>
 <script src="loader.js"></script>
 <script>
-loadData(['logistics.js','logistics.special.js','data.js'], function() {
+loadData(['ref_translations.js', 'logistics.js','logistics.special.js','data.js'], function() {
 const DATA = agendaToRaw(AGENDA);
 const ROWS = DATA.map(r => { while(r.length<15) r.push(""); return r; });
 
