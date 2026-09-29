@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour 2026 — Rapports</title>
+<title>Tantramour 2027 — Rapports</title>
 <style>
   :root {
     --bg: #ffffff; --surface: #f7f8fa; --border: #e5e7eb;
@@ -183,8 +183,8 @@
 <div class="wrap">
 
   <div class="logo">
-    <h1>Tantramour 2026</h1>
-    <p data-i18n="home_subtitle">Page destinée à la DreamTeam</p>
+    <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
+    <p data-i18n="bis_title_2">Page destinée à la DreamTeam</p>
   </div>
 
   <!-- ── WIDGET MESSAGE IMPORTANT (DreamTeam) — juste sous le titre ── -->
@@ -373,6 +373,16 @@ function esc(str) {
 
 loadData(['ref_display_reports.js'], function() {
   renderDreamTeamReports();
+  if (typeof I18n !== 'undefined') {
+    I18n.apply();
+    var pt = I18n.t('bis_page_title');
+    if (pt && pt !== 'bis_page_title') document.title = pt;
+  }
+  document.addEventListener('tm_lang_changed', function() {
+    if (typeof I18n === 'undefined') return;
+    var pt = I18n.t('bis_page_title');
+    if (pt && pt !== 'bis_page_title') document.title = pt;
+  });
 });
 
 const PW = '007';

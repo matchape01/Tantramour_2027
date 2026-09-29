@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour — Éditer Accueil (index.html)</title>
+<title>Tantramour — Éditer pages Accueil</title>
 <script src="ref_translations.js"></script>
 <script src="i18n.js"></script>
 <script src="github-api.js"></script>
@@ -93,6 +93,13 @@
     box-shadow:0 0 0 3px rgba(59,130,212,.15);
   }
 
+  /* ── ONGLETS ── */
+  .page-tabs { display:flex; border-bottom:2px solid var(--border); margin-bottom:24px; gap:0; }
+  .page-tab { cursor:pointer; padding:10px 22px; font-size:13px; font-weight:600; color:var(--muted); border:none; background:none; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .15s; font-family:inherit; }
+  .page-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .page-pane { display:none; }
+  .page-pane.active { display:block; }
+
   /* ── LIVE PREVIEW ── */
   .preview-section {
     background:var(--surface); border:1px solid var(--border); border-radius:10px;
@@ -137,21 +144,29 @@
   <header>
     <div class="logo">
       <h1 data-i18n="home_title_1">Tantramour</h1>
-      <p>✏️ Éditer le texte de la page Accueil (index.html)</p>
+      <p>✏️ Éditer les pages Accueil</p>
     </div>
     <div class="header-actions">
       <a class="btn" href="gestion_planning.html">← Gestion Planning</a>
-      <a class="btn" href="index.html" target="_blank">🌐 Voir Index</a>
       <button class="btn btn-save" onclick="saveAll()">💾 Sauvegarder</button>
       <button class="btn" onclick="document.body.classList.toggle('dark')">🌙</button>
     </div>
   </header>
 
   <div class="help-box">
-    <strong>💡 Éditeur des textes d'accueil :</strong>
-    <p style="margin-top:4px;">Ce formulaire permet d'éditer les textes principaux affichés sur la page d'accueil (<code>index.html</code>) en <strong>Français</strong> et en <strong>Anglais</strong>. Les modifications sont enregistrées dans <code>ref_translations.js</code>.</p>
+    <strong>💡 Éditeur des textes des pages :</strong>
+    <p style="margin-top:4px;">Ce formulaire permet d'éditer les textes principaux de <code>index.html</code>, <code>index_bis.html</code> et <code>gestion_planning.html</code>. Les modifications sont enregistrées dans <code>ref_translations.js</code>.</p>
   </div>
 
+  <!-- ONGLETS DE PAGES -->
+  <div class="page-tabs">
+    <button class="page-tab active" id="ptIndex"  onclick="showPageTab('index')">🏠 Index</button>
+    <button class="page-tab"        id="ptBis"    onclick="showPageTab('bis')">🌀 Index Bis</button>
+    <button class="page-tab"        id="ptGp"     onclick="showPageTab('gp')">⚙️ Gestion Planning</button>
+  </div>
+
+  <!-- ═══════ ONGLET INDEX ═══════ -->
+  <div class="page-pane active" id="ppIndex">
   <div class="edit-card">
 
     <!-- 0) TITRE ONGLET NAVIGATEUR -->
@@ -265,10 +280,9 @@
         💾 Enregistrer les modifications
       </button>
     </div>
+  </div><!-- /edit-card index -->
 
-  </div>
-
-  <!-- ── APERÇU LIVE ── -->
+  <!-- ── APERÇU LIVE INDEX ── -->
   <div class="preview-section">
     <div class="preview-title">
       <span>👁️ Aperçu direct du bandeau Accueil</span>
@@ -284,6 +298,99 @@
       <a class="preview-link" id="prevLink" href="https://tantramourfestival.com" target="_blank" rel="noopener">tantramourfestival.com</a>
     </div>
   </div>
+  </div><!-- /ppIndex -->
+
+  <!-- ═══════ ONGLET INDEX BIS ═══════ -->
+  <div class="page-pane" id="ppBis">
+  <div class="edit-card">
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title"><span>🔖</span> 1) Titre de l'onglet navigateur</div>
+        <span class="field-badge">Clé : bis_page_title</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block"><label>🇫🇷 Français</label><input type="text" id="bis_page_title_fr" oninput="updatePreview()" /></div>
+        <div class="input-block"><label>🇬🇧 Anglais</label><input type="text" id="bis_page_title_en" oninput="updatePreview()" /></div>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title"><span>🏷️</span> 2) Titre ligne 1 (h1)</div>
+        <span class="field-badge">Clé : bis_title_1</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block"><label>🇫🇷 Français</label><input type="text" id="bis_title_1_fr" oninput="updatePreview()" /></div>
+        <div class="input-block"><label>🇬🇧 Anglais</label><input type="text" id="bis_title_1_en" oninput="updatePreview()" /></div>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title"><span>🏷️</span> 3) Titre ligne 2 (sous-titre)</div>
+        <span class="field-badge">Clé : bis_title_2</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block"><label>🇫🇷 Français</label><input type="text" id="bis_title_2_fr" oninput="updatePreview()" /></div>
+        <div class="input-block"><label>🇬🇧 Anglais</label><input type="text" id="bis_title_2_en" oninput="updatePreview()" /></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;">
+      <button class="btn btn-save" onclick="saveAll()" style="padding:10px 24px;font-size:14px;">💾 Enregistrer les modifications</button>
+    </div>
+  </div>
+  <div class="preview-section" style="margin-top:16px;">
+    <div class="preview-title"><span>👁️ Aperçu Index Bis</span></div>
+    <div class="preview-box">
+      <div class="preview-h1" id="prevBisTitle1" style="font-size:26px;">Tantramour 2027</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px;" id="prevBisTitle2">Page destinée à la DreamTeam</div>
+    </div>
+  </div>
+  </div><!-- /ppBis -->
+
+  <!-- ═══════ ONGLET GESTION PLANNING ═══════ -->
+  <div class="page-pane" id="ppGp">
+  <div class="edit-card">
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title"><span>🔖</span> 1) Titre de l'onglet navigateur</div>
+        <span class="field-badge">Clé : gp_page_title</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block"><label>🇫🇷 Français</label><input type="text" id="gp_page_title_fr" oninput="updatePreview()" /></div>
+        <div class="input-block"><label>🇬🇧 Anglais</label><input type="text" id="gp_page_title_en" oninput="updatePreview()" /></div>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title"><span>🏷️</span> 2) Titre ligne 1 (h1)</div>
+        <span class="field-badge">Clé : gp_title_1</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block"><label>🇫🇷 Français</label><input type="text" id="gp_title_1_fr" oninput="updatePreview()" /></div>
+        <div class="input-block"><label>🇬🇧 Anglais</label><input type="text" id="gp_title_1_en" oninput="updatePreview()" /></div>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-header">
+        <div class="field-title"><span>🏷️</span> 3) Titre ligne 2 (sous-titre)</div>
+        <span class="field-badge">Clé : gp_title_2</span>
+      </div>
+      <div class="field-inputs">
+        <div class="input-block"><label>🇫🇷 Français</label><input type="text" id="gp_title_2_fr" oninput="updatePreview()" /></div>
+        <div class="input-block"><label>🇬🇧 Anglais</label><input type="text" id="gp_title_2_en" oninput="updatePreview()" /></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;">
+      <button class="btn btn-save" onclick="saveAll()" style="padding:10px 24px;font-size:14px;">💾 Enregistrer les modifications</button>
+    </div>
+  </div>
+  <div class="preview-section" style="margin-top:16px;">
+    <div class="preview-title"><span>👁️ Aperçu Gestion Planning</span></div>
+    <div class="preview-box">
+      <div class="preview-h1" id="prevGpTitle1" style="font-size:26px;color:#1d4ed8;">ADMIN — Gestion Planning</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px;" id="prevGpTitle2">Tantramour 2027 — 29 août › 4 septembre 2027</div>
+    </div>
+  </div>
+  </div><!-- /ppGp -->
 
 </div>
 
@@ -291,6 +398,13 @@
 
 <script>
 var _previewLang = 'fr';
+
+function showPageTab(tab) {
+  ['index','bis','gp'].forEach(function(t) {
+    document.getElementById('pt'+(t==='index'?'Index':t==='bis'?'Bis':'Gp')).classList.toggle('active', t===tab);
+    document.getElementById('pp'+(t==='index'?'Index':t==='bis'?'Bis':'Gp')).classList.toggle('active', t===tab);
+  });
+}
 
 function setPreviewLang(lang) {
   _previewLang = lang;
@@ -337,11 +451,29 @@ function initFields() {
   var webUrl = getTransValue('home_website_url', 'fr', 'https://tantramourfestival.com');
   document.getElementById('web_url').value = webUrl;
 
+  // Index Bis
+  document.getElementById('bis_page_title_fr').value = getTransValue('bis_page_title', 'fr', 'Tantramour 2027');
+  document.getElementById('bis_page_title_en').value = getTransValue('bis_page_title', 'en', 'Tantramour 2027');
+  document.getElementById('bis_title_1_fr').value = getTransValue('bis_title_1', 'fr', 'Tantramour 2027');
+  document.getElementById('bis_title_1_en').value = getTransValue('bis_title_1', 'en', 'Tantramour 2027');
+  document.getElementById('bis_title_2_fr').value = getTransValue('bis_title_2', 'fr', 'Page destinée à la DreamTeam');
+  document.getElementById('bis_title_2_en').value = getTransValue('bis_title_2', 'en', 'Page for the DreamTeam');
+
+  // Gestion Planning
+  document.getElementById('gp_page_title_fr').value = getTransValue('gp_page_title', 'fr', 'ADMIN — Gestion Planning');
+  document.getElementById('gp_page_title_en').value = getTransValue('gp_page_title', 'en', 'ADMIN — Planning Management');
+  document.getElementById('gp_title_1_fr').value = getTransValue('gp_title_1', 'fr', 'ADMIN — Gestion Planning');
+  document.getElementById('gp_title_1_en').value = getTransValue('gp_title_1', 'en', 'ADMIN — Planning Management');
+  document.getElementById('gp_title_2_fr').value = getTransValue('gp_title_2', 'fr', 'Tantramour 2027 — 29 août › 4 septembre 2027');
+  document.getElementById('gp_title_2_en').value = getTransValue('gp_title_2', 'en', 'Tantramour 2027 — August 29 › September 4, 2027');
+
   updatePreview();
 }
 
 function updatePreview() {
   var lang = _previewLang;
+
+  // Aperçu Index (onglet Home)
   var d = document.getElementById(lang === 'fr' ? 'dates_fr' : 'dates_en').value;
   var t1 = document.getElementById(lang === 'fr' ? 'title1_fr' : 'title1_en').value;
   var t2 = document.getElementById(lang === 'fr' ? 'title2_fr' : 'title2_en').value;
@@ -354,6 +486,18 @@ function updatePreview() {
   var prevLink = document.getElementById('prevLink');
   prevLink.textContent = wt || '—';
   prevLink.href = wu.indexOf('://') === -1 ? 'https://' + wu : wu;
+
+  // Aperçu Index Bis
+  var bisT1El = document.getElementById('bis_title_1_' + lang);
+  var bisT2El = document.getElementById('bis_title_2_' + lang);
+  if (bisT1El) document.getElementById('prevBisTitle1').textContent = bisT1El.value || '—';
+  if (bisT2El) document.getElementById('prevBisTitle2').textContent = bisT2El.value || '—';
+
+  // Aperçu Gestion Planning
+  var gpT1El = document.getElementById('gp_title_1_' + lang);
+  var gpT2El = document.getElementById('gp_title_2_' + lang);
+  if (gpT1El) document.getElementById('prevGpTitle1').textContent = gpT1El.value || '—';
+  if (gpT2El) document.getElementById('prevGpTitle2').textContent = gpT2El.value || '—';
 }
 
 function generateRefTranslationsContent() {
@@ -372,6 +516,9 @@ function generateRefTranslationsContent() {
 }
 
 async function saveAll() {
+  // Index Home
+  var ptFr = document.getElementById('page_title_fr').value.trim();
+  var ptEn = document.getElementById('page_title_en').value.trim();
   var dFr = document.getElementById('dates_fr').value.trim();
   var dEn = document.getElementById('dates_en').value.trim();
   var t1Fr = document.getElementById('title1_fr').value.trim();
@@ -382,15 +529,34 @@ async function saveAll() {
   var wtEn = document.getElementById('web_text_en').value.trim();
   var wu = document.getElementById('web_url').value.trim();
 
-  var ptFr = document.getElementById('page_title_fr').value.trim();
-  var ptEn = document.getElementById('page_title_en').value.trim();
   setTransValue('home_page_title', ptFr, ptEn);
-
   setTransValue('home_festival_dates', dFr, dEn);
   setTransValue('home_title_1', t1Fr, t1En);
   setTransValue('home_title_2', t2Fr, t2En);
   setTransValue('home_website_text', wtFr, wtEn);
   setTransValue('home_website_url', wu, wu);
+
+  // Index Bis
+  setTransValue('bis_page_title',
+    document.getElementById('bis_page_title_fr').value.trim(),
+    document.getElementById('bis_page_title_en').value.trim());
+  setTransValue('bis_title_1',
+    document.getElementById('bis_title_1_fr').value.trim(),
+    document.getElementById('bis_title_1_en').value.trim());
+  setTransValue('bis_title_2',
+    document.getElementById('bis_title_2_fr').value.trim(),
+    document.getElementById('bis_title_2_en').value.trim());
+
+  // Gestion Planning
+  setTransValue('gp_page_title',
+    document.getElementById('gp_page_title_fr').value.trim(),
+    document.getElementById('gp_page_title_en').value.trim());
+  setTransValue('gp_title_1',
+    document.getElementById('gp_title_1_fr').value.trim(),
+    document.getElementById('gp_title_1_en').value.trim());
+  setTransValue('gp_title_2',
+    document.getElementById('gp_title_2_fr').value.trim(),
+    document.getElementById('gp_title_2_en').value.trim());
 
   try {
     var content = generateRefTranslationsContent();
