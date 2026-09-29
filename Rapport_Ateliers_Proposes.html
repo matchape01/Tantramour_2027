@@ -647,7 +647,7 @@ function fmtDuree(h, m) {
 function animLabel(ids) {
   if (!ids || !ids.length) return '—';
   return ids.filter(Boolean).map(function(id){
-    var r = REF_RESSOURCES.find(function(x){ return x.id === id; });
+    var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
     return r ? r.value : id;
   }).join(', ');
 }
@@ -1094,7 +1094,7 @@ function minToPrepLabel(v) {
 
 function animIdsToNames(ids) {
   return (ids||[]).map(function(id){
-    var r = REF_RESSOURCES.find(function(x){ return x.id===id; });
+    var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
     return r ? r.value : id;
   });
 }
