@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -546,7 +546,7 @@ function isBilingue(id) { return id && BILINGUES.has(id.trim()); }
 // Retourne le lien URL d'une ressource identifiée par son ID
 function lienRessource(id) {
   if (!id || typeof REF_RESSOURCES === 'undefined') return '';
-  var r = REF_RESSOURCES.find(function(r) { return r.id === id; });
+  var r = REF_RESSOURCES.find(function(r){ return String(r.id) === String(id); });
   return (r && r.lien && r.lien.trim()) ? r.lien.trim() : '';
 }
 

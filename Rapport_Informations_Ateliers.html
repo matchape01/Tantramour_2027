@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -782,14 +782,14 @@ function pimentHtml(n) {
 }
 function isBilingue(id) {
   if (!id || typeof REF_RESSOURCES==='undefined') return false;
-  var r = REF_RESSOURCES.find(function(x){ return x.id===id; });
+  var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
   return r && r.langues && r.langues.indexOf('FR')!==-1 && r.langues.indexOf('EN')!==-1;
 }
 function angelWithPhone(id) {
   if (!id) return '—';
   var nom = resolveName(id);
   if (typeof REF_RESSOURCES === 'undefined') return esc(nom);
-  var r = REF_RESSOURCES.find(function(x){ return x.id===id; });
+  var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
   if (!r || !r.tel) return esc(nom);
   return esc(nom) + ' <span style="color:var(--muted)">(' + esc(r.tel) + ')</span>';
 }

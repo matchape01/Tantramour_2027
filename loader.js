@@ -19,7 +19,7 @@
 window.resolveName = function(val) {
   if (!val) return '';
   if (typeof REF_RESSOURCES === 'undefined') return val;
-  var r = REF_RESSOURCES.find(function(x) { return x.id === val; });
+  var r = REF_RESSOURCES.find(function(x) { return String(x.id) === String(val); });
   return r ? r.value : val; // fallback : val tel quel (nom brut si pas un ID connu)
 };
 window.resolveResourceId = function(name) {

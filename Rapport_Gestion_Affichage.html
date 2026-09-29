@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -200,7 +200,7 @@ function render() {
 }
 
 function toggleActive(id, active) {
-  var rep = REPORTS_STORE.find(function(r) { return r.id === id; });
+  var rep = REPORTS_STORE.find(function(r){ return String(r.id) === String(id); });
   if (rep) {
     rep.active = !!active;
     markDirty();
@@ -209,7 +209,7 @@ function toggleActive(id, active) {
 }
 
 function toggleDreamTeam(id, val) {
-  var rep = REPORTS_STORE.find(function(r) { return r.id === id; });
+  var rep = REPORTS_STORE.find(function(r){ return String(r.id) === String(id); });
   if (rep) {
     rep.showInDreamTeam = !!val;
     markDirty();
@@ -218,7 +218,7 @@ function toggleDreamTeam(id, val) {
 }
 
 function changeSection(id, newSection) {
-  var rep = REPORTS_STORE.find(function(r) { return r.id === id; });
+  var rep = REPORTS_STORE.find(function(r){ return String(r.id) === String(id); });
   if (rep && rep.section !== newSection) {
     rep.section = newSection;
     // Réassigner le prochain ordre disponible dans la nouvelle section
@@ -230,7 +230,7 @@ function changeSection(id, newSection) {
 }
 
 function moveReport(id, direction) {
-  var rep = REPORTS_STORE.find(function(r) { return r.id === id; });
+  var rep = REPORTS_STORE.find(function(r){ return String(r.id) === String(id); });
   if (!rep) return;
 
   var secReports = REPORTS_STORE.filter(function(r) { return r.section === rep.section; });

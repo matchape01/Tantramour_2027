@@ -1,16 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour 2026 — Gérer les Ressources</title>
+<title>Tantramour 2026 â€” GÃ©rer les Ressources</title>
 <style>
   :root {
     --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
     --text:#1f2328; --muted:#57606a; --accent:#3b82d4;
     --header-bg:#f0f4fb; --row-alt:#f7f8fa;
     --green:#16a34a; --green-bg:#dcfce7; --green-border:#86efac;
-    /* Badges rôles */
+    /* Badges rÃ´les */
     --badge-f-bg:#dcfce7;  --badge-f-tx:#166534;
     --badge-h-bg:#e0f2fe;  --badge-h-tx:#0369a1;
     --badge-t-bg:#f5f3ff;  --badge-t-tx:#7c3aed;
@@ -35,7 +35,7 @@
   body { font-family:-apple-system,"Segoe UI",system-ui,sans-serif; font-size:14px; line-height:1.6; background:var(--bg); color:var(--text); transition:background .2s,color .2s; }
   .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
 
-  /* ── HEADER ── */
+  /* â”€â”€ HEADER â”€â”€ */
   header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
   .logo h1 { font-size:20px; font-weight:700; }
   .logo p  { font-size:24px; font-weight:800; color:var(--accent); line-height:1.2; margin-top:2px; }
@@ -45,7 +45,7 @@
   .btn-add { background:var(--green-bg); border-color:var(--green-border); color:var(--green); font-weight:700; }
   .dark .btn-add { color:#4ade80; }
 
-  /* ── TOOLBAR ── */
+  /* â”€â”€ TOOLBAR â”€â”€ */
   .toolbar { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; align-items:flex-end; }
   .filter-group { display:flex; flex-direction:column; gap:4px; }
   .filter-group label { font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); font-weight:600; }
@@ -55,7 +55,7 @@
   .stats { font-size:12px; color:var(--muted); margin-bottom:12px; }
   .stats span { color:var(--accent); font-weight:600; }
 
-  /* ── TABLE ── */
+  /* â”€â”€ TABLE â”€â”€ */
   .table-wrap { border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:28px; }
   table { width:100%; border-collapse:collapse; }
   thead th {
@@ -93,7 +93,7 @@
   .btn-icon:hover { background:var(--border); color:var(--text); }
   .empty-row td { padding:40px; text-align:center; color:var(--muted); font-style:italic; }
 
-  /* ── PANNEAU ÉDITEUR ── */
+  /* â”€â”€ PANNEAU Ã‰DITEUR â”€â”€ */
   .editor-panel {
     background:var(--surface); border:2px solid var(--accent);
     border-radius:10px; padding:24px 28px; margin-bottom:32px;
@@ -113,7 +113,7 @@
   .form-group input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(59,130,212,.12); }
   .hint { font-size:11px; color:var(--muted); }
 
-  /* ── CHECKBOXES RÔLES ── */
+  /* â”€â”€ CHECKBOXES RÃ”LES â”€â”€ */
   .roles-check { display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
   .role-chk { display:flex; align-items:center; gap:6px; cursor:pointer; padding:6px 12px; border-radius:6px; border:2px solid var(--border); background:var(--bg); transition:all .15s; user-select:none; }
   .role-chk:hover { border-color:var(--accent); }
@@ -123,10 +123,10 @@
   .role-chk.checked-h { border-color:var(--badge-h-tx); background:var(--badge-h-bg); }
   .role-chk.checked-t { border-color:var(--badge-t-tx); background:var(--badge-t-bg); }
   .role-chk.checked-a { border-color:var(--badge-a-tx); background:var(--badge-a-bg); }
-  /* rôles additionnels : couleur générique accent */
+  /* rÃ´les additionnels : couleur gÃ©nÃ©rique accent */
   .role-chk.checked-x { border-color:var(--accent); background:#eff6ff; }
   .dark .role-chk.checked-x { background:#0c2d48; }
-  /* ── CHECKBOXES LANGUES ── */
+  /* â”€â”€ CHECKBOXES LANGUES â”€â”€ */
   .langues-check { display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
   .lang-chk { display:flex; align-items:center; gap:6px; cursor:pointer; padding:6px 12px; border-radius:6px; border:2px solid var(--border); background:var(--bg); transition:all .15s; user-select:none; }
   .lang-chk:hover { border-color:var(--accent); }
@@ -135,7 +135,7 @@
   .lang-chk.checked-fr { border-color:var(--badge-fr-tx); background:var(--badge-fr-bg); }
   .lang-chk.checked-en { border-color:var(--badge-en-tx); background:var(--badge-en-bg); }
 
-  /* ── ACTIONS ÉDITEUR ── */
+  /* â”€â”€ ACTIONS Ã‰DITEUR â”€â”€ */
   .editor-actions { display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; align-items:center; }
   .btn-primary { cursor:pointer; background:var(--accent); color:#fff; border:none; border-radius:6px; padding:9px 22px; font-size:14px; font-weight:700; font-family:inherit; display:inline-flex; align-items:center; gap:7px; }
   .btn-primary:hover { filter:brightness(1.1); }
@@ -149,7 +149,7 @@
   @keyframes spin { to { transform:rotate(360deg); } }
   .spinner { width:15px; height:15px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
 
-  /* ── CONFIRM MODAL ── */
+  /* â”€â”€ CONFIRM MODAL â”€â”€ */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; align-items:center; justify-content:center; }
   .modal-overlay.show { display:flex; }
   .modal-box { background:var(--bg); border-radius:12px; padding:28px 32px; max-width:380px; width:90%; border:1px solid var(--border); }
@@ -157,14 +157,14 @@
   .modal-box p { font-size:13px; color:var(--muted); margin-bottom:20px; }
   .modal-actions { display:flex; gap:10px; }
 
-  /* ── TOAST ── */
+  /* â”€â”€ TOAST â”€â”€ */
   .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1f2328; color:#fff; border-radius:8px; padding:12px 20px; font-size:13px; font-weight:600; z-index:9998; display:none; align-items:center; gap:8px; box-shadow:0 4px 16px rgba(0,0,0,.25); }
   .toast.show { display:flex; animation:fadeUp .25s ease; }
   @keyframes fadeUp { from{opacity:0;transform:translateX(-50%) translateY(8px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 
   footer { margin-top:48px; padding-top:14px; border-top:1px solid var(--border); text-align:center; font-size:12px; color:var(--muted); }
 
-  /* ── MODALE IMPORT ── */
+  /* â”€â”€ MODALE IMPORT â”€â”€ */
   .import-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9990; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; }
   .import-overlay.show { display:flex; }
   .import-box { background:var(--bg); border-radius:14px; padding:28px 32px; max-width:700px; width:100%; border:1px solid var(--border); box-shadow:0 12px 40px rgba(0,0,0,.18); }
@@ -186,7 +186,7 @@
   .change-chk label { font-size:12px; font-weight:600; cursor:pointer; }
   .import-actions { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
 
-  /* ── LÉGENDE ── */
+  /* â”€â”€ LÃ‰GENDE â”€â”€ */
   .legend { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
   .legend-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--muted); }
   .legend-dot { width:10px; height:10px; border-radius:3px; }
@@ -198,11 +198,11 @@
 <!-- i18n -->
 <body>
 
-<!-- ── CONFIRM DELETE ── -->
+<!-- â”€â”€ CONFIRM DELETE â”€â”€ -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-box">
-    <h3>🗑️ Supprimer cette ressource ?</h3>
-    <p id="confirmMsg">Cette action supprimera la ressource du référentiel.</p>
+    <h3>ðŸ—‘ï¸ Supprimer cette ressource ?</h3>
+    <p id="confirmMsg">Cette action supprimera la ressource du rÃ©fÃ©rentiel.</p>
     <div class="modal-actions">
       <button class="btn-secondary" style="flex:1" onclick="closeConfirm()">Annuler</button>
       <button class="btn-danger" style="flex:1" onclick="confirmDelete()">Supprimer</button>
@@ -214,54 +214,54 @@
   <header>
     <div class="logo">
       <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
-      <p>Gérer les Ressources</p>
+      <p>GÃ©rer les Ressources</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-add" onclick="openAdd()">＋ Ajouter une ressource</button>
-      <a class="btn" href="index.html" data-i18n="nav_accueil">🏠 Accueil</a>
-      <a class="btn" href="index_bis.html" data-i18n="nav_dreamteam">🌀 DreamTeam</a>
-      <a class="btn" href="gestion_planning.html" data-i18n="nav_admin">⚙️ Admin</a>
-      <button class="btn" onclick="hardReload()">🔄 <span data-i18n="nav_refresh">Refresh</span></button>
-      <button class="btn" id="modeBtn" onclick="toggleMode()">🌙 <span data-i18n="nav_mode_nuit">Mode Nuit</span></button>
-      <button class="mode-btn tm-lang-btn" onclick="I18n.setLang(I18n.getLang()==='fr'?'en':'fr')">🌐 EN</button>
+      <button class="btn btn-add" onclick="openAdd()">ï¼‹ Ajouter une ressource</button>
+      <a class="btn" href="index.html" data-i18n="nav_accueil">ðŸ  Accueil</a>
+      <a class="btn" href="index_bis.html" data-i18n="nav_dreamteam">ðŸŒ€ DreamTeam</a>
+      <a class="btn" href="gestion_planning.html" data-i18n="nav_admin">âš™ï¸ Admin</a>
+      <button class="btn" onclick="hardReload()">ðŸ”„ <span data-i18n="nav_refresh">Refresh</span></button>
+      <button class="btn" id="modeBtn" onclick="toggleMode()">ðŸŒ™ <span data-i18n="nav_mode_nuit">Mode Nuit</span></button>
+      <button class="mode-btn tm-lang-btn" onclick="I18n.setLang(I18n.getLang()==='fr'?'en':'fr')">ðŸŒ EN</button>
     </div>
   </header>
 
-  <!-- LÉGENDE -->
+  <!-- LÃ‰GENDE -->
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#166534"></div>Animateur</div>
     <div class="legend-item"><div class="legend-dot" style="background:#0369a1"></div>Helper</div>
     <div class="legend-item"><div class="legend-dot" style="background:#854d0e"></div>Traducteur</div>
     <div class="legend-item"><div class="legend-dot" style="background:#9d174d"></div>Angel</div>
-    <!-- légende dynamique — alimentée par buildRoleMeta() au chargement -->
+    <!-- lÃ©gende dynamique â€” alimentÃ©e par buildRoleMeta() au chargement -->
     <span id="legendExtra"></span>
   </div>
 
   <!-- TOOLBAR -->
   <div class="toolbar">
     <div class="filter-group">
-      <label data-i18n="filter_role">Rôle</label>
+      <label data-i18n="filter_role">RÃ´le</label>
       <select id="filterRole" onchange="renderTable()">
-        <option value="">Tous les rôles</option>
-        <!-- options peuplées dynamiquement par buildRoleMeta() -->
+        <option value="">Tous les rÃ´les</option>
+        <!-- options peuplÃ©es dynamiquement par buildRoleMeta() -->
       </select>
     </div>
     <div class="filter-group">
       <label>Recherche</label>
-      <input type="text" id="filterSearch" placeholder="Nom ou ID…" oninput="renderTable()">
+      <input type="text" id="filterSearch" placeholder="Nom ou IDâ€¦" oninput="renderTable()">
     </div>
     <div class="filter-group" style="justify-content:flex-end">
       <label>&nbsp;</label>
       <div style="display:flex;gap:8px;">
-        <button class="btn" onclick="exportExcel()">📥 Export Excel</button>
-        <button class="btn" onclick="triggerImport()">📤 Import Excel</button>
+        <button class="btn" onclick="exportExcel()">ðŸ“¥ Export Excel</button>
+        <button class="btn" onclick="triggerImport()">ðŸ“¤ Import Excel</button>
         <input type="file" id="importFileInput" accept=".xlsx" style="display:none" onchange="handleImportFile(this)">
       </div>
     </div>
   </div>
   <div class="stats" id="stats"></div>
 
-  <!-- ÉDITEUR (masqué par défaut) -->
+  <!-- Ã‰DITEUR (masquÃ© par dÃ©faut) -->
   <div class="editor-panel" id="editorPanel" style="display:none"></div>
 
   <!-- TABLE -->
@@ -269,13 +269,13 @@
     <table id="mainTable">
       <thead>
         <tr>
-          <th onclick="sortBy('value')" id="th-value">Nom <span class="sort-icon">↕</span></th>
-          <th>Rôles</th>
+          <th onclick="sortBy('value')" id="th-value">Nom <span class="sort-icon">â†•</span></th>
+          <th>RÃ´les</th>
           <th>Langues</th>
-          <th onclick="sortBy('id')" id="th-id">ID <span class="sort-icon">↕</span></th>
-          <th>📞 Tél.</th>
-          <th>✉️ Email</th>
-          <th>🔗 Lien</th>
+          <th onclick="sortBy('id')" id="th-id">ID <span class="sort-icon">â†•</span></th>
+          <th>ðŸ“ž TÃ©l.</th>
+          <th>âœ‰ï¸ Email</th>
+          <th>ðŸ”— Lien</th>
           <th></th>
         </tr>
       </thead>
@@ -286,54 +286,54 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ── MODALE IMPORT EXCEL ── -->
+<!-- â”€â”€ MODALE IMPORT EXCEL â”€â”€ -->
 <div class="import-overlay" id="importOverlay" onclick="importOverlayClick(event)">
   <div class="import-box" id="importBox">
-    <h3 id="importTitle">📤 Import Excel — Ressources</h3>
-    <p class="import-sub" id="importSub">Vérifiez les modifications avant d'enregistrer.</p>
+    <h3 id="importTitle">ðŸ“¤ Import Excel â€” Ressources</h3>
+    <p class="import-sub" id="importSub">VÃ©rifiez les modifications avant d'enregistrer.</p>
     <div class="import-changes" id="importChanges"></div>
     <div class="import-actions" id="importActions">
-      <button class="btn-primary" id="importSaveBtn" onclick="applyImport()">✅ Enregistrer les modifications</button>
-      <button class="btn-secondary" onclick="closeImport()">✕ Annuler</button>
+      <button class="btn-primary" id="importSaveBtn" onclick="applyImport()">âœ… Enregistrer les modifications</button>
+      <button class="btn-secondary" onclick="closeImport()">âœ• Annuler</button>
     </div>
   </div>
 </div>
 
-<!-- ── RÉFÉRENTIELS ── -->
+<!-- â”€â”€ RÃ‰FÃ‰RENTIELS â”€â”€ -->
 <script src="github-api.js"></script>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// ÉTAT
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã‰TAT
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let data        = [];   // copie de travail de REF_RESSOURCES
 let editingIdx  = null; // index dans data (null = nouveau)
-let pendingDel  = null; // index à supprimer
+let pendingDel  = null; // index Ã  supprimer
 let sortCol     = 'value';
 let sortAsc     = true;
 var AGENDA_DATA        = [];  // copie de travail de AGENDA (data.js)
 var DESCRIPTIONS_DATA  = [];  // copie de travail de REF_DESCRIPTIONS
 
-// Init : cloner le référentiel chargé
+// Init : cloner le rÃ©fÃ©rentiel chargÃ©
 function initData() {
   data = REF_RESSOURCES.map(function(r) {
     return { id: r.id, value: r.value, roles: r.roles.slice(), langues: (r.langues || []).slice(), tel: r.tel || '', email: r.email || '' };
   });
 }
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // RENDU TABLE
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // ROLE_META est construit dynamiquement depuis REF_RESOURCE_TYPES
-// Les 4 rôles historiques conservent leurs classes CSS dédiées ;
-// tout rôle supplémentaire reçoit 'role-x' (couleur accent générique).
+// Les 4 rÃ´les historiques conservent leurs classes CSS dÃ©diÃ©es ;
+// tout rÃ´le supplÃ©mentaire reÃ§oit 'role-x' (couleur accent gÃ©nÃ©rique).
 var ROLE_FIXED_CLS = { animateur:'role-f', helper:'role-h', traducteur:'role-t', angel:'role-a' };
 var ROLE_META = {};
 
 function buildRoleMeta() {
   ROLE_META = {};
   var sel = document.getElementById('filterRole');
-  // Vider les options sauf la première ("Tous les rôles")
+  // Vider les options sauf la premiÃ¨re ("Tous les rÃ´les")
   while (sel.options.length > 1) sel.remove(1);
 
   var extraLegend = '';
@@ -348,7 +348,7 @@ function buildRoleMeta() {
     opt.textContent = rt.icon + ' ' + rt.label;
     sel.appendChild(opt);
 
-    // Légende supplémentaire pour les rôles non-historiques
+    // LÃ©gende supplÃ©mentaire pour les rÃ´les non-historiques
     if (!ROLE_FIXED_CLS[rt.value]) {
       extraLegend += '<div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>' + rt.label + '</div>';
     }
@@ -375,14 +375,14 @@ function renderTable() {
   });
 
   document.getElementById('stats').innerHTML =
-    '<span>' + filtered.length + '</span> ressource(s) sur ' + data.length + ' — cliquez sur une ligne pour l\'éditer';
+    '<span>' + filtered.length + '</span> ressource(s) sur ' + data.length + ' â€” cliquez sur une ligne pour l\'Ã©diter';
 
-  // Icônes de tri
+  // IcÃ´nes de tri
   ['value','id'].forEach(function(col) {
     var th = document.getElementById('th-' + col);
     if (!th) return;
     th.classList.toggle('sorted', sortCol === col);
-    th.querySelector('.sort-icon').textContent = sortCol === col ? (sortAsc ? '↑' : '↓') : '↕';
+    th.querySelector('.sort-icon').textContent = sortCol === col ? (sortAsc ? 'â†‘' : 'â†“') : 'â†•';
   });
 
   var tbody = document.getElementById('tableBody');
@@ -402,20 +402,20 @@ function renderTable() {
       var cls = lg === 'FR' ? 'lang-badge-fr' : 'lang-badge-en';
       return '<span class="role-badge ' + cls + '">' + esc(lg) + '</span>';
     }).join('');
-    var telHtml   = r.tel   ? '<span style="font-size:12px">' + esc(r.tel)   + '</span>' : '<span style="color:var(--muted);font-size:11px">—</span>';
-    var emailHtml = r.email ? '<span style="font-size:12px">' + esc(r.email) + '</span>' : '<span style="color:var(--muted);font-size:11px">—</span>';
-    var lienHtml  = r.lien  ? '<a href="' + esc(r.lien) + '" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent)" onclick="event.stopPropagation()">🔗 Lien</a>' : '<span style="color:var(--muted);font-size:11px">—</span>';
+    var telHtml   = r.tel   ? '<span style="font-size:12px">' + esc(r.tel)   + '</span>' : '<span style="color:var(--muted);font-size:11px">â€”</span>';
+    var emailHtml = r.email ? '<span style="font-size:12px">' + esc(r.email) + '</span>' : '<span style="color:var(--muted);font-size:11px">â€”</span>';
+    var lienHtml  = r.lien  ? '<a href="' + esc(r.lien) + '" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent)" onclick="event.stopPropagation()">ðŸ”— Lien</a>' : '<span style="color:var(--muted);font-size:11px">â€”</span>';
     return '<tr' + sel + ' onclick="selectRow(' + realIdx + ')" id="row-' + realIdx + '">' +
       '<td class="td-name">' + esc(r.value) + '</td>' +
       '<td><div class="td-roles">' + badges + '</div></td>' +
-      '<td><div class="td-langues">' + (langBadges || '<span style="color:var(--muted);font-size:11px">—</span>') + '</div></td>' +
+      '<td><div class="td-langues">' + (langBadges || '<span style="color:var(--muted);font-size:11px">â€”</span>') + '</div></td>' +
       '<td class="td-id">' + esc(r.id) + '</td>' +
       '<td>' + telHtml + '</td>' +
       '<td>' + emailHtml + '</td>' +
       '<td>' + lienHtml + '</td>' +
       '<td class="td-actions">' +
-        '<button class="btn-icon" title="Éditer" onclick="event.stopPropagation();selectRow(' + realIdx + ')">✏️</button>' +
-        '<button class="btn-icon" title="Supprimer" onclick="event.stopPropagation();askDelete(' + realIdx + ')">🗑️</button>' +
+        '<button class="btn-icon" title="Ã‰diter" onclick="event.stopPropagation();selectRow(' + realIdx + ')">âœï¸</button>' +
+        '<button class="btn-icon" title="Supprimer" onclick="event.stopPropagation();askDelete(' + realIdx + ')">ðŸ—‘ï¸</button>' +
       '</td>' +
     '</tr>';
   }).join('');
@@ -429,9 +429,9 @@ function sortBy(col) {
 }
 window.sortBy = sortBy;
 
-// ══════════════════════════════════════════════════════════
-// SÉLECTION / ÉDITEUR
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SÃ‰LECTION / Ã‰DITEUR
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function selectRow(idx) {
   editingIdx = idx;
   renderTable();
@@ -458,14 +458,14 @@ function closeEditor() {
 }
 window.closeEditor = closeEditor;
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // RENDU FORMULAIRE
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function renderEditor(isNew) {
   var r = isNew ? { id:'', value:'', roles:[], langues:[] } : data[editingIdx];
   var panel = document.getElementById('editorPanel');
 
-  // Checkboxes rôles (dynamique depuis REF_RESOURCE_TYPES)
+  // Checkboxes rÃ´les (dynamique depuis REF_RESOURCE_TYPES)
   var chkboxes = REF_RESOURCE_TYPES.map(function(rt) {
     var rl = rt.value;
     var checked = r.roles.indexOf(rl) !== -1;
@@ -483,11 +483,11 @@ function renderEditor(isNew) {
   var langChkboxes =
     '<label class="lang-chk' + (chkFR ? ' checked-fr' : '') + '" id="lbl-lang-FR">' +
       '<input type="checkbox" id="chk-lang-FR" ' + (chkFR ? 'checked' : '') + ' onchange="onLangChange(\'FR\')">' +
-      '<span class="rc-label">🇫🇷 Français</span>' +
+      '<span class="rc-label">ðŸ‡«ðŸ‡· FranÃ§ais</span>' +
     '</label>' +
     '<label class="lang-chk' + (chkEN ? ' checked-en' : '') + '" id="lbl-lang-EN">' +
       '<input type="checkbox" id="chk-lang-EN" ' + (chkEN ? 'checked' : '') + ' onchange="onLangChange(\'EN\')">' +
-      '<span class="rc-label">🇬🇧 English</span>' +
+      '<span class="rc-label">ðŸ‡¬ðŸ‡§ English</span>' +
     '</label>';
 
   var badgeHtml = isNew
@@ -496,7 +496,7 @@ function renderEditor(isNew) {
 
   panel.innerHTML =
     '<div class="editor-title">' +
-      (isNew ? '➕' : '✏️') + ' ' + (isNew ? 'Ajouter une ressource' : 'Éditer : ' + esc(r.value)) +
+      (isNew ? 'âž•' : 'âœï¸') + ' ' + (isNew ? 'Ajouter une ressource' : 'Ã‰diter : ' + esc(r.value)) +
       badgeHtml +
     '</div>' +
 
@@ -505,39 +505,39 @@ function renderEditor(isNew) {
       '<div class="form-group">' +
         '<label>Nom complet</label>' +
         '<input type="text" id="f-value" value="' + esc(r.value) + '" placeholder="Ex : Matthieu Chapeleau (Atman)">' +
-        '<span class="hint">Nom exact tel qu\'il apparaît dans l\'agenda</span>' +
+        '<span class="hint">Nom exact tel qu\'il apparaÃ®t dans l\'agenda</span>' +
       '</div>' +
 
       '<div class="form-group">' +
         '<label>ID unique</label>' +
-        '<input type="text" id="f-id" value="' + esc(r.id) + '" placeholder="(généré automatiquement)"' + (isNew ? '' : ' readonly style="opacity:.6"') + '>' +
-        '<span class="hint">ID numérique généré automatiquement — ne jamais modifier après création</span>' +
+        '<input type="text" id="f-id" value="' + esc(r.id) + '" placeholder="(gÃ©nÃ©rÃ© automatiquement)"' + (isNew ? '' : ' readonly style="opacity:.6"') + '>' +
+        '<span class="hint">ID numÃ©rique gÃ©nÃ©rÃ© automatiquement â€” ne jamais modifier aprÃ¨s crÃ©ation</span>' +
       '</div>' +
 
       '<div class="form-group full">' +
-        '<label>Rôles</label>' +
+        '<label>RÃ´les</label>' +
         '<div class="roles-check" id="roles-check">' + chkboxes + '</div>' +
       '</div>' +
 
       '<div class="form-group full">' +
-        '<label>🌐 Langues parlées</label>' +
+        '<label>ðŸŒ Langues parlÃ©es</label>' +
         '<div class="langues-check" id="langues-check">' + langChkboxes + '</div>' +
       '</div>' +
 
       '<div class="form-group">' +
-        '<label>📞 Téléphone</label>' +
+        '<label>ðŸ“ž TÃ©lÃ©phone</label>' +
         '<input type="text" id="f-tel" value="' + esc(r.tel || '') + '" placeholder="Ex : +33 6 12 34 56 78">' +
-        '<span class="hint">Affiché dans les rapports Angel / Planning</span>' +
+        '<span class="hint">AffichÃ© dans les rapports Angel / Planning</span>' +
       '</div>' +
 
       '<div class="form-group">' +
-        '<label>✉️ Email</label>' +
+        '<label>âœ‰ï¸ Email</label>' +
         '<input type="text" id="f-email" value="' + esc(r.email || '') + '" placeholder="Ex : prenom@exemple.com">' +
         '<span class="hint">Adresse email de contact</span>' +
       '</div>' +
 
       '<div class="form-group full">' +
-        '<label>🔗 Lien</label>' +
+        '<label>ðŸ”— Lien</label>' +
         '<input type="text" id="f-lien" value="' + esc(r.lien || '') + '" placeholder="Ex : https://www.exemple.com/profil">' +
         '<span class="hint">URL du site, profil ou page de l\'intervenant</span>' +
       '</div>' +
@@ -545,10 +545,10 @@ function renderEditor(isNew) {
     '</div>' +
 
     '<div class="editor-actions">' +
-      '<button class="btn-primary" id="btnSave" onclick="saveResource()">✅ Enregistrer</button>' +
-      (isNew ? '' : '<button class="btn-danger" onclick="askDelete(' + editingIdx + ')">🗑️ Supprimer</button>') +
-      '<button class="btn-secondary" onclick="closeEditor()">✕ Annuler</button>' +
-      '<div class="saving-indicator" id="savingIndicator"><div class="spinner"></div> Sauvegarde en cours…</div>' +
+      '<button class="btn-primary" id="btnSave" onclick="saveResource()">âœ… Enregistrer</button>' +
+      (isNew ? '' : '<button class="btn-danger" onclick="askDelete(' + editingIdx + ')">ðŸ—‘ï¸ Supprimer</button>') +
+      '<button class="btn-secondary" onclick="closeEditor()">âœ• Annuler</button>' +
+      '<div class="saving-indicator" id="savingIndicator"><div class="spinner"></div> Sauvegarde en coursâ€¦</div>' +
     '</div>';
 }
 
@@ -570,9 +570,9 @@ function onLangChange(lg) {
 }
 window.onLangChange = onLangChange;
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // SAUVEGARDE RESSOURCE
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function collectForm() {
   var val   = document.getElementById('f-value').value.trim();
   var id    = document.getElementById('f-id').value.trim().toUpperCase();
@@ -596,10 +596,10 @@ function collectForm() {
 }
 
 function validateForm(form, isNew) {
-  if (!form.val) { showToast('❌ Le nom est obligatoire.', true); return false; }
-  if (!form.roles.length) { showToast('❌ Sélectionnez au moins un rôle.', true); return false; }
+  if (!form.val) { showToast('âŒ Le nom est obligatoire.', true); return false; }
+  if (!form.roles.length) { showToast('âŒ SÃ©lectionnez au moins un rÃ´le.', true); return false; }
   if (isNew && form.id && data.find(function(r) { return String(r.id) === String(form.id); })) {
-    showToast('❌ Cet ID existe déjà.', true); return false;
+    showToast('âŒ Cet ID existe dÃ©jÃ .', true); return false;
   }
   return true;
 }
@@ -619,9 +619,9 @@ async function saveResource() {
   var newName = form.val;
   var nameChanged = !isNew && oldName && oldName !== newName;
 
-  // Appliquer en mémoire
+  // Appliquer en mÃ©moire
   if (isNew) {
-    // Générer un ID numérique unique si le champ est vide ou non numérique
+    // GÃ©nÃ©rer un ID numÃ©rique unique si le champ est vide ou non numÃ©rique
     var newResId = form.id && !isNaN(parseInt(form.id)) ? parseInt(form.id)
       : (typeof generateResId === 'function' ? generateResId() : Math.floor(100000 + Math.random() * 900000));
     data.push({ id: newResId, value: form.val, roles: form.roles, langues: form.langues, tel: form.tel, email: form.email, lien: form.lien });
@@ -635,8 +635,8 @@ async function saveResource() {
     data[editingIdx].lien    = form.lien;
   }
 
-  // Si le nom a changé, propager dans AGENDA_DATA et DESCRIPTIONS_DATA
-  // (les champs fac1, helper1… stockent les noms ; les champs Id sont stables)
+  // Si le nom a changÃ©, propager dans AGENDA_DATA et DESCRIPTIONS_DATA
+  // (les champs fac1, helper1â€¦ stockent les noms ; les champs Id sont stables)
   if (nameChanged) {
     propagateRename(oldName, newName);
   }
@@ -645,21 +645,21 @@ async function saveResource() {
     // Toujours sauvegarder ref_ressources.js
     await sauvegarder('ref_ressources.js', genererRefRessources());
 
-    // Si le nom a changé, sauvegarder aussi data.js (noms mis à jour)
+    // Si le nom a changÃ©, sauvegarder aussi data.js (noms mis Ã  jour)
     if (nameChanged && AGENDA_DATA.length > 0) {
       await sauvegarder('data.js', buildDataJs());
     }
 
-    var msg = isNew ? '✅ Ressource ajoutée !'
-            : nameChanged ? '✅ Ressource renommée — propagation dans data.js effectuée !'
-            : '✅ Ressource mise à jour !';
+    var msg = isNew ? 'âœ… Ressource ajoutÃ©e !'
+            : nameChanged ? 'âœ… Ressource renommÃ©e â€” propagation dans data.js effectuÃ©e !'
+            : 'âœ… Ressource mise Ã  jour !';
     showToast(msg);
     closeEditor();
     renderTable();
   } catch(err) {
     if (isNew) { data.pop(); editingIdx = null; }
     else if (!isNew) { data[editingIdx].value = oldName; propagateRename(newName, oldName); } // rollback complet
-    showToast('❌ Sauvegarde impossible : ' + err.message, true);
+    showToast('âŒ Sauvegarde impossible : ' + err.message, true);
     console.error('[Rapport12] saveResource:', err);
   } finally {
     if (btn) btn.disabled = false;
@@ -668,13 +668,13 @@ async function saveResource() {
 }
 window.saveResource = saveResource;
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // SUPPRESSION
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function askDelete(idx) {
   pendingDel = idx;
   document.getElementById('confirmMsg').textContent =
-    'Supprimer "' + data[idx].value + '" du référentiel ?';
+    'Supprimer "' + data[idx].value + '" du rÃ©fÃ©rentiel ?';
   document.getElementById('confirmModal').classList.add('show');
 }
 window.askDelete = askDelete;
@@ -694,7 +694,7 @@ async function confirmDelete() {
   if (editingIdx === idx) { editingIdx = null; document.getElementById('editorPanel').style.display = 'none'; }
   else if (editingIdx > idx) editingIdx--;
 
-  // Vider tous les champs de data.js qui référencent l'ID supprimé
+  // Vider tous les champs de data.js qui rÃ©fÃ©rencent l'ID supprimÃ©
   var removedId = removed.id;
   var RESOURCE_FIELDS = ['fac1','fac2','fac3','fac4','traduction','helper1','helper2','helper3','helper4','angel'];
   var agendaTouched = false;
@@ -715,28 +715,28 @@ async function confirmDelete() {
     if (agendaTouched) saves.push(sauvegarder('data.js', buildDataJs()));
     if (descTouched)   saves.push(sauvegarder('ref_descriptions.js', buildRefDescJs()));
     await Promise.all(saves);
-    var extraMsg = (agendaTouched || descTouched) ? ' (données nettoyées dans data.js / ref_descriptions.js)' : '';
-    showToast('🗑️ "' + removed.value + '" supprimé.' + extraMsg);
+    var extraMsg = (agendaTouched || descTouched) ? ' (donnÃ©es nettoyÃ©es dans data.js / ref_descriptions.js)' : '';
+    showToast('ðŸ—‘ï¸ "' + removed.value + '" supprimÃ©.' + extraMsg);
     renderTable();
   } catch(err) {
     // Rollback
     data.splice(idx, 0, removed);
-    showToast('❌ Suppression impossible : ' + err.message, true);
+    showToast('âŒ Suppression impossible : ' + err.message, true);
     console.error('[Rapport12] confirmDelete:', err);
   }
 }
 window.confirmDelete = confirmDelete;
 
-// ══════════════════════════════════════════════════════════
-// PROPAGATION DU RENOMMAGE (désactivée — IDs stables)
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// PROPAGATION DU RENOMMAGE (dÃ©sactivÃ©e â€” IDs stables)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // Depuis la migration vers les IDs, data.js stocke des IDs stables (R_XXX).
-// Un renommage ne change que le .value dans ref_ressources.js → pas de
-// propagation nécessaire dans data.js ou ref_descriptions.js.
+// Un renommage ne change que le .value dans ref_ressources.js â†’ pas de
+// propagation nÃ©cessaire dans data.js ou ref_descriptions.js.
 function propagateRename(oldName, newName) {
   // Propager le renommage dans AGENDA_DATA :
-  // Les champs nom (fac1, helper1…) sont mis à jour avec le nouveau nom.
-  // Les champs ID (fac1Id, helper1Id…) sont stables — pas besoin de les toucher.
+  // Les champs nom (fac1, helper1â€¦) sont mis Ã  jour avec le nouveau nom.
+  // Les champs ID (fac1Id, helper1Idâ€¦) sont stables â€” pas besoin de les toucher.
   var NOM_FIELDS = ['fac1','fac2','fac3','fac4','traduction','helper1','helper2','helper3','helper4','angel'];
   var count = 0;
   AGENDA_DATA.forEach(function(e) {
@@ -754,12 +754,12 @@ function propagateRename(oldName, newName) {
       if (d.fac2 === oldName) { d.fac2 = newName; count++; }
     });
   }
-  console.log('[propagateRename] ' + count + ' occurrences mises à jour : "' + oldName + '" → "' + newName + '"');
+  console.log('[propagateRename] ' + count + ' occurrences mises Ã  jour : "' + oldName + '" â†’ "' + newName + '"');
 }
 
-// ══════════════════════════════════════════════════════════
-// SÉRIALISATION data.js
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SÃ‰RIALISATION data.js
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function buildDataJs() {
   var lines = AGENDA_DATA.map(function(e) {
     var s = '  {';
@@ -814,9 +814,9 @@ function buildDataJs() {
   return '/**\n * TANTRAMOUR 2026 \u2014 Donn\u00e9es AGENDA\n */\nvar AGENDA = [\n\n' + lines + '\n];\n\nfunction agendaToRaw(entries) {\n  return entries.map(function(e) { return [e.jour,e.date,e.heure,e.type,e.atelier,e.lieu,e.fac1,e.fac2,e.traduction,e.helper1,e.helper2,e.helper3,e.helper4||"",e.angel,e.note,e.logisticId||"",e.piment||0]; });\n}';
 }
 
-// ══════════════════════════════════════════════════════════
-// SÉRIALISATION ref_descriptions.js
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SÃ‰RIALISATION ref_descriptions.js
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function buildRefDescJs() {
   var lines = DESCRIPTIONS_DATA.map(function(d) {
     return '  { key:"'           + escJs(d.key||'') +
@@ -836,22 +836,22 @@ function buildRefDescJs() {
     'var REF_DESCRIPTIONS = [\n\n' + lines + '\n\n];\n';
 }
 
-// ══════════════════════════════════════════════════════════
-// SAUVEGARDE → ref_ressources.js
-// ══════════════════════════════════════════════════════════
-// sauvegarder() délègue à saveFile() de github-api.js (point d'entrée unique,
-// détection automatique local/GitHub Pages + détection de conflit multi-utilisateurs).
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SAUVEGARDE â†’ ref_ressources.js
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// sauvegarder() dÃ©lÃ¨gue Ã  saveFile() de github-api.js (point d'entrÃ©e unique,
+// dÃ©tection automatique local/GitHub Pages + dÃ©tection de conflit multi-utilisateurs).
 async function sauvegarder(filename, content) {
   return saveFile(filename, content);
 }
 
-// ── Génération du fichier ref_ressources.js ──────────────────────────────────
+// â”€â”€ GÃ©nÃ©ration du fichier ref_ressources.js â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function escJs(v) {
   return String(v || '').replace(/\\/g,'\\\\').replace(/"/g,'\\"');
 }
 
 function genererRefRessources() {
-  // Trier alphabétiquement par value avant de sérialiser
+  // Trier alphabÃ©tiquement par value avant de sÃ©rialiser
   var sorted = data.slice().sort(function(a, b) { return a.value.localeCompare(b.value); });
 
   var lines = sorted.map(function(r) {
@@ -914,9 +914,9 @@ lines + '\n' +
   );
 }
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // UTILITAIRES
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function esc(v) {
   return String(v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -931,16 +931,16 @@ function showToast(msg, isError) {
   setTimeout(function() { t.classList.remove('show'); }, isError ? 6000 : 3500);
 }
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // IMPORT EXCEL
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-// Pending changes après parsing : [{ idx, name, field, oldVal, newVal, accepted }]
+// Pending changes aprÃ¨s parsing : [{ idx, name, field, oldVal, newVal, accepted }]
 var _importPending = [];
 
 function triggerImport() {
   var inp = document.getElementById('importFileInput');
-  inp.value = '';   // reset pour permettre re-sélection du même fichier
+  inp.value = '';   // reset pour permettre re-sÃ©lection du mÃªme fichier
   inp.click();
 }
 window.triggerImport = triggerImport;
@@ -956,15 +956,15 @@ function closeImport() {
 }
 window.closeImport = closeImport;
 
-// ── Parseur XLSX (SpreadsheetML + deflate) ───────────────────────────────────
-// Async : décompresse via DecompressionStream (disponible Chrome/Edge/Firefox/Safari modernes).
+// â”€â”€ Parseur XLSX (SpreadsheetML + deflate) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Async : dÃ©compresse via DecompressionStream (disponible Chrome/Edge/Firefox/Safari modernes).
 async function parseXlsx(arrayBuffer) {
   var bytes = new Uint8Array(arrayBuffer);
 
   function r16(p) { return bytes[p] | (bytes[p+1] << 8); }
   function r32(p) { return (bytes[p] | (bytes[p+1]<<8) | (bytes[p+2]<<16) | (bytes[p+3]<<24)) >>> 0; }
 
-  // Décompression deflate-raw via DecompressionStream
+  // DÃ©compression deflate-raw via DecompressionStream
   async function inflate(compBytes) {
     var ds = new DecompressionStream('deflate-raw');
     var writer = ds.writable.getWriter();
@@ -984,8 +984,8 @@ async function parseXlsx(arrayBuffer) {
     return new TextDecoder('utf-8').decode(out);
   }
 
-  // ── Extraire tous les fichiers du ZIP (stored + deflate) ─────────────────
-  // On collecte d'abord les métadonnées (nom, compression, offsets)
+  // â”€â”€ Extraire tous les fichiers du ZIP (stored + deflate) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // On collecte d'abord les mÃ©tadonnÃ©es (nom, compression, offsets)
   var entries = [];
   var pos = 0;
   while (pos < bytes.length - 4) {
@@ -1001,7 +1001,7 @@ async function parseXlsx(arrayBuffer) {
     } else { pos++; }
   }
 
-  // Décompresser en parallèle les fichiers nécessaires
+  // DÃ©compresser en parallÃ¨le les fichiers nÃ©cessaires
   var needed = ['xl/workbook.xml','xl/sharedStrings.xml','xl/worksheets/sheet1.xml','xl/worksheets/Sheet1.xml'];
   var files = {};
   await Promise.all(entries
@@ -1016,15 +1016,15 @@ async function parseXlsx(arrayBuffer) {
     })
   );
 
-  // ── Trouver le chemin de la première feuille via workbook.xml ─────────────
+  // â”€â”€ Trouver le chemin de la premiÃ¨re feuille via workbook.xml â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var sheetXml = null;
   var wbXml = files['xl/workbook.xml'];
   if (wbXml) {
-    // Trouver r:id de la première sheet
+    // Trouver r:id de la premiÃ¨re sheet
     var sheetM = /<sheet [^>]*r:id="([^"]+)"/.exec(wbXml);
     if (sheetM) {
       var rId = sheetM[1];
-      // Lire workbook.xml.rels pour résoudre l'id → fichier
+      // Lire workbook.xml.rels pour rÃ©soudre l'id â†’ fichier
       var relsEntry = entries.find(function(e){ return e.name === 'xl/_rels/workbook.xml.rels'; });
       if (relsEntry) {
         var relsRaw = bytes.slice(relsEntry.start, relsEntry.start + relsEntry.compSize);
@@ -1035,7 +1035,7 @@ async function parseXlsx(arrayBuffer) {
         var relM  = relRe.exec(relsXml);
         if (relM) {
           var target = relM[1].replace(/^\/?xl\//, 'xl/').replace(/^worksheets\//, 'xl/worksheets/');
-          // Normaliser : si target est relatif à xl/
+          // Normaliser : si target est relatif Ã  xl/
           var sheetPath = target.startsWith('xl/') ? target : 'xl/' + target;
           sheetXml = files[sheetPath] || files['xl/worksheets/sheet1.xml'] || files['xl/worksheets/Sheet1.xml'];
         }
@@ -1046,7 +1046,7 @@ async function parseXlsx(arrayBuffer) {
   if (!sheetXml) sheetXml = files['xl/worksheets/sheet1.xml'] || files['xl/worksheets/Sheet1.xml'];
   if (!sheetXml) throw new Error('Feuille introuvable dans le fichier XLSX.');
 
-  // ── Shared strings ────────────────────────────────────────────────────────
+  // â”€â”€ Shared strings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var sharedStrings = [];
   var ssXml = files['xl/sharedStrings.xml'];
   if (ssXml) {
@@ -1061,7 +1061,7 @@ async function parseXlsx(arrayBuffer) {
     }
   }
 
-  // ── Parser lignes / cellules ──────────────────────────────────────────────
+  // â”€â”€ Parser lignes / cellules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var rows = [];
   var rowRe = /<row[^>]*>([\s\S]*?)<\/row>/g;
   var rowM;
@@ -1098,9 +1098,9 @@ function handleImportFile(input) {
   var file = input.files && input.files[0];
   if (!file) return;
 
-  // Vérification extension
+  // VÃ©rification extension
   if (!file.name.toLowerCase().endsWith('.xlsx')) {
-    showToast('❌ Format invalide — seuls les fichiers .xlsx sont acceptés.', true);
+    showToast('âŒ Format invalide â€” seuls les fichiers .xlsx sont acceptÃ©s.', true);
     return;
   }
 
@@ -1110,16 +1110,16 @@ function handleImportFile(input) {
     try {
       rows = await parseXlsx(e.target.result);
     } catch(err) {
-      showToast('❌ Impossible de lire le fichier : ' + err.message, true);
+      showToast('âŒ Impossible de lire le fichier : ' + err.message, true);
       return;
     }
 
     if (!rows.length) {
-      showToast('❌ Le fichier est vide.', true);
+      showToast('âŒ Le fichier est vide.', true);
       return;
     }
 
-    // ── Validation de la structure ───────────────────────────────────────
+    // â”€â”€ Validation de la structure â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var headers = rows[0].map(function(h) { return (h||'').trim().toLowerCase(); });
     var idxId    = headers.indexOf('id');
     var idxTel   = headers.indexOf('telephone');
@@ -1127,11 +1127,11 @@ function handleImportFile(input) {
     var idxLien  = headers.indexOf('lien');
 
     if (idxId === -1 || idxTel === -1 || idxEmail === -1) {
-      showToast('❌ Format incorrect — colonnes requises manquantes : ID, Telephone, Email.', true);
+      showToast('âŒ Format incorrect â€” colonnes requises manquantes : ID, Telephone, Email.', true);
       return;
     }
 
-    // ── Calcul des changements ───────────────────────────────────────────
+    // â”€â”€ Calcul des changements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var pending = [];
     var skipped = 0;
 
@@ -1141,7 +1141,7 @@ function handleImportFile(input) {
       if (!id) continue;
 
       // Chercher la ressource dans data
-      var idx = data.findIndex(function(r) { return r.id === id; });
+      var idx = data.findIndex(function(r){ return String(r.id) === String(id); });
       if (idx === -1) { skipped++; continue; }
 
       var res     = data[idx];
@@ -1152,7 +1152,7 @@ function handleImportFile(input) {
       ['tel','email','lien'].forEach(function(field) {
         var newVal = field === 'tel' ? newTel : field === 'email' ? newEmail : newLien;
         var oldVal = res[field] || '';
-        if (newVal === oldVal) return;  // rien à faire
+        if (newVal === oldVal) return;  // rien Ã  faire
         pending.push({
           idx:      idx,
           id:       id,
@@ -1160,14 +1160,14 @@ function handleImportFile(input) {
           field:    field,
           oldVal:   oldVal,
           newVal:   newVal,
-          conflict: oldVal !== '',      // conflit si une valeur existait déjà
-          accepted: true                // coché par défaut
+          conflict: oldVal !== '',      // conflit si une valeur existait dÃ©jÃ 
+          accepted: true                // cochÃ© par dÃ©faut
         });
       });
     }
 
     if (!pending.length && skipped === 0) {
-      showToast('ℹ️ Aucune modification détectée — les données sont déjà à jour.', false);
+      showToast('â„¹ï¸ Aucune modification dÃ©tectÃ©e â€” les donnÃ©es sont dÃ©jÃ  Ã  jour.', false);
       return;
     }
 
@@ -1182,29 +1182,29 @@ function renderImportModal(fileName, skipped) {
   var nbChanges   = _importPending.length;
   var nbConflicts = _importPending.filter(function(c){ return c.conflict; }).length;
 
-  document.getElementById('importTitle').textContent = '📤 Import : ' + fileName;
+  document.getElementById('importTitle').textContent = 'ðŸ“¤ Import : ' + fileName;
 
-  var sub = nbChanges + ' modification(s) détectée(s)';
-  if (nbConflicts)  sub += ' · ⚠️ ' + nbConflicts + ' conflit(s) (valeur existante)';
-  if (skipped)      sub += ' · ' + skipped + ' ID inconnu(s) ignoré(s)';
+  var sub = nbChanges + ' modification(s) dÃ©tectÃ©e(s)';
+  if (nbConflicts)  sub += ' Â· âš ï¸ ' + nbConflicts + ' conflit(s) (valeur existante)';
+  if (skipped)      sub += ' Â· ' + skipped + ' ID inconnu(s) ignorÃ©(s)';
   document.getElementById('importSub').textContent = sub;
 
   var html = '';
   if (!nbChanges) {
     html = '<div style="text-align:center;padding:24px;color:var(--muted);font-style:italic">' +
-           (skipped ? skipped + ' ID inconnu(s) ignoré(s). Aucune modification à appliquer.' : 'Aucune modification.') +
+           (skipped ? skipped + ' ID inconnu(s) ignorÃ©(s). Aucune modification Ã  appliquer.' : 'Aucune modification.') +
            '</div>';
     document.getElementById('importSaveBtn').style.display = 'none';
   } else {
     document.getElementById('importSaveBtn').style.display = '';
     html = _importPending.map(function(c, ci) {
       var cls   = c.conflict ? 'change-row conflict' : 'change-row new-val';
-      var label = c.field === 'tel' ? '📞 Téléphone' : '✉️ Email';
+      var label = c.field === 'tel' ? 'ðŸ“ž TÃ©lÃ©phone' : 'âœ‰ï¸ Email';
       var oldHtml = c.oldVal
-        ? '<span class="change-old">' + esc(c.oldVal) + '</span><span class="change-arrow"> → </span>'
-        : '<span style="color:var(--muted);font-style:italic">vide</span><span class="change-arrow"> → </span>';
+        ? '<span class="change-old">' + esc(c.oldVal) + '</span><span class="change-arrow"> â†’ </span>'
+        : '<span style="color:var(--muted);font-style:italic">vide</span><span class="change-arrow"> â†’ </span>';
       var newHtml = '<span class="change-new">' + esc(c.newVal) + '</span>';
-      var warning = c.conflict ? '<span style="font-size:11px;color:#d97706;font-weight:600"> ⚠️ Écrase une valeur existante</span>' : '';
+      var warning = c.conflict ? '<span style="font-size:11px;color:#d97706;font-weight:600"> âš ï¸ Ã‰crase une valeur existante</span>' : '';
       return '<div class="' + cls + '">' +
         '<div class="change-name">' + esc(c.name) + ' <span style="font-size:11px;color:var(--muted);font-family:monospace">' + esc(c.id) + '</span></div>' +
         '<div class="change-detail">' + label + ' : ' + oldHtml + newHtml + warning + '</div>' +
@@ -1223,7 +1223,7 @@ function renderImportModal(fileName, skipped) {
 async function applyImport() {
   var toApply = _importPending.filter(function(c){ return c.accepted; });
   if (!toApply.length) {
-    showToast('ℹ️ Aucun changement sélectionné.', false);
+    showToast('â„¹ï¸ Aucun changement sÃ©lectionnÃ©.', false);
     return;
   }
 
@@ -1236,46 +1236,46 @@ async function applyImport() {
 
   try {
     await sauvegarder('ref_ressources.js', genererRefRessources());
-    showToast('✅ ' + toApply.length + ' modification(s) enregistrée(s) !');
+    showToast('âœ… ' + toApply.length + ' modification(s) enregistrÃ©e(s) !');
     closeImport();
     renderTable();
   } catch(err) {
-    // rollback mémoire
+    // rollback mÃ©moire
     toApply.forEach(function(c) { data[c.idx][c.field] = c.oldVal; });
-    showToast('❌ Sauvegarde impossible : ' + err.message, true);
+    showToast('âŒ Sauvegarde impossible : ' + err.message, true);
   } finally {
     if (btn) btn.disabled = false;
   }
 }
 window.applyImport = applyImport;
 
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // EXPORT EXCEL
-// ══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function exportExcel() {
-  // ── Collecter tous les rôles distincts dans l'ordre ─────────────────────
+  // â”€â”€ Collecter tous les rÃ´les distincts dans l'ordre â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var allRoles = [];
   var rolesSeen = {};
-  // D'abord les rôles connus de REF_RESOURCE_TYPES (ordre stable)
+  // D'abord les rÃ´les connus de REF_RESOURCE_TYPES (ordre stable)
   if (typeof REF_RESOURCE_TYPES !== 'undefined') {
     REF_RESOURCE_TYPES.forEach(function(rt) {
       if (!rolesSeen[rt.value]) { rolesSeen[rt.value] = true; allRoles.push(rt.value); }
     });
   }
-  // Puis les rôles présents dans les données mais non listés
+  // Puis les rÃ´les prÃ©sents dans les donnÃ©es mais non listÃ©s
   data.forEach(function(r) {
     (r.roles || []).forEach(function(rl) {
       if (!rolesSeen[rl]) { rolesSeen[rl] = true; allRoles.push(rl); }
     });
   });
 
-  // ── En-têtes ─────────────────────────────────────────────────────────────
+  // â”€â”€ En-tÃªtes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var HEADERS = ['ID', 'Nom', 'Telephone', 'Email', 'Lien'].concat(allRoles).concat(['Langues']);
 
-  // ── Trier les ressources alphabétiquement par nom ─────────────────────────
+  // â”€â”€ Trier les ressources alphabÃ©tiquement par nom â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var sorted = data.slice().sort(function(a, b) { return a.value.localeCompare(b.value, 'fr'); });
 
-  // ── Helpers XML ──────────────────────────────────────────────────────────
+  // â”€â”€ Helpers XML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function escXml(v) {
     return String(v == null ? '' : v)
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -1293,7 +1293,7 @@ function exportExcel() {
     return '<c r="' + colLetter(col) + row + '"><v>' + (parseInt(val) || 0) + '</v></c>';
   }
 
-  // ── Lignes XML ───────────────────────────────────────────────────────────
+  // â”€â”€ Lignes XML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var rowsXml = '<row r="1">';
   HEADERS.forEach(function(h, ci) { rowsXml += cellS(ci, 1, h); });
   rowsXml += '</row>';
@@ -1314,7 +1314,7 @@ function exportExcel() {
     rowsXml += '</row>';
   });
 
-  // ── Largeurs colonnes ────────────────────────────────────────────────────
+  // â”€â”€ Largeurs colonnes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var colWidths = HEADERS.map(function(h, ci) {
     var maxLen = sorted.reduce(function(m, r) {
       var vals = [r.id, r.value].concat(allRoles.map(function(rl) {
@@ -1328,7 +1328,7 @@ function exportExcel() {
     return '<col min="' + (ci+1) + '" max="' + (ci+1) + '" width="' + w + '" customWidth="1"/>';
   }).join('');
 
-  // ── Assemblage XLSX (SpreadsheetML ZIP) ──────────────────────────────────
+  // â”€â”€ Assemblage XLSX (SpreadsheetML ZIP) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var sheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
     '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
     '<sheetViews><sheetView tabSelected="1" workbookViewId="0">' +
@@ -1362,7 +1362,7 @@ function exportExcel() {
     '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
     '</Types>';
 
-  // ── ZIP minimaliste ───────────────────────────────────────────────────────
+  // â”€â”€ ZIP minimaliste â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function strToBytes(str) { return new TextEncoder().encode(str); }
   function crc32(bytes) {
     var table = (function() {
@@ -1411,7 +1411,7 @@ function exportExcel() {
   ];
   var zipBytes = buildZip(entries);
 
-  // ── Nom du fichier avec date ──────────────────────────────────────────────
+  // â”€â”€ Nom du fichier avec date â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var today = new Date();
   var ymd = today.getFullYear() + '-' +
     String(today.getMonth() + 1).padStart(2, '0') + '-' +
@@ -1426,7 +1426,7 @@ function exportExcel() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
-  showToast('✅ Export ' + fileName + ' téléchargé !');
+  showToast('âœ… Export ' + fileName + ' tÃ©lÃ©chargÃ© !');
 }
 window.exportExcel = exportExcel;
 
@@ -1441,17 +1441,17 @@ window.hardReload = hardReload;
 
 function toggleMode() {
   var isDark = document.body.classList.toggle('dark');
-  document.getElementById('modeBtn').textContent = isDark ? '☀️ Mode Jour' : '🌙 Mode Nuit';
+  document.getElementById('modeBtn').textContent = isDark ? 'â˜€ï¸ Mode Jour' : 'ðŸŒ™ Mode Nuit';
 }
 window.toggleMode = toggleMode;
 
-// ── Démarrage ─────────────────────────────────────────────
+// â”€â”€ DÃ©marrage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 loadData(['ref_id_mapping.js', 'ref_translations.js', 'ref_resource_types.js', 'ref_ressources.js', 'data.js', 'ref_descriptions.js'], function() {
   if (typeof REF_RESSOURCES === 'undefined' || typeof REF_RESOURCE_TYPES === 'undefined') {
     document.getElementById('tableBody').innerHTML =
-      '<tr class="empty-row"><td colspan="7">⚠️ Erreur de chargement des ressources — cliquez sur 🔄 Refresh.</td></tr>';
-    document.getElementById('stats').textContent = 'Données non disponibles.';
-    console.error('[Rapport_Gerer_Ressources] REF_RESSOURCES ou REF_RESOURCE_TYPES introuvable après loadData.');
+      '<tr class="empty-row"><td colspan="7">âš ï¸ Erreur de chargement des ressources â€” cliquez sur ðŸ”„ Refresh.</td></tr>';
+    document.getElementById('stats').textContent = 'DonnÃ©es non disponibles.';
+    console.error('[Rapport_Gerer_Ressources] REF_RESSOURCES ou REF_RESOURCE_TYPES introuvable aprÃ¨s loadData.');
     return;
   }
   if (typeof AGENDA !== 'undefined') {
@@ -1467,6 +1467,7 @@ loadData(['ref_id_mapping.js', 'ref_translations.js', 'ref_resource_types.js', '
 </script>
 </body>
 </html>
+
 
 
 

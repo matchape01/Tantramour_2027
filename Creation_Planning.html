@@ -1338,13 +1338,13 @@
           const inFr = (a.nomFr || '').toLowerCase().includes(qSearch);
           const inEn = (a.nomEn || '').toLowerCase().includes(qSearch);
           const inAnim = (a.animateurs || []).some(id => {
-            const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.id === id) : null;
+            const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => String(x.id) === String(id)) : null;
             return r && r.value.toLowerCase().includes(qSearch);
           });
           if (!inFr && !inEn && !inAnim) return false;
         }
         if (qType && a.type !== qType) return false;
-        if (qAnim && (!a.animateurs || !a.animateurs.includes(qAnim))) return false;
+        if (qAnim && (!a.animateurs || !a.animateurs.some(id => String(id) === String(qAnim)))) return false;
         return true;
       });
 
@@ -1362,7 +1362,7 @@
 
         // Animateurs
         const animNames = (a.animateurs || []).map(id => {
-          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.id === id) : null;
+          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => String(x.id) === String(id)) : null;
           return r ? r.value : id;
         }).join(', ') || '—';
 
@@ -1487,7 +1487,7 @@
         const timeLabel = minToTimeStr(ev.startMin) + ' - ' + minToTimeStr(ev.endMin);
 
         const animNames = (ev.animateurs || []).map(id => {
-          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => x.id === id) : null;
+          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => String(x.id) === String(id)) : null;
           return r ? r.value : id;
         }).join(', ') || '';
 
@@ -1600,13 +1600,13 @@
         const heureStr = minToTimeStr(ev.startMin) + ' - ' + minToTimeStr(ev.endMin);
 
         // Récupérer animateurs
-        const anim1 = ev.animateurs[0] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[0])) || {}).value || '' : '';
+        const anim1 = ev.animateurs[0] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => String(r.id) === String(ev.animateurs[0]))) || {}).value || '' : '';
         const anim1Id = ev.animateurs[0] || '';
-        const anim2 = ev.animateurs[1] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[1])) || {}).value || '' : '';
+        const anim2 = ev.animateurs[1] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => String(r.id) === String(ev.animateurs[1]))) || {}).value || '' : '';
         const anim2Id = ev.animateurs[1] || '';
-        const anim3 = ev.animateurs[2] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[2])) || {}).value || '' : '';
+        const anim3 = ev.animateurs[2] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => String(r.id) === String(ev.animateurs[2]))) || {}).value || '' : '';
         const anim3Id = ev.animateurs[2] || '';
-        const anim4 = ev.animateurs[3] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => r.id === ev.animateurs[3])) || {}).value || '' : '';
+        const anim4 = ev.animateurs[3] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => String(r.id) === String(ev.animateurs[3]))) || {}).value || '' : '';
         const anim4Id = ev.animateurs[3] || '';
 
         return `  {id:"${escJs(ev.atelierId || ev.id)}",jour:"${escJs(ev.jour)}",date:"${escJs(ev.date)}",heure:"${escJs(heureStr)}",type:"${escJs(ev.type)}",atelier:"${escJs(ev.nom)}",lieu:"${escJs(ev.lieu)}",fac1:"${escJs(anim1)}",fac1Id:"${escJs(anim1Id)}",fac2:"${escJs(anim2)}",fac2Id:"${escJs(anim2Id)}",fac3:"${escJs(anim3)}",fac3Id:"${escJs(anim3Id)}",fac4:"${escJs(anim4)}",fac4Id:"${escJs(anim4Id)}",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:""}`;

@@ -501,35 +501,35 @@ function populateEditor(idx) {
       <label data-i18n="filter_traducteur">Traducteur</label>
       <select id="ef_trad_${idx}" onchange="onEF(${idx},'traduction',this.value)">
         <option value="">— aucun —</option>
-        ${traducteurs.map(r => `<option value="${esc(r.id)}"${r.id === e.traduction ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${traducteurs.map(r => `<option value="${esc(r.id)}"${String(r.id) === String(e.traduction) ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 1</label>
       <select id="ef_h1_${idx}" onchange="onEF(${idx},'helper1',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper1 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${String(r.id) === String(e.helper1) ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 2</label>
       <select id="ef_h2_${idx}" onchange="onEF(${idx},'helper2',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper2 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${String(r.id) === String(e.helper2) ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 3</label>
       <select id="ef_h3_${idx}" onchange="onEF(${idx},'helper3',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper3 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${String(r.id) === String(e.helper3) ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Helper 4</label>
       <select id="ef_h4_${idx}" onchange="onEF(${idx},'helper4',this.value)">
         <option value="">— aucun —</option>
-        ${helpers.map(r => `<option value="${esc(r.id)}"${r.id === e.helper4 ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
+        ${helpers.map(r => `<option value="${esc(r.id)}"${String(r.id) === String(e.helper4) ? ' selected' : ''}>${esc(r.value)}</option>`).join('')}
       </select>
     </div>
   `;
@@ -649,6 +649,7 @@ render();
 </script>
 </body>
 </html>
+
 
 
 

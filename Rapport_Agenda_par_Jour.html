@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour 2026 — Planning par Jour</title>
+<title>Tantramour 2026 â€” Planning par Jour</title>
 <style>
   :root {
     --bg: #ffffff; --surface: #f7f8fa; --border: #e5e7eb;
@@ -37,10 +37,10 @@
   select { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 13px; color: var(--text); font-family: inherit; min-width: 200px; cursor: pointer; }
   .stats { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
   .stats span { color: var(--accent); font-weight: 600; }
-  /* ── TABLE VIEW ── */
+  /* â”€â”€ TABLE VIEW â”€â”€ */
   .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  /* Largeurs fixes — sans colonne Date, noms sur plusieurs lignes */
+  /* Largeurs fixes â€” sans colonne Date, noms sur plusieurs lignes */
   col.c-jour   { width: 48px; }
   col.c-date   { width: 100px; }
   col.c-heure  { width: 108px; }
@@ -66,15 +66,15 @@
   tbody tr.conflict-row:hover { background: #ffe0e8 !important; }
   td { padding: 6px 8px; font-size: 12px; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   td.td-wrap { white-space: normal; }
-  /* Colonnes où les noms doivent pouvoir passer à la ligne */
+  /* Colonnes oÃ¹ les noms doivent pouvoir passer Ã  la ligne */
   td.td-names { white-space: normal; overflow: visible; }
   td.td-names .pill { display: block; margin: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  /* Colonne Piment — centrée */
+  /* Colonne Piment â€” centrÃ©e */
   td.td-piment, th.th-piment { text-align: center; }
   td.conflict-cell { background: #fef08a !important; }
   td.conflict-cell .pill, td.conflict-cell span.pill { background: #fef08a !important; color: #b91c1c !important; font-weight: 700 !important; border: 1px solid #f59e0b; }
   td.conflict-cell-text { background: #fef08a !important; color: #b91c1c !important; font-weight: 700 !important; }
-  /* ── CARD VIEW ── */
+  /* â”€â”€ CARD VIEW â”€â”€ */
   .card-list { display: none; flex-direction: column; gap: 20px; }
   /* Groupe jour */
   .card-day-group { display: flex; flex-direction: column; gap: 8px; }
@@ -86,7 +86,7 @@
   .vg-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); flex: 1; }
   .vg-angel { font-size: 11px; font-weight: 600; color: var(--badge-at); background: var(--badge-a); border-radius: 4px; padding: 2px 8px; white-space: nowrap; }
   .vg-angel-tel { font-size: 10px; font-weight: 400; opacity: .8; }
-  /* Rangée de mini-cartes */
+  /* RangÃ©e de mini-cartes */
   .vg-cards { display: flex; flex-direction: row; }
   .vg-cards .mini-card:not(:last-child) { border-right: 1px solid var(--border); }
   /* Mini-carte individuelle */
@@ -99,11 +99,11 @@
   .mini-card-row { display: flex; gap: 5px; align-items: flex-start; }
   .mini-card-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .3px; color: var(--muted); font-weight: 600; min-width: 58px; padding-top: 2px; flex-shrink: 0; }
   .mini-card-val { font-size: 11px; color: var(--text); flex: 1; display: flex; flex-wrap: wrap; gap: 3px; align-items: center; line-height: 1.4; }
-  /* Ligne discrète (repas, réunion, prépa) */
+  /* Ligne discrÃ¨te (repas, rÃ©union, prÃ©pa) */
   .vg-small { padding: 4px 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
   .vg-small-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
   .vg-small-items { font-size: 11px; color: var(--muted); }
-  /* ── SHARED ── */
+  /* â”€â”€ SHARED â”€â”€ */
   .tag { display: inline-block; background: var(--tag-bg); color: var(--tag-text); border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 600; white-space: nowrap; }
   .pill { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin: 1px 2px; white-space: nowrap; }
   .pill-h { background: var(--badge-h); color: var(--badge-ht); }
@@ -113,14 +113,14 @@
   .heure { white-space: nowrap; font-variant-numeric: tabular-nums; }
   .empty { text-align: center; padding: 48px; color: var(--muted); font-size: 14px; }
   footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--muted); }
-  /* ── RESPONSIVE AUTO-SWITCH ── */
+  /* â”€â”€ RESPONSIVE AUTO-SWITCH â”€â”€ */
   @media (max-width: 767px) {
     .wrap { padding: 16px 12px; }
     select { min-width: 100%; }
     .filters { gap: 10px; }
   }
 
-  /* ── MODALE DÉTAIL (identique à Mon Planning V2) ── */
+  /* â”€â”€ MODALE DÃ‰TAIL (identique Ã  Mon Planning V2) â”€â”€ */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9999; align-items:flex-start; justify-content:center; padding:24px 16px; overflow-y:auto; }
   .modal-overlay.open { display:flex; }
   .modal-box { position:relative; background:var(--bg); border-radius:14px; max-width:680px; width:100%; border:1px solid var(--border); box-shadow:0 12px 40px rgba(0,0,0,.2); }
@@ -155,7 +155,7 @@
     .modal-top { flex-direction:column; }
     .modal-top-right { flex-direction:row; align-items:center; }
   }
-  /* ── BOUTON POSE MASSAGE ── */
+  /* â”€â”€ BOUTON POSE MASSAGE â”€â”€ */
   .btn-massage {
     display: inline-flex; align-items: center; gap: 5px;
     background: #d1fae5; color: #065f46; border: 1.5px solid #6ee7b7;
@@ -166,7 +166,7 @@
   }
   .btn-massage:hover { background: #a7f3d0; border-color: #34d399; }
   .btn-massage .sun-icon { font-size: 14px; }
-  /* ── POPUP POSE MASSAGE ── */
+  /* â”€â”€ POPUP POSE MASSAGE â”€â”€ */
   #pmOverlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
     z-index: 9998; align-items: flex-start; justify-content: center;
@@ -206,11 +206,11 @@
 <script src="i18n.js"></script>
 </head>
 <body>
-<!-- ── MODALE MOT DE PASSE ADMIN ── -->
+<!-- â”€â”€ MODALE MOT DE PASSE ADMIN â”€â”€ -->
 <div id="editPwOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:12px;padding:36px 32px;max-width:340px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.18);font-family:-apple-system,'Segoe UI',system-ui,sans-serif;">
-    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#57606a;margin-bottom:6px;">⚙️ Admin — Édition</p>
-    <p style="font-size:17px;font-weight:700;color:#1f2328;margin-bottom:6px;" data-i18n="pw_acces_restreint">🔒 Accès restreint</p>
+    <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#57606a;margin-bottom:6px;">âš™ï¸ Admin â€” Ã‰dition</p>
+    <p style="font-size:17px;font-weight:700;color:#1f2328;margin-bottom:6px;" data-i18n="pw_acces_restreint">ðŸ”’ AccÃ¨s restreint</p>
     <p style="font-size:13px;color:#57606a;margin-bottom:16px;" id="editPwAtelier"></p>
     <input id="editPwInput" type="password" placeholder="Mot de passe" autocomplete="off"
       style="width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:15px;outline:none;margin-bottom:8px;"
@@ -223,12 +223,12 @@
   </div>
 </div>
 
-<!-- ── POPUP POSE MASSAGE ── -->
+<!-- â”€â”€ POPUP POSE MASSAGE â”€â”€ -->
 <div id="pmOverlay">
   <div id="pmModal" onclick="pmClose()">
-    <button class="pm-close-x" onclick="event.stopPropagation();pmClose()" aria-label="Fermer">✕</button>
+    <button class="pm-close-x" onclick="event.stopPropagation();pmClose()" aria-label="Fermer">âœ•</button>
     <div class="pm-header">
-      <div class="pm-sun">🌞</div>
+      <div class="pm-sun">ðŸŒž</div>
       <div>
         <div class="pm-title" id="pmTitle">Pause Massage</div>
         <div class="pm-day" id="pmDay"></div>
@@ -237,7 +237,7 @@
     <div class="pm-body" id="pmBody"></div>
     <div style="display:flex;gap:10px;">
       <button class="pm-close" style="flex:1;" onclick="event.stopPropagation();pmClose()">Fermer</button>
-      <button class="pm-lang-btn" onclick="event.stopPropagation();pmToggleLang()" style="flex:0 0 auto;padding:10px 16px;border:1px solid #6ee7b7;border-radius:8px;background:#f0fdf4;color:#065f46;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;">🌐 EN</button>
+      <button class="pm-lang-btn" onclick="event.stopPropagation();pmToggleLang()" style="flex:0 0 auto;padding:10px 16px;border:1px solid #6ee7b7;border-radius:8px;background:#f0fdf4;color:#065f46;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;">ðŸŒ EN</button>
     </div>
   </div>
 </div>
@@ -249,14 +249,14 @@
       <p data-i18n="r1_title">Planning par Jour</p>
     </div>
     <div class="header-actions">
-      <a class="mode-btn" href="index.html" data-i18n="nav_accueil">🏠 Accueil</a>
-      <a class="mode-btn" href="index_bis.html" data-i18n="nav_dreamteam">🌀 DreamTeam</a>
-      <a class="mode-btn" href="gestion_planning.html" data-i18n="nav_admin">⚙️ Admin</a>
-      <button class="mode-btn" onclick="hardReload()">🔄 <span data-i18n="nav_refresh">Refresh</span></button>
-      <button class="mode-btn" id="viewBtn" onclick="toggleView()">📱 <span data-i18n="nav_vue_mobile" id="viewBtnText">Vue Mobile</span></button>
-      <button class="mode-btn" onclick="exportXlsx()">📥 <span data-i18n="nav_export_excel">Export Excel</span></button>
-      <button class="mode-btn" id="modeBtn" onclick="toggleMode()">🌙 <span data-i18n="nav_mode_nuit" id="modeBtnText">Mode Nuit</span></button>
-      <button class="mode-btn tm-lang-btn" onclick="I18n.setLang(I18n.getLang()==='fr'?'en':'fr')">🌐 EN</button>
+      <a class="mode-btn" href="index.html" data-i18n="nav_accueil">ðŸ  Accueil</a>
+      <a class="mode-btn" href="index_bis.html" data-i18n="nav_dreamteam">ðŸŒ€ DreamTeam</a>
+      <a class="mode-btn" href="gestion_planning.html" data-i18n="nav_admin">âš™ï¸ Admin</a>
+      <button class="mode-btn" onclick="hardReload()">ðŸ”„ <span data-i18n="nav_refresh">Refresh</span></button>
+      <button class="mode-btn" id="viewBtn" onclick="toggleView()">ðŸ“± <span data-i18n="nav_vue_mobile" id="viewBtnText">Vue Mobile</span></button>
+      <button class="mode-btn" onclick="exportXlsx()">ðŸ“¥ <span data-i18n="nav_export_excel">Export Excel</span></button>
+      <button class="mode-btn" id="modeBtn" onclick="toggleMode()">ðŸŒ™ <span data-i18n="nav_mode_nuit" id="modeBtnText">Mode Nuit</span></button>
+      <button class="mode-btn tm-lang-btn" onclick="I18n.setLang(I18n.getLang()==='fr'?'en':'fr')">ðŸŒ EN</button>
     </div>
   </header>
 
@@ -265,13 +265,13 @@
       <label data-i18n="filter_jour_date">Jour / Date</label>
       <select id="filterJour" onchange="render()">
         <option value="" data-i18n="filter_tous_jours">Tous les jours</option>
-        <option value="Jour 1" data-i18n="jour1_label">Jour 1 — Sam. 29 août</option>
-        <option value="Jour 2" data-i18n="jour2_label">Jour 2 — Dim. 30 août</option>
-        <option value="Jour 3" data-i18n="jour3_label">Jour 3 — Lun. 31 août</option>
-        <option value="Jour 4" data-i18n="jour4_label">Jour 4 — Mar. 1 sept.</option>
-        <option value="Jour 5" data-i18n="jour5_label">Jour 5 — Mer. 2 sept.</option>
-        <option value="Jour 6" data-i18n="jour6_label">Jour 6 — Jeu. 3 sept.</option>
-        <option value="Jour 7" data-i18n="jour7_label">Jour 7 — Ven. 4 sept.</option>
+        <option value="Jour 1" data-i18n="jour1_label">Jour 1 â€” Sam. 29 aoÃ»t</option>
+        <option value="Jour 2" data-i18n="jour2_label">Jour 2 â€” Dim. 30 aoÃ»t</option>
+        <option value="Jour 3" data-i18n="jour3_label">Jour 3 â€” Lun. 31 aoÃ»t</option>
+        <option value="Jour 4" data-i18n="jour4_label">Jour 4 â€” Mar. 1 sept.</option>
+        <option value="Jour 5" data-i18n="jour5_label">Jour 5 â€” Mer. 2 sept.</option>
+        <option value="Jour 6" data-i18n="jour6_label">Jour 6 â€” Jeu. 3 sept.</option>
+        <option value="Jour 7" data-i18n="jour7_label">Jour 7 â€” Ven. 4 sept.</option>
       </select>
     </div>
     <div class="filter-group">
@@ -324,17 +324,17 @@
       </colgroup>
       <thead>
         <tr>
-          <th onclick="sortBy(0)"><span data-i18n="col_jour">Jour</span><span class="sort-icon" id="si0">⇅</span></th>
-          <th onclick="sortBy(1)"><span data-i18n="col_date">Date</span><span class="sort-icon" id="si1">⇅</span></th>
-          <th onclick="sortBy(2)"><span data-i18n="col_heure">Heure</span><span class="sort-icon" id="si2">⇅</span></th>
-          <th onclick="sortBy(3)"><span data-i18n="col_type">Type</span><span class="sort-icon" id="si3">⇅</span></th>
-          <th onclick="sortBy(4)"><span data-i18n="col_atelier">Atelier</span><span class="sort-icon" id="si4">⇅</span></th>
-          <th class="th-piment" onclick="sortBy(10)" data-i18n-title="col_piment">🌶️<span class="sort-icon" id="si10">⇅</span></th>
-          <th onclick="sortBy(5)"><span data-i18n="col_lieu">Lieu</span><span class="sort-icon" id="si5">⇅</span></th>
-          <th onclick="sortBy(6)"><span data-i18n="col_animateur">Animateur(s)</span><span class="sort-icon" id="si6">⇅</span></th>
-          <th onclick="sortBy(7)"><span data-i18n="col_traducteur">Trad.</span><span class="sort-icon" id="si7">⇅</span></th>
-          <th onclick="sortBy(8)"><span data-i18n="col_helpers">Helper(s)</span><span class="sort-icon" id="si8">⇅</span></th>
-          <th onclick="sortBy(9)"><span data-i18n="col_angel">Angel</span><span class="sort-icon" id="si9">⇅</span></th>
+          <th onclick="sortBy(0)"><span data-i18n="col_jour">Jour</span><span class="sort-icon" id="si0">â‡…</span></th>
+          <th onclick="sortBy(1)"><span data-i18n="col_date">Date</span><span class="sort-icon" id="si1">â‡…</span></th>
+          <th onclick="sortBy(2)"><span data-i18n="col_heure">Heure</span><span class="sort-icon" id="si2">â‡…</span></th>
+          <th onclick="sortBy(3)"><span data-i18n="col_type">Type</span><span class="sort-icon" id="si3">â‡…</span></th>
+          <th onclick="sortBy(4)"><span data-i18n="col_atelier">Atelier</span><span class="sort-icon" id="si4">â‡…</span></th>
+          <th class="th-piment" onclick="sortBy(10)" data-i18n-title="col_piment">ðŸŒ¶ï¸<span class="sort-icon" id="si10">â‡…</span></th>
+          <th onclick="sortBy(5)"><span data-i18n="col_lieu">Lieu</span><span class="sort-icon" id="si5">â‡…</span></th>
+          <th onclick="sortBy(6)"><span data-i18n="col_animateur">Animateur(s)</span><span class="sort-icon" id="si6">â‡…</span></th>
+          <th onclick="sortBy(7)"><span data-i18n="col_traducteur">Trad.</span><span class="sort-icon" id="si7">â‡…</span></th>
+          <th onclick="sortBy(8)"><span data-i18n="col_helpers">Helper(s)</span><span class="sort-icon" id="si8">â‡…</span></th>
+          <th onclick="sortBy(9)"><span data-i18n="col_angel">Angel</span><span class="sort-icon" id="si9">â‡…</span></th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -343,16 +343,16 @@
   <div class="card-list" id="cardView"></div>
 </div>
 
-<!-- ── MODALE DÉTAIL ATELIER ── -->
+<!-- â”€â”€ MODALE DÃ‰TAIL ATELIER â”€â”€ -->
 <div class="modal-overlay" id="detailModal" onclick="closeModalOnOverlay(event)">
   <div class="modal-box" id="detailBox">
     <div class="modal-top">
       <div class="modal-top-left">
-        <div class="modal-atelier" id="mTitle">—</div>
+        <div class="modal-atelier" id="mTitle">â€”</div>
         <div class="modal-sub" id="mSub"></div>
       </div>
       <div class="modal-top-right">
-        <button class="modal-close" onclick="closeModal()" title="Fermer">✕</button>
+        <button class="modal-close" onclick="closeModal()" title="Fermer">âœ•</button>
         <div class="modal-lang-toggle">
           <button class="modal-lang-btn active" id="mlBtnFr" onclick="setModalLang('fr')">FR</button>
           <button class="modal-lang-btn" id="mlBtnEn" onclick="setModalLang('en')">ENG</button>
@@ -377,7 +377,7 @@
 <script src="loader.js"></script>
 <script>
 loadData(['ref_translations.js', 'data.js', 'logistics.js', 'ref_descriptions.js', 'logistics.helpers.js', 'logistics.special.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
-// RAW : chaque entrée est augmentée d'une propriété _idx = index dans AGENDA
+// RAW : chaque entrÃ©e est augmentÃ©e d'une propriÃ©tÃ© _idx = index dans AGENDA
 const RAW = AGENDA.map((e, i) => {
   const r = [
     e.jour, e.date, e.heure, e.type, e.atelier, e.lieu,
@@ -390,11 +390,11 @@ const RAW = AGENDA.map((e, i) => {
   return r;
 });
 
-// ─── Détection des conflits (même logique que Rapport4) ──────────────────────
+// â”€â”€â”€ DÃ©tection des conflits (mÃªme logique que Rapport4) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function parseIntervalle(h) {
   if (!h) return null;
-  const norm = h.replace(/\./g, ':').replace(/â€"|–|—/g, '-');
-  const m = norm.match(/(\d{1,2}):(\d{2})\s*[-–—]+\s*(\d{1,2}):(\d{2})/);
+  const norm = h.replace(/\./g, ':').replace(/Ã¢â‚¬"|â€“|â€”/g, '-');
+  const m = norm.match(/(\d{1,2}):(\d{2})\s*[-â€“â€”]+\s*(\d{1,2}):(\d{2})/);
   if (!m) return null;
   const debut = parseInt(m[1]) * 60 + parseInt(m[2]);
   let fin     = parseInt(m[3]) * 60 + parseInt(m[4]);
@@ -403,10 +403,10 @@ function parseIntervalle(h) {
 }
 function chevauche(a, b) { return a && b && a[0] < b[1] && b[0] < a[1]; }
 
-// Retourne une Map : "atelier||jour" → Set de noms en conflit + leurs rôles
-// et un Set de clés "atelier||jour" ayant au moins un conflit
+// Retourne une Map : "atelier||jour" â†’ Set de noms en conflit + leurs rÃ´les
+// et un Set de clÃ©s "atelier||jour" ayant au moins un conflit
 function buildConflictIndex() {
-  // parPersonne : nom → [{atelier, jour, heure, iv, role, field}]
+  // parPersonne : nom â†’ [{atelier, jour, heure, iv, role, field}]
   const parPersonne = new Map();
   AGENDA.forEach(e => {
     const iv = parseIntervalle(e.heure);
@@ -428,8 +428,8 @@ function buildConflictIndex() {
     add(e.angel,      'Angel',        'angel');
   });
 
-  // conflictFields : "atelier||jour" → Set de champs (fac1, helper2...) en conflit
-  const conflictFields = new Map(); // clé → Set<field>
+  // conflictFields : "atelier||jour" â†’ Set de champs (fac1, helper2...) en conflit
+  const conflictFields = new Map(); // clÃ© â†’ Set<field>
 
   parPersonne.forEach((slots, nom) => {
     const parJour = new Map();
@@ -443,7 +443,7 @@ function buildConflictIndex() {
           const a = daySlots[i], b = daySlots[j];
           if (a.role === 'Angel' && b.role === 'Angel') continue;
           if (chevauche(a.iv, b.iv)) {
-            // Marquer les deux ateliers impliqués
+            // Marquer les deux ateliers impliquÃ©s
             [[a.atelier, a.jour, a.field], [b.atelier, b.jour, b.field]].forEach(([at, jr, fld]) => {
               const k = `${at}||${jr}`;
               if (!conflictFields.has(k)) conflictFields.set(k, new Set());
@@ -460,7 +460,7 @@ function buildConflictIndex() {
 
 const CONFLICT_INDEX = buildConflictIndex();
 
-// ─── Set des animateurs anglophones ───────────────────────────────────────
+// â”€â”€â”€ Set des animateurs anglophones â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ANGLOPHONES = new Set(
   (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
     .filter(r => r.roles && r.roles.indexOf('anglophone') !== -1)
@@ -480,35 +480,35 @@ const types = [...new Set(RAW.map(r=>r[3]).filter(Boolean))].sort();
 const selType = document.getElementById('filterType');
 types.forEach(t => { const o=document.createElement('option'); o.value=t; o.text=t; selType.appendChild(o); });
 
-// Peupler le filtre Lieu depuis REF_LIEUX (seulement les lieux présents dans les données)
+// Peupler le filtre Lieu depuis REF_LIEUX (seulement les lieux prÃ©sents dans les donnÃ©es)
 const lieuxPresents = new Set(RAW.map(r=>r[5]).filter(Boolean));
 const selLieu = document.getElementById('filterLieu');
 REF_LIEUX.filter(l => lieuxPresents.has(l.value)).forEach(l => {
   const o=document.createElement('option'); o.value=l.value; o.text=l.label||l.value; selLieu.appendChild(o);
 });
 
-// Peupler le filtre Animateur depuis REF_ANIMATEURS (seulement ceux présents dans les données)
+// Peupler le filtre Animateur depuis REF_ANIMATEURS (seulement ceux prÃ©sents dans les donnÃ©es)
 const facsPresents = new Set(RAW.flatMap(r=>[r[6],r[7]]).filter(Boolean));
 const selFac = document.getElementById('filterFac');
 REF_ANIMATEURS.filter(f => facsPresents.has(f.value)).forEach(f => {
   const o=document.createElement('option'); o.value=f.value; o.text=f.value; selFac.appendChild(o);
 });
 
-// Peupler le filtre Traducteur depuis REF_TRADUCTEURS (seulement ceux présents dans les données)
+// Peupler le filtre Traducteur depuis REF_TRADUCTEURS (seulement ceux prÃ©sents dans les donnÃ©es)
 const tradsPresents = new Set(RAW.map(r=>r[8]).filter(Boolean));
 const selTrad = document.getElementById('filterTrad');
 REF_TRADUCTEURS.filter(t => tradsPresents.has(t.value)).forEach(t => {
   const o=document.createElement('option'); o.value=t.value; o.text=t.value; selTrad.appendChild(o);
 });
 
-// Peupler le filtre Helper depuis REF_HELPERS (seulement ceux présents dans les données)
+// Peupler le filtre Helper depuis REF_HELPERS (seulement ceux prÃ©sents dans les donnÃ©es)
 const helpersPresents = new Set(RAW.flatMap(r=>[r[9],r[10],r[11],r[12]]).filter(Boolean));
 const selHelper = document.getElementById('filterHelper');
 REF_HELPERS.filter(h => helpersPresents.has(h.value)).forEach(h => {
   const o=document.createElement('option'); o.value=h.value; o.text=h.value; selHelper.appendChild(o);
 });
 
-// Peupler le filtre Angel depuis REF_ANGELS (seulement ceux présents dans les données)
+// Peupler le filtre Angel depuis REF_ANGELS (seulement ceux prÃ©sents dans les donnÃ©es)
 const angelsPresents = new Set(RAW.map(r=>r[13]).filter(Boolean));
 const selAngel = document.getElementById('filterAngel');
 REF_ANGELS.filter(a => angelsPresents.has(a.value)).forEach(a => {
@@ -538,13 +538,13 @@ function getFiltered() {
 
 function sortBy(col) {
   if(sortCol===col) sortAsc=!sortAsc; else { sortCol=col; sortAsc=true; }
-  // Réinitialiser toutes les icônes de tri présentes dans le thead
+  // RÃ©initialiser toutes les icÃ´nes de tri prÃ©sentes dans le thead
   document.querySelectorAll('.sort-icon').forEach(el => {
-    el.textContent = '⇅';
+    el.textContent = 'â‡…';
     el.parentElement.classList.remove('sorted');
   });
   const si=document.getElementById('si'+col);
-  if(si){ si.textContent=sortAsc?'↑':'↓'; si.parentElement.classList.add('sorted'); }
+  if(si){ si.textContent=sortAsc?'â†‘':'â†“'; si.parentElement.classList.add('sorted'); }
   render();
 }
 
@@ -567,8 +567,8 @@ function pills(vals, cls) {
 
 let isMobileView = window.innerWidth < 768;
 
-// Convertit une heure texte en minutes pour le tri (ex: "11:15 - 13:00" → 675)
-// Les heures floues ("Matin", "APRES MIDI") sont renvoyées en fin de liste
+// Convertit une heure texte en minutes pour le tri (ex: "11:15 - 13:00" â†’ 675)
+// Les heures floues ("Matin", "APRES MIDI") sont renvoyÃ©es en fin de liste
 function heureEnMinutes(h) {
   if (!h) return 9999;
   const norm = h.replace(/\./g, ':');
@@ -584,7 +584,7 @@ function render() {
       return sortAsc ? av.localeCompare(bv,'fr') : bv.localeCompare(av,'fr');
     });
   } else {
-    // Tri par défaut : jour (ordre naturel) puis heure de début
+    // Tri par dÃ©faut : jour (ordre naturel) puis heure de dÃ©but
     const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
     data = [...data].sort((a,b) => {
       const dj = JOUR_ORDER.indexOf(a[0]) - JOUR_ORDER.indexOf(b[0]);
@@ -601,7 +601,7 @@ function render() {
   }
 }
 
-// Champs RAW → colonne tableau (index colonne → champ(s) de l'entrée AGENDA)
+// Champs RAW â†’ colonne tableau (index colonne â†’ champ(s) de l'entrÃ©e AGENDA)
 const COL_FIELDS = {
   6: ['fac1','fac2','fac3','fac4'],
   7: ['traduction'],
@@ -611,7 +611,7 @@ const COL_FIELDS = {
 
 function renderTable(data) {
   const tb = document.getElementById('tbody');
-  if(!data.length) { tb.innerHTML=`<tr><td colspan="11" class="empty">Aucun résultat</td></tr>`; return; }
+  if(!data.length) { tb.innerHTML=`<tr><td colspan="11" class="empty">Aucun rÃ©sultat</td></tr>`; return; }
   tb.innerHTML = data.map(r => {
     const cf = getConflictFields(r);
     const rowCls = cf ? ' class="conflict-row"' : '';
@@ -623,7 +623,7 @@ function renderTable(data) {
       return fields.some(f => cf.has(f)) ? ' class="td-names conflict-cell"' : ' class="td-names"';
     };
 
-    // Pills avec wrapping vertical, conflit éventuel
+    // Pills avec wrapping vertical, conflit Ã©ventuel
     const pillsNames = (vals, fields, cls) => vals.map((v, i) => {
       if (!v) return '';
       const inConflict = cf && cf.has(fields[i]);
@@ -633,17 +633,17 @@ function renderTable(data) {
     }).join('');
 
     const piment = parseInt(r[16]) || 0;
-    const pimentHtml = piment > 0 ? '🌶️'.repeat(piment) : '';
+    const pimentHtml = piment > 0 ? 'ðŸŒ¶ï¸'.repeat(piment) : '';
 
     const realIdx = r._idx !== undefined ? r._idx : 0;
-    const enBadge = hasAnglophoneFac(r) ? '<span title="Atelier anglophone" style="font-size:11px;margin-left:5px">🇬🇧</span>' : '';
+    const enBadge = hasAnglophoneFac(r) ? '<span title="Atelier anglophone" style="font-size:11px;margin-left:5px">ðŸ‡¬ðŸ‡§</span>' : '';
 
-    // Traducteur avec conflit éventuel
+    // Traducteur avec conflit Ã©ventuel
     const tradHtml = r[8]
       ? `<span class="pill pill-t"${cf&&cf.has('traduction')?' style="background:#fef08a;color:#b91c1c;font-weight:700;border:1px solid #f59e0b"':''}>${r[8]}</span>`
       : '';
 
-    // Angel avec conflit éventuel
+    // Angel avec conflit Ã©ventuel
     const angelHtml = r[13]
       ? `<span class="pill pill-a"${cf&&cf.has('angel')?' style="background:#fef08a;color:#b91c1c;font-weight:700;border:1px solid #f59e0b"':''}>${r[13]}</span>`
       : '';
@@ -664,7 +664,7 @@ function renderTable(data) {
   }).join('');
 }
 
-// Extrait l'heure de début pour trier (ex: "9:45 - 11:00" → 9*60+45=585)
+// Extrait l'heure de dÃ©but pour trier (ex: "9:45 - 11:00" â†’ 9*60+45=585)
 function parseHeure(h) {
   if (!h) return 9999;
   const m = h.match(/(\d+)[:.h](\d+)/);
@@ -685,16 +685,16 @@ function minutesToHeure(mins) {
   return h + ':' + (m < 10 ? '0' : '') + m;
 }
 
-// ── Lookup téléphone d'un angel depuis REF_RESSOURCES ──────────────────────
+// â”€â”€ Lookup tÃ©lÃ©phone d'un angel depuis REF_RESSOURCES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function angelTel(nom) {
   if (!nom || typeof REF_RESSOURCES === 'undefined') return '';
   const r = REF_RESSOURCES.find(x => x.value === nom);
   return (r && r.tel) ? r.tel : '';
 }
 
-// ── Construit une mini-carte atelier ───────────────────────────────────────
+// â”€â”€ Construit une mini-carte atelier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildMiniCard(r) {
-  const enBadge = hasAnglophoneFac(r) ? ' <span title="Anglophone" style="font-size:11px">🇬🇧</span>' : '';
+  const enBadge = hasAnglophoneFac(r) ? ' <span title="Anglophone" style="font-size:11px">ðŸ‡¬ðŸ‡§</span>' : '';
   const lieu    = r[5] ? `<span class="tag" style="font-size:10px">${r[5]}</span>` : '';
   const facs    = pills([r[6],r[7]],'pill-f');
   const trad    = r[8]  ? `<span class="pill pill-t">${r[8]}</span>` : '';
@@ -706,7 +706,7 @@ function buildMiniCard(r) {
   const prepMin = logE && logE.prepDuration != null ? logE.prepDuration : null;
   const debut   = heureMinutes(r[2]);
   const arrivee = (debut !== null && prepMin !== null) ? minutesToHeure(debut - prepMin) : '';
-  const heureHtml = r[2] ? `<div class="mini-card-heure">${r[2]}${prepMin !== null ? `<span class="mini-card-prep"> ⏱${prepMin}mn${arrivee?' ↑'+arrivee:''}</span>` : ''}</div>` : '';
+  const heureHtml = r[2] ? `<div class="mini-card-heure">${r[2]}${prepMin !== null ? `<span class="mini-card-prep"> â±${prepMin}mn${arrivee?' â†‘'+arrivee:''}</span>` : ''}</div>` : '';
 
   const rows = [];
   if (facs)    rows.push(`<div class="mini-card-row"><span class="mini-card-lbl">Fac.</span><span class="mini-card-val">${facs}</span></div>`);
@@ -717,16 +717,16 @@ function buildMiniCard(r) {
   const realIdx = r._idx !== undefined ? r._idx : 0;
   return `<div class="mini-card" style="cursor:pointer" onclick="openDetail(${realIdx})">
     ${heureHtml}
-    <div class="mini-card-title">${r[4]||'—'}${enBadge}</div>
+    <div class="mini-card-title">${r[4]||'â€”'}${enBadge}</div>
     <div class="mini-card-meta">${lieu}</div>
     ${rows.length ? `<div class="mini-card-rows">${rows.join('')}</div>` : ''}
   </div>`;
 }
 
-// ── Construit un bloc visuel (header + rangée de mini-cartes) ──────────────
+// â”€â”€ Construit un bloc visuel (header + rangÃ©e de mini-cartes) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildVgBlock(title, items, angelRow) {
   const angelHtml = angelRow
-    ? `<span class="vg-angel">👼 ${angelRow.nom}${angelRow.tel ? `<span class="vg-angel-tel"> · ${angelRow.tel}</span>` : ''}</span>`
+    ? `<span class="vg-angel">ðŸ‘¼ ${angelRow.nom}${angelRow.tel ? `<span class="vg-angel-tel"> Â· ${angelRow.tel}</span>` : ''}</span>`
     : '';
   return `<div class="vg-block">
     <div class="vg-header"><span class="vg-title">${title}</span>${angelHtml}</div>
@@ -734,15 +734,15 @@ function buildVgBlock(title, items, angelRow) {
   </div>`;
 }
 
-// ── Construit une ligne discrète (repas, réunion d'équipe, prépa) ──────────
+// â”€â”€ Construit une ligne discrÃ¨te (repas, rÃ©union d'Ã©quipe, prÃ©pa) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildSmallLine(emoji, label, items) {
-  const txt = items.map(r => r[4]).filter(Boolean).join(' · ');
-  return `<div class="vg-small"><span class="vg-small-lbl">${emoji} ${label}</span><span class="vg-small-items">${txt||'—'}</span></div>`;
+  const txt = items.map(r => r[4]).filter(Boolean).join(' Â· ');
+  return `<div class="vg-small"><span class="vg-small-lbl">${emoji} ${label}</span><span class="vg-small-items">${txt||'â€”'}</span></div>`;
 }
 
 function renderCards(data) {
   const cv = document.getElementById('cardView');
-  if (!data.length) { cv.innerHTML=`<div class="empty">Aucun résultat</div>`; return; }
+  if (!data.length) { cv.innerHTML=`<div class="empty">Aucun rÃ©sultat</div>`; return; }
 
   const DAY_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 
@@ -755,27 +755,27 @@ function renderCards(data) {
   dayMap.forEach(g => g.items.sort((a,b) => parseHeure(a[2]) - parseHeure(b[2])));
   const groups = DAY_ORDER.filter(j => dayMap.has(j)).map(j => dayMap.get(j));
 
-  // ── Ordre des groupes visuels ────────────────────────────────────────────
-  // Chaque entrée : { key, types[], label, mode }
-  //   mode = 'cards'  → mini-cartes côte à côte (avec angel)
-  //   mode = 'small'  → ligne discrète
-  //   mode = 'group'  → regroupe plusieurs types en petite ligne (prepa+rassemblement)
+  // â”€â”€ Ordre des groupes visuels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Chaque entrÃ©e : { key, types[], label, mode }
+  //   mode = 'cards'  â†’ mini-cartes cÃ´te Ã  cÃ´te (avec angel)
+  //   mode = 'small'  â†’ ligne discrÃ¨te
+  //   mode = 'group'  â†’ regroupe plusieurs types en petite ligne (prepa+rassemblement)
   const VG_ORDER = [
-    { key:'yoga',        types:['MEDITATION / YOGA'],                                    label:'🧘 Méditation / Yoga',          mode:'cards'  },
-    { key:'ptdej',       types:['REPAS & PAUSE'],         heureMax: 11*60,               label:'Petit déjeuner',                mode:'small'  },
-    { key:'reunion_am',  types:["REUNION D'EQUIPE"],      heureMax: 11*60,               label:'Réunion d\'équipe',             mode:'small'  },
-    { key:'prepa_rass',  types:['PREPA & LOGISTICS','RASSEMBLEMENT'], heureMax: 12*60,   label:'🎯 Préparation & Rassemblement', mode:'cards'  },
-    { key:'tantra_am',   types:['ATELIERS TANTRA (Matin)','TANTRA CAFE & CONFERENCE'],   label:'🌀 Ateliers Tantra – Matin',    mode:'cards', withAngel:'AM' },
-    { key:'art_am',      types:['ATELIER ARTISTIQUE (Matin)','TANTRA CAFE & CONFERENCE'],label:'🎨 Ateliers Artistiques – Matin',mode:'cards', withAngel:'AM' },
-    { key:'dejeuner',    types:['REPAS & PAUSE'],         heureMin: 11*60, heureMax:15*60,label:'Déjeuner',                     mode:'small'  },
-    { key:'support',     types:['SUPPORT EMOTIONNEL'],                                   label:'💙 Support Émotionnel',         mode:'cards'  },
-    { key:'pool_cafe_am',types:['DJ Set','POOL PARTY','TANTRA CAFE & CONFERENCE'], heureMin:12*60, heureMax:16*60, label:'Pool Party / Tantra Café', mode:'cards' },
-    { key:'tantra_pm',   types:['ATELIERS TANTRA (Apres-Midi)','TANTRA CAFE & CONFERENCE'], heureMin:14*60, label:'🌀 Ateliers Tantra – Après-midi', mode:'cards', withAngel:'PM' },
-    { key:'art_pm',      types:['ATELIER ARTISTIQUE (Apres-Midi)','TANTRA CAFE & CONFERENCE'], heureMin:14*60, label:'🎨 Ateliers Artistiques – Après-midi', mode:'cards', withAngel:'PM' },
-    { key:'gouter_dinner',types:['REPAS & PAUSE'],        heureMin: 15*60,               label:'Dîner / Goûter',               mode:'small'  },
-    { key:'prepa_soir',  types:['PREPA & LOGISTICS'],     heureMin: 18*60,               label:'Prépa & Logistique – Soir',    mode:'small'  },
-    { key:'reunion_pm',  types:["REUNION D'EQUIPE"],      heureMin: 11*60,               label:'Réunion d\'équipe',            mode:'small'  },
-    { key:'soir',        types:['CEREMONIE & CONCERT','LOVE TEMPLE','DJ Set','POOL PARTY'], heureMin:18*60, label:'🌙 Soirée', mode:'cards'  },
+    { key:'yoga',        types:['MEDITATION / YOGA'],                                    label:'ðŸ§˜ MÃ©ditation / Yoga',          mode:'cards'  },
+    { key:'ptdej',       types:['REPAS & PAUSE'],         heureMax: 11*60,               label:'Petit dÃ©jeuner',                mode:'small'  },
+    { key:'reunion_am',  types:["REUNION D'EQUIPE"],      heureMax: 11*60,               label:'RÃ©union d\'Ã©quipe',             mode:'small'  },
+    { key:'prepa_rass',  types:['PREPA & LOGISTICS','RASSEMBLEMENT'], heureMax: 12*60,   label:'ðŸŽ¯ PrÃ©paration & Rassemblement', mode:'cards'  },
+    { key:'tantra_am',   types:['ATELIERS TANTRA (Matin)','TANTRA CAFE & CONFERENCE'],   label:'ðŸŒ€ Ateliers Tantra â€“ Matin',    mode:'cards', withAngel:'AM' },
+    { key:'art_am',      types:['ATELIER ARTISTIQUE (Matin)','TANTRA CAFE & CONFERENCE'],label:'ðŸŽ¨ Ateliers Artistiques â€“ Matin',mode:'cards', withAngel:'AM' },
+    { key:'dejeuner',    types:['REPAS & PAUSE'],         heureMin: 11*60, heureMax:15*60,label:'DÃ©jeuner',                     mode:'small'  },
+    { key:'support',     types:['SUPPORT EMOTIONNEL'],                                   label:'ðŸ’™ Support Ã‰motionnel',         mode:'cards'  },
+    { key:'pool_cafe_am',types:['DJ Set','POOL PARTY','TANTRA CAFE & CONFERENCE'], heureMin:12*60, heureMax:16*60, label:'Pool Party / Tantra CafÃ©', mode:'cards' },
+    { key:'tantra_pm',   types:['ATELIERS TANTRA (Apres-Midi)','TANTRA CAFE & CONFERENCE'], heureMin:14*60, label:'ðŸŒ€ Ateliers Tantra â€“ AprÃ¨s-midi', mode:'cards', withAngel:'PM' },
+    { key:'art_pm',      types:['ATELIER ARTISTIQUE (Apres-Midi)','TANTRA CAFE & CONFERENCE'], heureMin:14*60, label:'ðŸŽ¨ Ateliers Artistiques â€“ AprÃ¨s-midi', mode:'cards', withAngel:'PM' },
+    { key:'gouter_dinner',types:['REPAS & PAUSE'],        heureMin: 15*60,               label:'DÃ®ner / GoÃ»ter',               mode:'small'  },
+    { key:'prepa_soir',  types:['PREPA & LOGISTICS'],     heureMin: 18*60,               label:'PrÃ©pa & Logistique â€“ Soir',    mode:'small'  },
+    { key:'reunion_pm',  types:["REUNION D'EQUIPE"],      heureMin: 11*60,               label:'RÃ©union d\'Ã©quipe',            mode:'small'  },
+    { key:'soir',        types:['CEREMONIE & CONCERT','LOVE TEMPLE','DJ Set','POOL PARTY'], heureMin:18*60, label:'ðŸŒ™ SoirÃ©e', mode:'cards'  },
   ];
 
   cv.innerHTML = groups.map(g => {
@@ -793,11 +793,11 @@ function renderCards(data) {
       }
     });
 
-    // Tracker pour ne pas afficher deux fois le même atelier
+    // Tracker pour ne pas afficher deux fois le mÃªme atelier
     const used = new Set();
     const markUsed = arr => arr.forEach(r => used.add(r));
 
-    // Filtre selon types + fenêtre horaire + non-déjà-utilisé
+    // Filtre selon types + fenÃªtre horaire + non-dÃ©jÃ -utilisÃ©
     const pick = (types, opts) => {
       opts = opts || {};
       return items.filter(r => {
@@ -825,7 +825,7 @@ function renderCards(data) {
       }
     });
 
-    // Résidus non capturés → un bloc générique
+    // RÃ©sidus non capturÃ©s â†’ un bloc gÃ©nÃ©rique
     const leftover = items.filter(r => !used.has(r) && r[3] !== 'SHIFT ANGEL');
     if (leftover.length) {
       blocks.push(buildVgBlock('Autres', leftover, null));
@@ -835,19 +835,19 @@ function renderCards(data) {
     // Bouton Pause Massage pour ce jour
     const pmBtn = buildMassageBtn(g.jour);
     return `<div class="card-day-group">
-      <div class="card-day-header" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">${g.jour}<span class="card-day-sub"> — ${g.date}</span><span class="card-day-sub"> (${nb} atelier${nb>1?'s':''})</span>${pmBtn}</div>
+      <div class="card-day-header" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">${g.jour}<span class="card-day-sub"> â€” ${g.date}</span><span class="card-day-sub"> (${nb} atelier${nb>1?'s':''})</span>${pmBtn}</div>
       ${blocks.join('')}
     </div>`;
   }).join('');
 }
 
-// ─── Modale mot de passe Admin ───────────────────────────────────────────────
+// â”€â”€â”€ Modale mot de passe Admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ADMIN_PW = '007';
 let _editTarget = '';
 
 function openEditPw(jour, atelierName, agendaIdx) {
   _editTarget = `Rapport_Editer_Atelier.html?idx=${agendaIdx}`;
-  document.getElementById('editPwAtelier').textContent = `${jour} — ${atelierName}`;
+  document.getElementById('editPwAtelier').textContent = `${jour} â€” ${atelierName}`;
   document.getElementById('editPwInput').value = '';
   document.getElementById('editPwError').textContent = '';
   document.getElementById('editPwOverlay').style.display = 'flex';
@@ -904,27 +904,27 @@ function toggleMode() {
   }
 }
 
-// ── POSE MASSAGE : logique popup ────────────────────────────────────────────
+// â”€â”€ POSE MASSAGE : logique popup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// Cherche l'entrée Pause Massage pour un jour donné (value = "Jour 1", etc.)
+// Cherche l'entrÃ©e Pause Massage pour un jour donnÃ© (value = "Jour 1", etc.)
 function pmFindEntry(jourValue) {
   if (typeof REF_PAUSE_MASSAGE === 'undefined' || !REF_PAUSE_MASSAGE) return null;
   if (typeof REF_JOURS === 'undefined') return null;
-  // Trouver l'id REF_JOURS correspondant à la value du jour
+  // Trouver l'id REF_JOURS correspondant Ã  la value du jour
   const jourDef = REF_JOURS.find(j => j.value === jourValue);
   if (!jourDef) return null;
-  // Chercher une entrée spécifique à ce jour, puis une entrée "tous les jours"
+  // Chercher une entrÃ©e spÃ©cifique Ã  ce jour, puis une entrÃ©e "tous les jours"
   return REF_PAUSE_MASSAGE.find(p => p.actif !== false && p.jourId === jourDef.id)
       || REF_PAUSE_MASSAGE.find(p => p.actif !== false && !p.jourId);
 }
 
-// Construit le bouton HTML pour un jour — renvoie '' si pas de donnée active
+// Construit le bouton HTML pour un jour â€” renvoie '' si pas de donnÃ©e active
 function buildMassageBtn(jourValue) {
   const entry = pmFindEntry(jourValue);
   if (!entry) return '';
   const lang = (typeof I18n !== 'undefined') ? I18n.getLang() : 'fr';
   const label = lang === 'en' ? 'Massage Break' : 'Pause Massage';
-  return `<button class="btn-massage" onclick="pmOpen('${jourValue.replace(/'/g,"\\'")}')"><span class="sun-icon">🌞</span>${label}</button>`;
+  return `<button class="btn-massage" onclick="pmOpen('${jourValue.replace(/'/g,"\\'")}')"><span class="sun-icon">ðŸŒž</span>${label}</button>`;
 }
 
 // Ouvre la popup
@@ -954,14 +954,14 @@ document.getElementById('pmOverlay').addEventListener('click', function(e) {
   if (e.target === this) pmClose();
 });
 
-// Bascule la langue depuis la popup et rafraîchit son contenu
+// Bascule la langue depuis la popup et rafraÃ®chit son contenu
 function pmToggleLang() {
   if (typeof I18n === 'undefined') return;
   I18n.setLang(I18n.getLang() === 'fr' ? 'en' : 'fr');
 }
 window.pmToggleLang = pmToggleLang;
 
-// Mémorise le jour courant affiché dans la popup pour pouvoir la rafraîchir
+// MÃ©morise le jour courant affichÃ© dans la popup pour pouvoir la rafraÃ®chir
 var _pmCurrentJour = null;
 var _pmOrigOpen = pmOpen;
 pmOpen = function(jourValue) {
@@ -970,12 +970,12 @@ pmOpen = function(jourValue) {
 };
 window.pmOpen = pmOpen;
 
-// Met à jour le bouton langue dans la popup
+// Met Ã  jour le bouton langue dans la popup
 function pmUpdateLangBtn() {
   var btn = document.querySelector('#pmModal .pm-lang-btn');
   if (!btn) return;
   var lang = (typeof I18n !== 'undefined') ? I18n.getLang() : 'fr';
-  btn.textContent = lang === 'fr' ? '🌐 EN' : '🌐 FR';
+  btn.textContent = lang === 'fr' ? 'ðŸŒ EN' : 'ðŸŒ FR';
 }
 
 // Re-render quand la langue change
@@ -990,17 +990,17 @@ document.addEventListener('tm_lang_changed', function() {
 // Auto-detect mobile on load
 setView(window.innerWidth < 768);
 
-// Auto-refresh si ouvert depuis Home (paramètre ?v= présent)
+// Auto-refresh si ouvert depuis Home (paramÃ¨tre ?v= prÃ©sent)
 if (location.search.includes('v=') && !sessionStorage.getItem('_refreshed_' + location.pathname)) {
   sessionStorage.setItem('_refreshed_' + location.pathname, '1');
   hardReload();
 }
 
-// ════════════════════════════════════════════════
-// EXPORT XLSX (SpreadsheetML — pur navigateur)
-// ════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EXPORT XLSX (SpreadsheetML â€” pur navigateur)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function exportXlsx() {
-  // ── Données filtrées triées comme à l'écran ──────────────────────────────
+  // â”€â”€ DonnÃ©es filtrÃ©es triÃ©es comme Ã  l'Ã©cran â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let data = getFiltered();
   const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
   data = [...data].sort((a, b) => {
@@ -1008,19 +1008,19 @@ function exportXlsx() {
     return dj !== 0 ? dj : heureEnMinutes(a[2]) - heureEnMinutes(b[2]);
   });
 
-  // ── Colonnes ────────────────────────────────────────────────────────────
+  // â”€â”€ Colonnes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const HEADERS = ['Jour','Date','Heure','Type','Atelier','Piment','Lieu',
                    'Animateur 1','Animateur 2','Animateur 3','Animateur 4','Traducteur',
                    'Helper 1','Helper 2','Helper 3','Helper 4','Angel','Note'];
 
-  // ── Helpers XML ─────────────────────────────────────────────────────────
+  // â”€â”€ Helpers XML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function esc(v) {
     return String(v == null ? '' : v)
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;').replace(/'/g,'&apos;');
   }
 
-  // Convertit un numéro de colonne (0-based) en lettre(s) Excel : 0→A, 25→Z, 26→AA
+  // Convertit un numÃ©ro de colonne (0-based) en lettre(s) Excel : 0â†’A, 25â†’Z, 26â†’AA
   function colLetter(n) {
     let s = '';
     n++;
@@ -1035,15 +1035,15 @@ function exportXlsx() {
     return `<c r="${cellRef(col, row)}" t="inlineStr"><is><t>${esc(val)}</t></is></c>`;
   }
 
-  // ── Construction des lignes XML ──────────────────────────────────────────
+  // â”€â”€ Construction des lignes XML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let rowsXml = '';
 
-  // En-tête (ligne 1)
+  // En-tÃªte (ligne 1)
   rowsXml += `<row r="1">`;
   HEADERS.forEach((h, ci) => { rowsXml += cellS(ci, 1, h); });
   rowsXml += `</row>`;
 
-  // Données (à partir de la ligne 2)
+  // DonnÃ©es (Ã  partir de la ligne 2)
   data.forEach((r, ri) => {
     const rowNum = ri + 2;
     // r = [jour, date, heure, type, atelier, lieu, fac1, fac2, trad, h1, h2, h3, h4, angel, note, logisticId, piment, fac3, fac4]
@@ -1053,7 +1053,7 @@ function exportXlsx() {
     rowsXml += `</row>`;
   });
 
-  // ── Calcul des largeurs de colonnes ─────────────────────────────────────
+  // â”€â”€ Calcul des largeurs de colonnes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const colWidths = HEADERS.map((h, ci) => {
     const maxLen = data.reduce((m, r) => {
       const vals = [r[0],r[1],r[2],r[3],r[4], r[16]||0, r[5],r[6],r[7],r[8],r[9],r[10],r[11],r[12],r[13],r[14]];
@@ -1065,8 +1065,8 @@ function exportXlsx() {
     `<col min="${ci+1}" max="${ci+1}" width="${w}" customWidth="1"/>`
   ).join('');
 
-  // ── Assemblage du fichier XLSX (ZIP SpreadsheetML minimal) ───────────────
-  // Nom de fichier reflétant les filtres actifs
+  // â”€â”€ Assemblage du fichier XLSX (ZIP SpreadsheetML minimal) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Nom de fichier reflÃ©tant les filtres actifs
   const fj  = document.getElementById('filterJour').value;
   const ft  = document.getElementById('filterType').value;
   const fileName = ['TantramourAgenda', fj||'TousJours', ft||''].filter(Boolean).join('_') + '.xlsx';
@@ -1104,8 +1104,8 @@ function exportXlsx() {
   <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
 </Types>`;
 
-  // ── Construction du ZIP en JavaScript pur ────────────────────────────────
-  // Implémentation minimale du format ZIP (Local File Header + Central Directory)
+  // â”€â”€ Construction du ZIP en JavaScript pur â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ImplÃ©mentation minimale du format ZIP (Local File Header + Central Directory)
   function strToBytes(str) {
     const enc = new TextEncoder();
     return enc.encode(str);
@@ -1215,7 +1215,7 @@ function exportXlsx() {
     return buf;
   }
 
-  // ── Assembler les fichiers du XLSX ───────────────────────────────────────
+  // â”€â”€ Assembler les fichiers du XLSX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const entries = [
     makeZipEntry('[Content_Types].xml',          contentTypes),
     makeZipEntry('_rels/.rels',                   relsRoot),
@@ -1226,7 +1226,7 @@ function exportXlsx() {
 
   const zipBytes = buildZip(entries);
 
-  // ── Téléchargement ───────────────────────────────────────────────────────
+  // â”€â”€ TÃ©lÃ©chargement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const blob = new Blob([zipBytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
@@ -1237,16 +1237,16 @@ function exportXlsx() {
 }
 
 
-// ════════════════════════════════════════════════════════════════
-// MODALE DÉTAIL (identique à Mon Planning V2)
-// ════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// MODALE DÃ‰TAIL (identique Ã  Mon Planning V2)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 var _modalLang  = 'fr';
 var _modalEntry = null;
 
 function _esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function _lieuLabel(lieu) {
-  if (!lieu) return '—';
+  if (!lieu) return 'â€”';
   if (typeof REF_LIEUX !== 'undefined') {
     var r = REF_LIEUX.find(function(l) { return l.value === lieu; });
     if (r && r.capacite) return _esc(lieu) + ' <span style="color:var(--muted);font-size:11px">(' + r.capacite + ')</span>';
@@ -1255,7 +1255,7 @@ function _lieuLabel(lieu) {
 }
 function _calcDuree(h) {
   if (!h) return null;
-  var m = String(h).replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+  var m = String(h).replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
   if (!m) return null;
   var d = (parseInt(m[3])*60+parseInt(m[4])) - (parseInt(m[1])*60+parseInt(m[2]));
   if (d < 0) d += 1440;
@@ -1285,26 +1285,26 @@ function _noteLabel(val, lang) {
   return val;
 }
 function _pimentHtml(n) {
-  return n > 0 ? '<span class="piment-modal">'+'🌶️'.repeat(n)+'</span>' : '';
+  return n > 0 ? '<span class="piment-modal">'+'ðŸŒ¶ï¸'.repeat(n)+'</span>' : '';
 }
 function _isBilingue2(id) {
   if (!id || typeof REF_RESSOURCES==='undefined') return false;
-  var r = REF_RESSOURCES.find(function(x) { return x.id===id; });
+  var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
   return r && r.langues && r.langues.indexOf('FR')!==-1 && r.langues.indexOf('EN')!==-1;
 }
 function _angelWithPhone(id) {
-  if (!id) return '—';
+  if (!id) return 'â€”';
   var nom = resolveName(id);
   if (typeof REF_RESSOURCES === 'undefined') return _esc(nom);
-  var r = REF_RESSOURCES.find(function(x) { return x.id===id; });
+  var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
   if (!r || !r.tel) return _esc(nom);
   return _esc(nom) + ' <span style="color:var(--muted)">(' + _esc(r.tel) + ')</span>';
 }
 
 var JOUR_META_MODAL = {
-  'Jour 1': { jourEn:'Day 1', date:'Samedi 29 août',   dateEn:'Saturday Aug 29' },
-  'Jour 2': { jourEn:'Day 2', date:'Dimanche 30 août', dateEn:'Sunday Aug 30'   },
-  'Jour 3': { jourEn:'Day 3', date:'Lundi 31 août',    dateEn:'Monday Aug 31'   },
+  'Jour 1': { jourEn:'Day 1', date:'Samedi 29 aoÃ»t',   dateEn:'Saturday Aug 29' },
+  'Jour 2': { jourEn:'Day 2', date:'Dimanche 30 aoÃ»t', dateEn:'Sunday Aug 30'   },
+  'Jour 3': { jourEn:'Day 3', date:'Lundi 31 aoÃ»t',    dateEn:'Monday Aug 31'   },
   'Jour 4': { jourEn:'Day 4', date:'Mardi 1 sept.',    dateEn:'Tuesday Sep 1'   },
   'Jour 5': { jourEn:'Day 5', date:'Mercredi 2 sept.', dateEn:'Wednesday Sep 2' },
   'Jour 6': { jourEn:'Day 6', date:'Jeudi 3 sept.',    dateEn:'Thursday Sep 3'  },
@@ -1315,7 +1315,7 @@ function _jourSubtitle(jour, lang) {
   if (!m) return jour;
   var j = (lang==='en' && m.jourEn) ? m.jourEn : jour;
   var d = (lang==='en' && m.dateEn) ? m.dateEn : m.date;
-  return j + (d ? ' — ' + d : '');
+  return j + (d ? ' â€” ' + d : '');
 }
 
 window.setModalLang = function(lang) {
@@ -1329,7 +1329,7 @@ window.setModalLang = function(lang) {
          REF_DESCRIPTIONS.find(function(d) { return d.atelier && d.atelier.trim()===(_modalEntry.atelier||'').trim(); }))
       : null;
     var pm = parseInt(_modalEntry.piment)||0;
-    var titleFr = _modalEntry.atelier||'—';
+    var titleFr = _modalEntry.atelier||'â€”';
     var titleEn = (_d && _d.nomEn && _d.nomEn.trim()) ? _d.nomEn.trim() : titleFr;
     document.getElementById('mTitle').innerHTML = _esc(lang==='en' ? titleEn : titleFr) + (pm ? ' '+_pimentHtml(pm) : '');
   }
@@ -1348,7 +1348,7 @@ window.openDetail = function(agendaIdx) {
     ? ((e.id && REF_DESCRIPTIONS.find(function(d) { return d.atelierId===e.id; })) ||
        REF_DESCRIPTIONS.find(function(d) { return d.atelier && d.atelier.trim()===(e.atelier||'').trim(); }))
     : null;
-  var _titleFr = e.atelier||'—';
+  var _titleFr = e.atelier||'â€”';
   var _titleEn = (_descInit && _descInit.nomEn && _descInit.nomEn.trim()) ? _descInit.nomEn.trim() : _titleFr;
   document.getElementById('mTitle').innerHTML = _esc(_modalLang==='en' ? _titleEn : _titleFr) + (pm ? ' '+_pimentHtml(pm) : '');
   document.getElementById('mSub').textContent = _jourSubtitle(e.jour, _modalLang);
@@ -1409,34 +1409,34 @@ function _renderModalBody() {
     : '<span class="badge-lang badge-fr">FR</span>';
 
   var noteVal       = e.note ? _noteLabel(e.note, lang) : '';
-  var nomAtelierVal = _esc((lang==='en' && desc && desc.nomEn && desc.nomEn.trim()) ? desc.nomEn.trim() : (e.atelier||'—')) + ' ' + langBadge;
-  var typeVal       = e.type ? _esc(e.type) : '—';
+  var nomAtelierVal = _esc((lang==='en' && desc && desc.nomEn && desc.nomEn.trim()) ? desc.nomEn.trim() : (e.atelier||'â€”')) + ' ' + langBadge;
+  var typeVal       = e.type ? _esc(e.type) : 'â€”';
   var jourDate      = _jourSubtitle(e.jour, lang);
-  var horaireVal    = _esc(e.heure||'—') + (dur ? ' <span style="color:var(--muted);font-size:11px">('+_fmtDuree(dur)+')</span>' : '');
+  var horaireVal    = _esc(e.heure||'â€”') + (dur ? ' <span style="color:var(--muted);font-size:11px">('+_fmtDuree(dur)+')</span>' : '');
 
   var rows1 = [];
-  rows1.push(['🧘 '+(lang==='en'?'Workshop (FR/ENG)':'Nom atelier (FR/ENG)'), nomAtelierVal]);
-  rows1.push(['🏷 '+(lang==='en'?'Type':'Type'), typeVal]);
-  rows1.push(['📅 '+(lang==='en'?'Day - Date':'Jour - Date'), jourDate]);
-  rows1.push(['🕐 '+(lang==='en'?'Schedule':'Horaire'), horaireVal]);
-  if (arrivee) rows1.push(['⏰ '+(lang==='en'?'Arrive at':'Arrivée'), '<strong style="color:#dc2626">'+arrivee+'</strong>']);
-  rows1.push(['📍 '+(lang==='en'?'Venue':'Lieu'), e.lieu ? _lieuLabel(e.lieu) : '—']);
-  rows1.push(['🎓 '+(lang==='en'?'Teacher(s)':'Animateur(s)'), facs.length ? facs.map(_esc).join(' &amp; ') : '—']);
-  rows1.push(['🙌 '+(lang==='en'?'Helper(s)':'Helper(s)'), helpers.length ? helpers.map(_esc).join(', ') : '—']);
-  rows1.push(['🌐 '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? _esc(resolveName(e.traduction)) : '—']);
-  rows1.push(['👼 Angel', _angelWithPhone(e.angel)]);
-  rows1.push(['🏷 Note', noteVal ? _esc(noteVal) : '—']);
+  rows1.push(['ðŸ§˜ '+(lang==='en'?'Workshop (FR/ENG)':'Nom atelier (FR/ENG)'), nomAtelierVal]);
+  rows1.push(['ðŸ· '+(lang==='en'?'Type':'Type'), typeVal]);
+  rows1.push(['ðŸ“… '+(lang==='en'?'Day - Date':'Jour - Date'), jourDate]);
+  rows1.push(['ðŸ• '+(lang==='en'?'Schedule':'Horaire'), horaireVal]);
+  if (arrivee) rows1.push(['â° '+(lang==='en'?'Arrive at':'ArrivÃ©e'), '<strong style="color:#dc2626">'+arrivee+'</strong>']);
+  rows1.push(['ðŸ“ '+(lang==='en'?'Venue':'Lieu'), e.lieu ? _lieuLabel(e.lieu) : 'â€”']);
+  rows1.push(['ðŸŽ“ '+(lang==='en'?'Teacher(s)':'Animateur(s)'), facs.length ? facs.map(_esc).join(' &amp; ') : 'â€”']);
+  rows1.push(['ðŸ™Œ '+(lang==='en'?'Helper(s)':'Helper(s)'), helpers.length ? helpers.map(_esc).join(', ') : 'â€”']);
+  rows1.push(['ðŸŒ '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? _esc(resolveName(e.traduction)) : 'â€”']);
+  rows1.push(['ðŸ‘¼ Angel', _angelWithPhone(e.angel)]);
+  rows1.push(['ðŸ· Note', noteVal ? _esc(noteVal) : 'â€”']);
 
   var gridHtml1 = rows1.map(function(r) { return '<div class="modal-lbl">'+r[0]+'</div><div class="modal-val">'+r[1]+'</div>'; }).join('');
 
-  var noTxt = '<span class="no-content">—</span>';
+  var noTxt = '<span class="no-content">â€”</span>';
   var dark  = document.body.classList.contains('dark');
 
   var descTxt = (lang==='en' && desc && desc.descEn && desc.descEn.trim())
     ? desc.descEn : (desc && desc.descFr && desc.descFr.trim() ? desc.descFr : '');
   var consigneTxt = (lang==='en' && desc && desc.consigneEn && desc.consigneEn.trim())
     ? desc.consigneEn : (desc && desc.consigne && desc.consigne.trim() ? desc.consigne : '');
-  var consigneLabel = lang==='en' ? '⚠️ Participant instructions' : '⚠️ Instructions participants';
+  var consigneLabel = lang==='en' ? 'âš ï¸ Participant instructions' : 'âš ï¸ Instructions participants';
 
   var _disabled = e._consignesDisabled || {};
   function _consignesTypeBlock(placement) {
@@ -1485,10 +1485,10 @@ function _renderModalBody() {
 
   var titleStyle = 'font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;padding-bottom:8px;margin-bottom:14px;border-bottom:2px solid;';
 
-  // Bloc 1) Informations générales
+  // Bloc 1) Informations gÃ©nÃ©rales
   var sec1 = '<div style="'+S_INFO+'">'+
     '<div style="'+titleStyle+S_INFO_TL+';border-bottom-color:'+(dark?'#92400e':'#fde68a')+'">'+
-      '1) '+(lang==='en'?'General information':'Informations générales')+
+      '1) '+(lang==='en'?'General information':'Informations gÃ©nÃ©rales')+
     '</div>'+
     '<div class="modal-grid">'+gridHtml1+'</div>'+
     '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">'+
@@ -1508,14 +1508,14 @@ function _renderModalBody() {
   // Bloc 2) Informations logistiques
   var isDefaultPrep = !(logE && logE.prepDuration != null);
   var prepVal = prep+' min'+
-    (isDefaultPrep ? ' <span style="font-size:10px;color:var(--muted);font-style:italic;">'+(lang==='en'?'(default)':'(défaut)')+'</span>' : '')+
-    (arrivee ? ' &rarr; '+(lang==='en'?'arrival':'arrivée')+' <strong style="color:#dc2626">'+arrivee+'</strong>' : '');
+    (isDefaultPrep ? ' <span style="font-size:10px;color:var(--muted);font-style:italic;">'+(lang==='en'?'(default)':'(dÃ©faut)')+'</span>' : '')+
+    (arrivee ? ' &rarr; '+(lang==='en'?'arrival':'arrivÃ©e')+' <strong style="color:#dc2626">'+arrivee+'</strong>' : '');
 
   var validBadge = logE
     ? (logE.validatedByFac
-        ? '<span class="validated-badge validated-yes">&#10003; '+(lang==='en'?'Validated by teacher':'Validé par animateur')+'</span>'
-        : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validé')+'</span>')
-    : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validé')+'</span>';
+        ? '<span class="validated-badge validated-yes">&#10003; '+(lang==='en'?'Validated by teacher':'ValidÃ© par animateur')+'</span>'
+        : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validÃ©')+'</span>')
+    : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validÃ©')+'</span>';
 
   var updatedAt  = logE && logE.updatedAt ? logE.updatedAt : (logH && logH.updatedAt ? logH.updatedAt : '');
   var avantTxt   = logH && logH.avant   && logH.avant.trim().replace(/<[^>]*>/g,'').trim()   ? logH.avant   : '';
@@ -1529,7 +1529,7 @@ function _renderModalBody() {
       '2) '+(lang==='en'?'Logistics information':'Informations logistiques')+
     '</div>'+
     '<div class="modal-grid" style="margin-bottom:10px">'+
-      '<div class="modal-lbl" style="white-space:nowrap">'+(lang==='en'?'Preparation':'Préparation')+'</div>'+
+      '<div class="modal-lbl" style="white-space:nowrap">'+(lang==='en'?'Preparation':'PrÃ©paration')+'</div>'+
       '<div class="modal-val" style="white-space:nowrap">'+prepVal+'</div>'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:8px;">'+
@@ -1542,17 +1542,17 @@ function _renderModalBody() {
     '</div>'+
   '</div>';
 
-  // Bloc 3) Besoins logistiques spécifiques
+  // Bloc 3) Besoins logistiques spÃ©cifiques
   var sec_spec = '<div style="'+S_SPEC+'">'+
     '<div style="'+titleStyle+S_SPEC_TL+';border-bottom-color:'+(dark?'#9333ea':'#c084fc')+'">'+
-      '3) '+(lang==='en'?'Specific logistics needs':'Besoins logistiques spécifiques')+
+      '3) '+(lang==='en'?'Specific logistics needs':'Besoins logistiques spÃ©cifiques')+
     '</div>'+
     '<div style="color:#1d4ed8;font-weight:700">'+(logSpecTxt ? logSpecTxt : noTxt)+'</div>'+
-    _consignesRecurrentesBlock('Spécifique')+
-    _consignesTypeBlock('Spécifique')+
+    _consignesRecurrentesBlock('SpÃ©cifique')+
+    _consignesTypeBlock('SpÃ©cifique')+
   '</div>';
 
-  // Bloc 4) Équipements
+  // Bloc 4) Ã‰quipements
   var eqAgenda = e._equipements || {};
   var eqLogist = (logId && logE && logE._equipements) || {};
   var eqAll    = Object.assign({}, eqLogist, eqAgenda);
@@ -1561,9 +1561,9 @@ function _renderModalBody() {
   if (!eqKeys.length) {
     sec_eq = '<div style="'+S_EQ+'">'+
       '<div style="'+titleStyle+S_EQ_TL+';border-bottom-color:'+(dark?'#0d9488':'#2dd4bf')+'">'+
-        '4) '+(lang==='en'?'Equipment':'Équipements')+
+        '4) '+(lang==='en'?'Equipment':'Ã‰quipements')+
       '</div>'+
-      '<span style="font-size:13px;color:var(--muted)">—</span>'+
+      '<span style="font-size:13px;color:var(--muted)">â€”</span>'+
     '</div>';
   } else {
     var TYPE_ORDER_EQ = ['Hameau','Tantramour','Animateur'];
@@ -1572,7 +1572,7 @@ function _renderModalBody() {
       : [];
     var byCat = {};
     eqKeys.forEach(function(eqId) {
-      var ref  = (typeof REF_EQUIPEMENTS !== 'undefined') ? REF_EQUIPEMENTS.find(function(r) { return r.id===eqId; }) : null;
+      var ref  = (typeof REF_EQUIPEMENTS !== 'undefined') ? REF_EQUIPEMENTS.find(function(r){ return String(r.id) === String(eqId); }) : null;
       var type = (ref && ref.type) || 'Autre';
       var cat  = (ref && ref.categorie) || 'Divers';
       var nom  = (ref && ref.value) || eqId;
@@ -1585,7 +1585,7 @@ function _renderModalBody() {
     var eqHtml = '';
     orderedCats.forEach(function(cat) {
       eqHtml += '<div style="margin-bottom:8px;">';
-      eqHtml += '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">• '+_esc(cat)+' :</div>';
+      eqHtml += '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">â€¢ '+_esc(cat)+' :</div>';
       var knownTypes = TYPE_ORDER_EQ.filter(function(t) { return byCat[cat][t]; });
       var otherTypes = Object.keys(byCat[cat]).filter(function(t) { return TYPE_ORDER_EQ.indexOf(t)===-1; }).sort();
       knownTypes.concat(otherTypes).forEach(function(type) {
@@ -1598,7 +1598,7 @@ function _renderModalBody() {
     });
     sec_eq = '<div style="'+S_EQ+'">'+
       '<div style="'+titleStyle+S_EQ_TL+';border-bottom-color:'+(dark?'#0d9488':'#2dd4bf')+'">'+
-        '4) '+(lang==='en'?'Equipment':'Équipements')+
+        '4) '+(lang==='en'?'Equipment':'Ã‰quipements')+
       '</div>'+eqHtml+
     '</div>';
   }
@@ -1610,32 +1610,32 @@ function _renderModalBody() {
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:8px;">'+
       '<div class="modal-desc-box">'+
-        '<div class="modal-desc-lbl">'+(lang==='en'?'To do before':'À faire avant')+'</div>'+
+        '<div class="modal-desc-lbl">'+(lang==='en'?'To do before':'Ã€ faire avant')+'</div>'+
         '<div style="color:#1d4ed8;font-weight:700">'+(avantTxt ? avantTxt : noTxt)+'</div>'+
         _consignesRecurrentesBlock('Avant')+
         _consignesTypeBlock('Avant')+
       '</div>'+
       '<div class="modal-desc-box">'+
-        '<div class="modal-desc-lbl">'+(lang==='en'?'To do during':'À faire pendant')+'</div>'+
+        '<div class="modal-desc-lbl">'+(lang==='en'?'To do during':'Ã€ faire pendant')+'</div>'+
         '<div style="color:#1d4ed8;font-weight:700">'+(pendantTxt ? pendantTxt : noTxt)+'</div>'+
         _consignesRecurrentesBlock('Pendant')+
         _consignesTypeBlock('Pendant')+
       '</div>'+
       '<div class="modal-desc-box">'+
-        '<div class="modal-desc-lbl">'+(lang==='en'?'To do after':'À faire après')+'</div>'+
-        (range > 0 ? '<div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 8px;margin-bottom:6px;">🧹 '+(lang==='en'?'Tidying up':'Rangement')+' : <strong style="color:var(--text)">'+range+' min</strong></div>' : '')+
+        '<div class="modal-desc-lbl">'+(lang==='en'?'To do after':'Ã€ faire aprÃ¨s')+'</div>'+
+        (range > 0 ? '<div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 8px;margin-bottom:6px;">ðŸ§¹ '+(lang==='en'?'Tidying up':'Rangement')+' : <strong style="color:var(--text)">'+range+' min</strong></div>' : '')+
         '<div style="color:#1d4ed8;font-weight:700">'+(apresTxt ? apresTxt : noTxt)+'</div>'+
-        _consignesRecurrentesBlock('Après')+
-        _consignesTypeBlock('Après')+
+        _consignesRecurrentesBlock('AprÃ¨s')+
+        _consignesTypeBlock('AprÃ¨s')+
       '</div>'+
     '</div>'+
   '</div>';
 
-  // Pied : validé + dernière modif
+  // Pied : validÃ© + derniÃ¨re modif
   var sec_footer =
     '<div style="padding:10px 4px 2px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px;">'+
       validBadge+
-      '<div style="font-size:11px;color:var(--muted)">'+(lang==='en'?'Last updated':'Dernière modification')+' : '+(updatedAt ? _esc(updatedAt) : '—')+'</div>'+
+      '<div style="font-size:11px;color:var(--muted)">'+(lang==='en'?'Last updated':'DerniÃ¨re modification')+' : '+(updatedAt ? _esc(updatedAt) : 'â€”')+'</div>'+
     '</div>';
 
   document.getElementById('mBody').innerHTML =
@@ -1645,7 +1645,7 @@ function _renderModalBody() {
 }
 
 
-// Exposer dans window les fonctions appelées depuis les onclick HTML
+// Exposer dans window les fonctions appelÃ©es depuis les onclick HTML
 window.hardReload    = hardReload;
 window.toggleMode    = toggleMode;
 window.toggleView    = toggleView;
@@ -1661,3 +1661,4 @@ window.checkEditPw   = checkEditPw;
 </script>
 </body>
 </html>
+

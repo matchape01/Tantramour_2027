@@ -378,7 +378,7 @@ function renderList() {
 // ÉDITION
 // ════════════════════════════════════════════════════════════════
 function editer(id) {
-  var n = NEWS_SESSION.find(function(x) { return x.id === id; });
+  var n = NEWS_SESSION.find(function(x){ return String(x.id) === String(id); });
   if (!n) return;
   _editId = id;
   document.getElementById('formTitle').textContent = '✏️ Modifier la news' + (n.hidden ? ' 🚫' : '');

@@ -879,7 +879,7 @@ function createAtelier() {
 // ═══════════════════════════════════════════════════════════════
 
 function openEdit(id) {
-  var a = ATELIERS.find(function(x){ return x.id===id; });
+  var a = ATELIERS.find(function(x){ return String(x.id) === String(id); });
   if (!a) return;
 
   document.getElementById('e_id').value          = a.id;
