@@ -983,18 +983,31 @@ function renderProgList(ateliers) {
 
   window._progRows = ateliers;
 
+  // Yoga et Rassemblement : par type (inchangé)
+  var yogaMeditation = ateliers.filter(function(e) { return e.type === 'MEDITATION / YOGA'; });
+  var rassemblement  = ateliers.filter(function(e) { return e.type === 'RASSEMBLEMENT'; });
+
+  // Exclus des sections horaires (déjà dans leurs propres sections)
+  var excluded = ['MEDITATION / YOGA', 'RASSEMBLEMENT'];
+
+  // Matin       : 10h45 (645 min) → 13h28 (808 min)
+  // Après-midi  : 13h29 (809 min) → 19h59 (1199 min)
+  // Soirée      : 20h00 (1200 min) et +
   var matin = ateliers.filter(function(e) {
+    if (excluded.indexOf(e.type) !== -1) return false;
     var hm = heureMin(e.heure);
-    return ['ATELIERS TANTRA (Matin)','ATELIER ARTISTIQUE (Matin)','CONFERENCE'].indexOf(e.type) !== -1 && hm >= 10 * 60 && hm <= 12 * 60;
+    return hm >= 645 && hm <= 808;
   });
   var apresMidi = ateliers.filter(function(e) {
-    return ['SUPPORT EMOTIONNEL','POOL PARTY','TANTRA CAFE','ATELIERS TANTRA (Apres-Midi)','ATELIER ARTISTIQUE (Apres-Midi)'].indexOf(e.type) !== -1;
+    if (excluded.indexOf(e.type) !== -1) return false;
+    var hm = heureMin(e.heure);
+    return hm >= 809 && hm <= 1199;
   });
   var soiree = ateliers.filter(function(e) {
-    return ['DJ Set','CEREMONIE & CONCERT','LOVE TEMPLE'].indexOf(e.type) !== -1;
+    if (excluded.indexOf(e.type) !== -1) return false;
+    var hm = heureMin(e.heure);
+    return hm >= 1200;
   });
-  var yogaMeditation = ateliers.filter(function(e) { return e.type === 'MEDITATION / YOGA'; });
-  var rassemblement = ateliers.filter(function(e) { return e.type === 'RASSEMBLEMENT'; });
 
   var byTime = function(a, b) { return heureMin(a.heure) - heureMin(b.heure); };
   matin.sort(byTime);
