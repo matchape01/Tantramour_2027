@@ -26,7 +26,7 @@ var REF_TRANSLATIONS = [
   { key: "card_editer_index_title", fr: "Éditer Accueil (index)", en: "Edit Home (index)" },
   { key: "card_editer_index_desc", fr: "Modifier les textes de la page d'accueil (dates, titre, site web)", en: "Edit homepage texts (dates, title, website)" },
   { key: "home_subtitle", fr: "Page destinée à la DreamTeam", en: "Page for the DreamTeam" },
-  { key: "bis_page_title", fr: "Tantramour 2027 — Rapports", en: "Tantramour 2027 — Reports" },
+  { key: "bis_page_title", fr: "Tantramour 2027 - Dream Team", en: "Tantramour 2027 - Dream Team" },
   { key: "bis_title_1", fr: "Tantramour 2027", en: "Tantramour 2027" },
   { key: "bis_title_2", fr: "Page destinée à la DreamTeam", en: "Page for the DreamTeam" },
   { key: "gp_page_title", fr: "Tantramour 2027 — Gestion Planning", en: "Tantramour 2027 — Schedule Management" },
