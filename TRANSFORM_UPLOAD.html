@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour 2026 — Transform & Upload</title>
+<title>Tantramour 2027 — Transform & Upload</title>
 <style>
   :root {
     --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
@@ -100,7 +100,7 @@
   <!-- HEADER -->
   <header>
     <div class="logo">
-      <div class="logo-badge">Tantramour 2026 — Admin</div>
+      <div class="logo-badge" id="logoBadge">Tantramour 2027 — Admin</div>
       <h1>🔄 Transform & Upload</h1>
       <p>Conversion des fiches animateurs → fichier logistique consolidé</p>
     </div>
@@ -161,6 +161,8 @@
 <div class="toast" id="toast"></div>
 
 <!-- SheetJS CDN -->
+<script src="ref_translations.js"></script>
+<script src="loader.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════
@@ -569,6 +571,16 @@ function toast(msg, erreur) {
   t.classList.add('show');
   setTimeout(function(){ t.classList.remove('show'); }, 5000);
 }
+// Mettre à jour le badge avec la valeur fraîche de bis_title_1
+loadData(['ref_translations.js'], function() {
+  if (typeof I18n !== 'undefined') {
+    var title = I18n.t('bis_title_1');
+    if (title && title !== 'bis_title_1') {
+      var badge = document.getElementById('logoBadge');
+      if (badge) badge.textContent = title + ' — Admin';
+    }
+  }
+});
 </script>
 </body>
 </html>
