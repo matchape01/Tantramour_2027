@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -363,7 +363,7 @@
 <script>
 // Initialisation par défaut — écrasée si logistics.helpers.js se charge correctement
 if (typeof LOGISTICS_HELPERS === 'undefined') window.LOGISTICS_HELPERS = {};
-loadData(['ref_translations.js', 'data.js', 'ref_descriptions.js', 'logistics.js', 'logistics.special.js', 'logistics.helpers.js', 'ref_consignes_type.js', 'ref_equipements.js', 'ref_equip_cat.js'], function() {
+loadData(['ref_id_mapping.js', 'ref_translations.js', 'data.js', 'ref_descriptions.js', 'logistics.js', 'logistics.special.js', 'logistics.helpers.js', 'ref_consignes_type.js', 'ref_equipements.js', 'ref_equip_cat.js'], function() {
 
 // ══════════════════════════════════════════════
 // ÉTAT
@@ -3444,10 +3444,8 @@ async function eqDemandeAjouter() {
   var qty    = parseInt(qtyEl ? qtyEl.value : '1', 10) || 1;
   if (!nom) { showToast('⚠️ Le nom de l\'équipement est obligatoire', true); return; }
 
-  // Générer un ID unique au format EQ_NEWXX
-  var existingIds = (REF_EQUIPEMENTS || []).map(function(e){ return e.id; });
-  var n = 1, newId;
-  do { newId = 'EQ_NEW' + (n < 10 ? '0' : '') + n; n++; } while (existingIds.indexOf(newId) !== -1);
+  // Générer un ID numérique unique via generateEquipId()
+  var newId = (typeof generateEquipId === 'function') ? generateEquipId() : Math.floor(100000 + Math.random() * 900000);
 
   var newEq = { type: type, categorie: cat, id: newId, value: nom, stock: 0, description: desc, remarque: '' };
   if (typeof REF_EQUIPEMENTS === 'undefined') window.REF_EQUIPEMENTS = [];
@@ -3476,7 +3474,8 @@ function genererRefEquipementsJs() {
   var lines = (REF_EQUIPEMENTS || []).map(function(eq) {
     var stock = (eq.stock === 'N/A') ? '"N/A"' : (parseInt(eq.stock,10) || 0);
     var cat   = escJs(eq.categorie || 'Divers');
-    return '  { type: "' + escJs(eq.type) + '", categorie: "' + cat + '", id: "' + escJs(eq.id) + '", value: "' + escJs(eq.value) + '", stock: ' + stock + ', description: "' + escJs(eq.description || '') + '", remarque: "' + escJs(eq.remarque || '') + '" }';
+    var idVal = (typeof eq.id === 'number') ? eq.id : (isNaN(parseInt(eq.id)) ? ('"' + escJs(String(eq.id)) + '"') : parseInt(eq.id));
+    return '  { type: "' + escJs(eq.type) + '", categorie: "' + cat + '", id: ' + idVal + ', value: "' + escJs(eq.value) + '", stock: ' + stock + ', description: "' + escJs(eq.description || '') + '", remarque: "' + escJs(eq.remarque || '') + '" }';
   });
   return '/**\n * TANTRAMOUR 2026 — Référentiel : Équipements\n' +
     ' * Chaque entrée : { id, value, type, categorie, stock, description, remarque }\n' +

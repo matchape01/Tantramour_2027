@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -510,8 +510,8 @@ function renderEditor(isNew) {
 
       '<div class="form-group">' +
         '<label>ID unique</label>' +
-        '<input type="text" id="f-id" value="' + esc(r.id) + '" placeholder="Ex : R_MATTHIEU"' + (isNew ? '' : ' readonly style="opacity:.6"') + '>' +
-        '<span class="hint">Préfixe R_ requis — ne jamais changer après création</span>' +
+        '<input type="text" id="f-id" value="' + esc(r.id) + '" placeholder="(généré automatiquement)"' + (isNew ? '' : ' readonly style="opacity:.6"') + '>' +
+        '<span class="hint">ID numérique généré automatiquement — ne jamais modifier après création</span>' +
       '</div>' +
 
       '<div class="form-group full">' +
@@ -597,11 +597,8 @@ function collectForm() {
 
 function validateForm(form, isNew) {
   if (!form.val) { showToast('❌ Le nom est obligatoire.', true); return false; }
-  if (!form.id)  { showToast('❌ L\'ID est obligatoire.', true); return false; }
-  if (!form.id.startsWith('R_')) { showToast('❌ L\'ID doit commencer par "R_".', true); return false; }
-  if (!/^R_[A-Z0-9_]+$/.test(form.id)) { showToast('❌ L\'ID ne doit contenir que des lettres majuscules, chiffres et _.', true); return false; }
   if (!form.roles.length) { showToast('❌ Sélectionnez au moins un rôle.', true); return false; }
-  if (isNew && data.find(function(r) { return r.id === form.id; })) {
+  if (isNew && form.id && data.find(function(r) { return String(r.id) === String(form.id); })) {
     showToast('❌ Cet ID existe déjà.', true); return false;
   }
   return true;
@@ -624,7 +621,10 @@ async function saveResource() {
 
   // Appliquer en mémoire
   if (isNew) {
-    data.push({ id: form.id, value: form.val, roles: form.roles, langues: form.langues, tel: form.tel, email: form.email, lien: form.lien });
+    // Générer un ID numérique unique si le champ est vide ou non numérique
+    var newResId = form.id && !isNaN(parseInt(form.id)) ? parseInt(form.id)
+      : (typeof generateResId === 'function' ? generateResId() : Math.floor(100000 + Math.random() * 900000));
+    data.push({ id: newResId, value: form.val, roles: form.roles, langues: form.langues, tel: form.tel, email: form.email, lien: form.lien });
     editingIdx = data.length - 1;
   } else {
     data[editingIdx].value   = form.val;
@@ -858,8 +858,9 @@ function genererRefRessources() {
     var rolesStr   = '["' + r.roles.join('", "') + '"]';
     var langues    = r.langues && r.langues.length ? r.langues : [];
     var languesStr = '["' + langues.join('", "') + '"]';
-    var pad = Math.max(0, 16 - r.id.length);
-    return '  { id: "' + escJs(r.id) + '",  ' + ' '.repeat(pad) +
+    var idVal = (typeof r.id === 'number') ? r.id : (isNaN(parseInt(r.id)) ? ('"' + escJs(String(r.id)) + '"') : parseInt(r.id));
+    var pad = Math.max(0, 16 - String(r.id).length);
+    return '  { id: ' + idVal + ',  ' + ' '.repeat(pad) +
            'value: "' + escJs(r.value) + '",  ' +
            ' '.repeat(Math.max(0, 40 - r.value.length)) +
            'roles: ' + rolesStr + ', ' +
@@ -894,22 +895,22 @@ lines + '\n' +
 '\n' +
 '// \u2500\u2500\u2500 Alias de compatibilit\u00e9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
 '// Ces 4 variables reconstituent les anciens r\u00e9f\u00e9rentiels depuis REF_RESSOURCES.\n' +
-'// Les rapports existants continuent de fonctionner sans modification.\n' +
+'// Les IDs sont d\u00e9sormais num\u00e9riques \u2014 l\'ID est utilis\u00e9 directement.\n' +
 'var REF_ANIMATEURS = REF_RESSOURCES\n' +
 '  .filter(function(r){ return r.roles.indexOf("animateur") !== -1; })\n' +
-'  .map(function(r){ return { id: "F_" + r.id.slice(2), value: r.value }; });\n' +
+'  .map(function(r){ return { id: r.id, value: r.value }; });\n' +
 '\n' +
 'var REF_HELPERS = REF_RESSOURCES\n' +
 '  .filter(function(r){ return r.roles.indexOf("helper") !== -1; })\n' +
-'  .map(function(r){ return { id: "H_" + r.id.slice(2), value: r.value }; });\n' +
+'  .map(function(r){ return { id: r.id, value: r.value }; });\n' +
 '\n' +
 'var REF_TRADUCTEURS = REF_RESSOURCES\n' +
 '  .filter(function(r){ return r.roles.indexOf("traducteur") !== -1; })\n' +
-'  .map(function(r){ return { id: "TR_" + r.id.slice(2), value: r.value }; });\n' +
+'  .map(function(r){ return { id: r.id, value: r.value }; });\n' +
 '\n' +
 'var REF_ANGELS = REF_RESSOURCES\n' +
 '  .filter(function(r){ return r.roles.indexOf("angel") !== -1; })\n' +
-'  .map(function(r){ return { id: "A_" + r.id.slice(2), value: r.value }; });\n'
+'  .map(function(r){ return { id: r.id, value: r.value }; });\n'
   );
 }
 
@@ -1445,7 +1446,7 @@ function toggleMode() {
 window.toggleMode = toggleMode;
 
 // ── Démarrage ─────────────────────────────────────────────
-loadData(['ref_translations.js', 'ref_resource_types.js', 'ref_ressources.js', 'data.js', 'ref_descriptions.js'], function() {
+loadData(['ref_id_mapping.js', 'ref_translations.js', 'ref_resource_types.js', 'ref_ressources.js', 'data.js', 'ref_descriptions.js'], function() {
   if (typeof REF_RESSOURCES === 'undefined' || typeof REF_RESOURCE_TYPES === 'undefined') {
     document.getElementById('tableBody').innerHTML =
       '<tr class="empty-row"><td colspan="7">⚠️ Erreur de chargement des ressources — cliquez sur 🔄 Refresh.</td></tr>';

@@ -40,6 +40,7 @@ var REFRESHABLE = [
   'data.js',
   'Ateliers.js',
   'template_config.js',
+  'ref_id_mapping.js',
   'ref_ressources.js',
   'ref_descriptions.js',
   'ref_consignes_type.js',
