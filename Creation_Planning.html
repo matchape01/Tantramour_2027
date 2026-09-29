@@ -28,20 +28,7 @@
     --hour-col-w: 60px;
     --sidebar-w: 340px;
 
-    /* ── COULEURS PAR TYPE ──────────────────────────────────────────
-       tantra  = ROUGE        art     = JAUNE CLAIR   yoga  = VERT
-       cere    = VIOLET       pool    = VERT CLAIR    love  = ORANGE
-       support = BLEU CLAIR   cafe    = GRIS          rass  = BLEU
-    ────────────────────────────────────────────────────────────────── */
-    --c-tantra:#dc2626;    --c-tantra-bg:#fff1f2;    --c-tantra-bd:#fca5a5;
-    --c-art:#ca8a04;       --c-art-bg:#fefce8;       --c-art-bd:#fde68a;
-    --c-yoga:#16a34a;      --c-yoga-bg:#f0fdf4;      --c-yoga-bd:#86efac;
-    --c-cere:#7c3aed;      --c-cere-bg:#f5f3ff;      --c-cere-bd:#c4b5fd;
-    --c-pool:#15803d;      --c-pool-bg:#dcfce7;      --c-pool-bd:#86efac;
-    --c-love:#ea580c;      --c-love-bg:#fff7ed;      --c-love-bd:#fed7aa;
-    --c-support:#0891b2;   --c-support-bg:#ecfeff;   --c-support-bd:#67e8f9;
-    --c-cafe:#6b7280;      --c-cafe-bg:#f3f4f6;      --c-cafe-bd:#d1d5db;
-    --c-rass:#1d4ed8;      --c-rass-bg:#eff6ff;      --c-rass-bd:#93c5fd;
+    /* ── COULEURS PAR TYPE — injectées dynamiquement depuis ref_type_colors.js ── */
   }
 
   .dark {
@@ -60,15 +47,6 @@
     --success-light: #052e16;
     --warning: #fbbf24;
     --warning-light: #451a03;
-    --c-tantra-bg:#2d0000; --c-tantra-bd:#991b1b;
-    --c-art-bg:#2d2500;    --c-art-bd:#92400e;
-    --c-yoga-bg:#052e1a;   --c-yoga-bd:#16a34a;
-    --c-cere-bg:#1a0a2e;   --c-cere-bd:#7c3aed;
-    --c-pool-bg:#052e16;   --c-pool-bd:#166534;
-    --c-love-bg:#2a1200;   --c-love-bd:#c2410c;
-    --c-support-bg:#00141a;--c-support-bd:#0e7490;
-    --c-cafe-bg:#1f2328;   --c-cafe-bd:#6b7280;
-    --c-rass-bg:#0c1a40;   --c-rass-bd:#1e40af;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1270,30 +1248,15 @@
     // ═══════════════════════════════════════════════════════════════
     // CODE COULEUR PAR TYPE — même palette que Rapport_Mon_Agenda_Simplifie
     // ═══════════════════════════════════════════════════════════════
-    const TYPE_CSS = {
-      'ATELIERS TANTRA (Matin)':         't-tantra',
-      'ATELIERS TANTRA (Apres-Midi)':    't-tantra',
-      'ATELIERS TANTRA':                 't-tantra',
-      'ATELIER ARTISTIQUE (Matin)':      't-art',
-      'ATELIER ARTISTIQUE (Apres-Midi)': 't-art',
-      'ATELIER ARTISTIQUE':              't-art',
-      'MEDITATION / YOGA':               't-yoga',
-      'CEREMONIE & CONCERT':             't-cere',
-      'CEREMONIE':                       't-cere',
-      'CONCERT':                         't-cere',
-      'DJ Set':                          't-pool',
-      'POOL PARTY':                      't-pool',
-      'LOVE TEMPLE':                     't-love',
-      'SUPPORT EMOTIONNEL':              't-support',
-      'TANTRA CAFE':                     't-cafe',
-      'CONFERENCE':                      't-cafe',
-      'RASSEMBLEMENT':                   't-rass',
-      'REUNION':                         't-rass',
-      'SHIFT ANGEL':                     't-support',
-      'PREPA & LOGISTICS':               't-cafe',
-    };
+    // Couleurs dynamiques depuis ref_type_colors.js
+    const TYPE_CSS = {};
+    (function() {
+      (typeof REF_TYPE_COLORS !== 'undefined' ? REF_TYPE_COLORS : []).forEach(function(e) {
+        e.types.forEach(function(t) { TYPE_CSS[t] = e.cssClass; });
+      });
+    })();
     function typeCssClass(type) {
-      return (type && TYPE_CSS[type]) ? TYPE_CSS[type] : '';
+      return (typeof typeColorClass === 'function') ? typeColorClass(type) : (TYPE_CSS[type] || '');
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1632,7 +1595,16 @@
     // ═══════════════════════════════════════════════════════════════
     // INITIALISATION DE LA PAGE
     // ═══════════════════════════════════════════════════════════════
-    loadData(['ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+    loadData(['ref_type_colors.js', 'ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+    // Injecter les variables CSS couleurs depuis ref_type_colors.js
+    (function() {
+      if (typeof buildTypeCssVars === 'function') {
+        var s = document.createElement('style');
+        s.id = 'type-color-vars';
+        s.textContent = buildTypeCssVars();
+        document.head.appendChild(s);
+      }
+    })();
       // 1. Charger config depuis template_config.js s'il existe
       if (typeof TEMPLATE_CONFIG !== 'undefined' && TEMPLATE_CONFIG && typeof TEMPLATE_CONFIG === 'object') {
         Object.assign(CONFIG, TEMPLATE_CONFIG);

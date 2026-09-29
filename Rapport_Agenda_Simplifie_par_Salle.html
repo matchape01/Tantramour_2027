@@ -9,23 +9,11 @@
     --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
     --text:#1f2328; --muted:#57606a; --accent:#3b82d4;
     --hour-col:56px;
-    /* Couleurs PAR TYPE */
-    --c-tantra:#166534;   --c-tantra-bg:#dcfce7;   --c-tantra-bd:#86efac;
-    --c-art:#0369a1;      --c-art-bg:#e0f2fe;      --c-art-bd:#7dd3fc;
-    --c-yoga:#7c3aed;     --c-yoga-bg:#f5f3ff;     --c-yoga-bd:#c4b5fd;
-    --c-ceremonie:#dc2626;--c-ceremonie-bg:#fee2e2; --c-ceremonie-bd:#fca5a5;
-    --c-reunion:#92400e;  --c-reunion-bg:#fffbeb;  --c-reunion-bd:#fcd34d;
-    --c-other:#374151;    --c-other-bg:#f3f4f6;    --c-other-bd:#d1d5db;
+    /* Couleurs PAR TYPE — injectées dynamiquement depuis ref_type_colors.js */
   }
   .dark {
     --bg:#0d1117; --surface:#161b22; --border:#30363d;
     --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
-    --c-tantra:#4ade80;     --c-tantra-bg:#0a2e1a;    --c-tantra-bd:#166534;
-    --c-art:#58a6ff;        --c-art-bg:#0c2d48;       --c-art-bd:#1d4ed8;
-    --c-yoga:#a78bfa;       --c-yoga-bg:#1e1b4b;      --c-yoga-bd:#7c3aed;
-    --c-ceremonie:#f87171;  --c-ceremonie-bg:#2d0000; --c-ceremonie-bd:#991b1b;
-    --c-reunion:#fcd34d;    --c-reunion-bg:#2a1500;   --c-reunion-bd:#92400e;
-    --c-other:#9ca3af;      --c-other-bg:#1c1f26;     --c-other-bd:#4b5563;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { height:100%; overflow:hidden; }
@@ -266,7 +254,16 @@
 <script src="ref_descriptions.js"></script>
 <script src="i18n.js"></script>
 <script>
-loadData(['ref_translations.js', 'data.js','logistics.js'], function() {
+loadData(['ref_type_colors.js', 'ref_translations.js', 'data.js','logistics.js'], function() {
+// Injecter les variables CSS couleurs depuis ref_type_colors.js
+(function() {
+  if (typeof buildTypeCssVars === 'function') {
+    var s = document.createElement('style');
+    s.id = 'type-color-vars';
+    s.textContent = buildTypeCssVars();
+    document.head.appendChild(s);
+  }
+})();
 
 // ── Config ────────────────────────────────────────────────────────────────────
 var H_START = 7;
@@ -279,16 +276,9 @@ var JOUR_DATES = {
   'Jour 4':'Mar. 01/09','Jour 5':'Mer. 02/09','Jour 6':'Jeu. 03/09','Jour 7':'Ven. 04/09'
 };
 
-// ── CSS class selon type d'atelier ────────────────────────────────────────────
+// ── CSS class selon type d'atelier — dynamique depuis ref_type_colors.js ─────
 function typeToCss(type) {
-  if (!type) return 't-other';
-  var t = type.toUpperCase();
-  if (t.indexOf('TANTRA') !== -1) return 't-tantra';
-  if (t.indexOf('ARTISTIQUE') !== -1 || t.indexOf('DJ') !== -1 || t.indexOf('POOL') !== -1) return 't-art';
-  if (t.indexOf('YOGA') !== -1 || t.indexOf('MEDITATION') !== -1) return 't-yoga';
-  if (t.indexOf('CEREMONIE') !== -1 || t.indexOf('CONCERT') !== -1 || t.indexOf('RASSEMBLEMENT') !== -1) return 't-ceremonie';
-  if (t.indexOf('REUNION') !== -1 || t.indexOf('REPAS') !== -1 || t.indexOf('PAUSE') !== -1) return 't-reunion';
-  return 't-other';
+  return (typeof typeColorClass === 'function') ? typeColorClass(type) : 't-other';
 }
 
 // ── Parsing heure ─────────────────────────────────────────────────────────────

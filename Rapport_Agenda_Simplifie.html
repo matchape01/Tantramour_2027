@@ -10,35 +10,11 @@
     --text:#1f2328; --muted:#57606a; --accent:#3b82d4;
     --hour-col:48px;
     --slot:30; /* minutes par slot = 1 ligne de grille */
-    /* couleurs types */
-    --c-tantra:#be185d;  --c-tantra-bg:#fdf2f8;  --c-tantra-bd:#fbcfe8;
-    --c-art:#c2410c;     --c-art-bg:#fff7ed;      --c-art-bd:#fed7aa;
-    --c-yoga:#16a34a;    --c-yoga-bg:#f0fdf4;     --c-yoga-bd:#86efac;
-    --c-cere:#7c3aed;    --c-cere-bg:#f5f3ff;     --c-cere-bd:#c4b5fd;
-    --c-pool:#166534;    --c-pool-bg:#f0fdf4;     --c-pool-bd:#4ade80;
-    --c-love:#dc2626;    --c-love-bg:#fff1f2;     --c-love-bd:#fca5a5;
-    --c-rass:#1e40af;    --c-rass-bg:#eff6ff;     --c-rass-bd:#93c5fd;
-    --c-dj:#6d28d9;      --c-dj-bg:#f5f3ff;       --c-dj-bd:#c4b5fd;
-    --c-conf:#0e7490;    --c-conf-bg:#ecfeff;     --c-conf-bd:#67e8f9;
-    --c-support:#0e7490; --c-support-bg:#ecfeff;  --c-support-bd:#67e8f9;
-    --c-meeting:#92400e; --c-meeting-bg:#fffbeb;  --c-meeting-bd:#fcd34d;
-    --c-prepa:#374151;   --c-prepa-bg:#f9fafb;    --c-prepa-bd:#9ca3af;
+    /* couleurs types — injectées dynamiquement depuis ref_type_colors.js */
   }
   .dark {
     --bg:#0d1117; --surface:#161b22; --border:#30363d;
     --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
-    --c-tantra-bg:#2d0a1e; --c-tantra-bd:#9d174d;
-    --c-art-bg:#2a1200;    --c-art-bd:#c2410c;
-    --c-yoga-bg:#052e1a;   --c-yoga-bd:#16a34a;
-    --c-cere-bg:#1a0a2e;   --c-cere-bd:#7c3aed;
-    --c-pool-bg:#001a0a;   --c-pool-bd:#166534;
-    --c-love-bg:#2d0000;   --c-love-bd:#991b1b;
-    --c-rass-bg:#0c1a40;   --c-rass-bd:#1e40af;
-    --c-dj-bg:#1a0a2e;     --c-dj-bd:#7c3aed;
-    --c-conf-bg:#00141a;   --c-conf-bd:#0e7490;
-    --c-support-bg:#00141a;--c-support-bd:#0e7490;
-    --c-meeting-bg:#2a1500; --c-meeting-bd:#92400e;
-    --c-prepa-bg:#1a1d20;   --c-prepa-bd:#4b5563;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { height:100%; overflow:hidden; }
@@ -186,7 +162,16 @@
 
 <script src="loader.js"></script>
 <script>
-loadData(['ref_translations.js', 'data.js'], function() {
+loadData(['ref_type_colors.js', 'ref_translations.js', 'data.js'], function() {
+// Injecter les variables CSS couleurs depuis ref_type_colors.js
+(function() {
+  if (typeof buildTypeCssVars === 'function') {
+    var s = document.createElement('style');
+    s.id = 'type-color-vars';
+    s.textContent = buildTypeCssVars();
+    document.head.appendChild(s);
+  }
+})();
 
 // ── Config ────────────────────────────────────────────────────────────────────
 var H_START = 7;    // première heure affichée (7h00)
@@ -212,22 +197,20 @@ var TYPE_SHORT = {
   'REUNION':'Réunion','PREPA & LOGISTICS':'Prépa & Logistique',
 };
 
-var TYPE_CSS = {
-  'ATELIERS TANTRA (Matin)':'t-tantra','ATELIERS TANTRA (Apres-Midi)':'t-tantra',
-  'ATELIER ARTISTIQUE (Matin)':'t-art','ATELIER ARTISTIQUE (Apres-Midi)':'t-art',
-  'MEDITATION / YOGA':'t-yoga','RASSEMBLEMENT':'t-rass',
-  'CEREMONIE & CONCERT':'t-cere','LOVE TEMPLE':'t-love',
-  'SUPPORT EMOTIONNEL':'t-support','DJ Set':'t-dj',
-  'POOL PARTY':'t-pool','TANTRA CAFE':'t-yoga','CONFERENCE':'t-conf',
-  'REUNION':'t-meeting','PREPA & LOGISTICS':'t-prepa',
-};
-
-var TYPE_COLOR = {
-  't-tantra':'#be185d','t-art':'#c2410c','t-yoga':'#16a34a',
-  't-rass':'#1e40af','t-cere':'#7c3aed','t-love':'#dc2626',
-  't-support':'#0e7490','t-dj':'#6d28d9','t-pool':'#166534','t-conf':'#0e7490',
-  't-meeting':'#92400e','t-prepa':'#374151',
-};
+// Couleurs dynamiques depuis ref_type_colors.js
+var TYPE_CSS = {};
+(function() {
+  (typeof REF_TYPE_COLORS !== 'undefined' ? REF_TYPE_COLORS : []).forEach(function(e) {
+    e.types.forEach(function(t) { TYPE_CSS[t] = e.cssClass; });
+  });
+})();
+var TYPE_COLOR = {};
+(function() {
+  var dark = document.body && document.body.classList.contains('dark');
+  (typeof REF_TYPE_COLORS !== 'undefined' ? REF_TYPE_COLORS : []).forEach(function(e) {
+    TYPE_COLOR[e.cssClass] = dark ? e.colorDark : e.color;
+  });
+})();
 
 // Ordre fixe des lieux — chaque lieu = une sous-colonne dans chaque jour
 var LIEUX_ORDER = ['SHIVA','CHENREZIG','SHAKTI','TARA','GANESH','HANUMAN','PISCINE','BUDDHA','EXTERIEUR','TEST',''];
