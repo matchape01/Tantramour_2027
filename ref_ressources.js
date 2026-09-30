@@ -16,7 +16,7 @@
 var REF_RESSOURCES = [
   { id: 555375,            value: "Alexandre Fourcault",                       roles: ["helper"],                                               langues: ["FR"], tel: "", email: "", lien: "" },
   { id: 943524,            value: "Alexandre Sattler",                         roles: ["helper", "colibri"],                                    langues: ["FR"], tel: "", email: "", lien: "" },
-  { id: 845215,            value: "Amana",                                     roles: ["animateur", "helper", "traducteur", "colibri"],         langues: ["FR", "EN"], tel: "00 41 79 195 91 74", email: "amana.noname@gmail.com", lien: "" },
+  { id: 845215,            value: "Amana",                                     roles: ["animateur", "helper", "traducteur", "colibri"],         langues: ["FR", "EN"], tel: "00 41 79 195 91 74", email: "amana.noname@gmail.com", lien: "https://tantramourfestival.com/equipe/amana/" },
   { id: 342972,            value: "Atman Clochette (Matthieu)",                roles: ["animateur", "helper", "admin", "manager", "Mi-Colibri"], langues: ["FR"], tel: "06 95 48 53 00", email: "matthieu.chapeleau@gmail.com", lien: "" },
   { id: 530949,            value: "Audrey Barthélémy",                         roles: ["animateur", "helper", "colibri"],                       langues: ["FR"], tel: "06 60 61 57 13", email: "contact@audreybarthelemy.fr", lien: "" },
   { id: 135188,            value: "Bhaskar (Alexandre Roque)",                 roles: ["helper", "traducteur"],                                 langues: ["FR", "EN"], tel: "", email: "", lien: "" },
