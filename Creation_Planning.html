@@ -1078,9 +1078,30 @@
               <label>Type</label>
               <select id="evFieldType"></select>
             </div>
+          </div>
+        </div>
+
+        <hr class="ev-modal-sep" />
+
+        <!-- Animateurs -->
+        <div>
+          <div class="ev-modal-section-title">👤 Animateur(s) — jusqu'à 4</div>
+          <div class="ev-modal-grid">
             <div class="ev-modal-field">
-              <label>Animateurs</label>
-              <select id="evFieldAnimateurs" multiple size="3"></select>
+              <label style="font-size:11px;color:var(--muted)">Animateur 1</label>
+              <select id="evFieldA1"><option value="">— Aucun —</option></select>
+            </div>
+            <div class="ev-modal-field">
+              <label style="font-size:11px;color:var(--muted)">Animateur 2</label>
+              <select id="evFieldA2"><option value="">— Aucun —</option></select>
+            </div>
+            <div class="ev-modal-field">
+              <label style="font-size:11px;color:var(--muted)">Animateur 3</label>
+              <select id="evFieldA3"><option value="">— Aucun —</option></select>
+            </div>
+            <div class="ev-modal-field">
+              <label style="font-size:11px;color:var(--muted)">Animateur 4</label>
+              <select id="evFieldA4"><option value="">— Aucun —</option></select>
             </div>
           </div>
         </div>
@@ -1092,16 +1113,16 @@
           <div class="ev-modal-section-title">⏱ Durées</div>
           <div class="ev-modal-grid three">
             <div class="ev-modal-field">
-              <label>Durée atelier (min)</label>
-              <input type="number" id="evFieldDuree" min="15" max="480" step="15" />
+              <label>Durée atelier</label>
+              <select id="evFieldDuree"></select>
             </div>
             <div class="ev-modal-field">
-              <label>Préparation (min)</label>
-              <input type="number" id="evFieldPrep" min="0" max="120" step="5" />
+              <label>Préparation</label>
+              <select id="evFieldPrep"></select>
             </div>
             <div class="ev-modal-field">
-              <label>Rangement (min)</label>
-              <input type="number" id="evFieldRange" min="0" max="120" step="5" />
+              <label>Rangement</label>
+              <select id="evFieldRange"></select>
             </div>
           </div>
         </div>
@@ -1697,6 +1718,28 @@
     // ═══════════════════════════════════════════════════════════════
     let _evDetailId = null; // ID de l'événement en cours d'édition
 
+    // ── Helpers durée (identique à Rapport_Ateliers_Proposes) ──
+    function _buildDurOpts(selectedVal, maxMin, step) {
+      const max = (maxMin != null) ? maxMin : 120;
+      const inc = (step   != null) ? step   : 5;
+      let opts = '';
+      for (let v = 0; v <= max; v += inc) {
+        const h = Math.floor(v / 60), m = v % 60;
+        let label = h ? h + 'h' + (m ? (m < 10 ? '0'+m : m) : '') : m + ' min';
+        if (v === 0) label = '0 min';
+        opts += `<option value="${v}"${v === (selectedVal||0) ? ' selected' : ''}>${label}</option>`;
+      }
+      return opts;
+    }
+
+    function _buildAnimOpts() {
+      return (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
+        .filter(r => r.roles && r.roles.includes('animateur'))
+        .sort((a, b) => a.value.localeCompare(b.value, 'fr'))
+        .map(r => `<option value="${esc(r.id)}">${esc(r.value)}</option>`)
+        .join('');
+    }
+
     function openEventDetail(evId) {
       const ev = PLACED_EVENTS.find(e => e.id === evId);
       if (!ev) return;
@@ -1705,15 +1748,21 @@
       // Récupérer les données complémentaires depuis ATELIERS si disponible
       const atRef = (typeof ATELIERS !== 'undefined' ? ATELIERS : []).find(a => a.id === ev.atelierId);
 
-      // ── Remplir champs texte ──
+      const dureeMin    = ev.dureeMin || (atRef ? (atRef.dureeH||0)*60+(atRef.dureeMin||0) : 60);
+      const prepMin     = ev.prepDuration !== undefined ? ev.prepDuration : (atRef ? atRef.prepDuration || 0 : 0);
+      const rangeMin    = ev.rangeDuration !== undefined ? ev.rangeDuration : (atRef ? atRef.rangeDuration || 0 : 0);
+
+      // ── Champs texte ──
       document.getElementById('evModalTitle').textContent = ev.nom || 'Atelier';
-      document.getElementById('evFieldNom').value = ev.nom || '';
+      document.getElementById('evFieldNom').value   = ev.nom || '';
       document.getElementById('evFieldNomEn').value = ev.nomEn || (atRef ? atRef.nomEn || '' : '');
       document.getElementById('evFieldDescFr').value = ev.descFr || (atRef ? atRef.descFr || '' : '');
       document.getElementById('evFieldDescEn').value = ev.descEn || (atRef ? atRef.descEn || '' : '');
-      document.getElementById('evFieldDuree').value = ev.dureeMin || (atRef ? (atRef.dureeH||0)*60+(atRef.dureeMin||0) : 60);
-      document.getElementById('evFieldPrep').value = ev.prepDuration !== undefined ? ev.prepDuration : (atRef ? atRef.prepDuration || 0 : 0);
-      document.getElementById('evFieldRange').value = ev.rangeDuration !== undefined ? ev.rangeDuration : (atRef ? atRef.rangeDuration || 0 : 0);
+
+      // ── Selects durée ──
+      document.getElementById('evFieldDuree').innerHTML = _buildDurOpts(dureeMin, 300, 15);
+      document.getElementById('evFieldPrep').innerHTML  = _buildDurOpts(prepMin);
+      document.getElementById('evFieldRange').innerHTML = _buildDurOpts(rangeMin);
 
       // ── Select Type ──
       const selType = document.getElementById('evFieldType');
@@ -1727,17 +1776,13 @@
         selType.appendChild(opt);
       });
 
-      // ── Select Animateurs (multiple) ──
-      const selAnim = document.getElementById('evFieldAnimateurs');
-      selAnim.innerHTML = '';
-      const animSelected = new Set((ev.animateurs || []).map(String));
-      const animeurs = (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
-        .filter(r => r.roles && r.roles.includes('animateur'));
-      animeurs.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r.id; opt.textContent = r.value;
-        if (animSelected.has(String(r.id))) opt.selected = true;
-        selAnim.appendChild(opt);
+      // ── 4 selects animateurs individuels ──
+      const animOpts = _buildAnimOpts();
+      const anims = (ev.animateurs || []).map(String);
+      ['evFieldA1','evFieldA2','evFieldA3','evFieldA4'].forEach((id, i) => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">— Aucun —</option>' + animOpts;
+        sel.value = anims[i] || '';
       });
 
       // ── Select Jour ──
@@ -1814,9 +1859,10 @@
       const newStartMin = parseInt(document.getElementById('evFieldHeure').value, 10);
       const newLieu   = document.getElementById('evFieldLieu').value;
 
-      // Animateurs sélectionnés
-      const selAnim = document.getElementById('evFieldAnimateurs');
-      const newAnims = Array.from(selAnim.selectedOptions).map(o => o.value);
+      // 4 animateurs individuels (filtre les vides)
+      const newAnims = ['evFieldA1','evFieldA2','evFieldA3','evFieldA4']
+        .map(id => document.getElementById(id).value)
+        .filter(Boolean);
 
       // Trouver le dateLabel du jour sélectionné
       const jourObj = FESTIVAL_DAYS.find(d => d.jour === newJour);
