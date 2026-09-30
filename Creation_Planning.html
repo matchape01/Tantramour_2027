@@ -1189,7 +1189,7 @@
               ${CONFIG.selectedLieux.map(lCode => {
                 const lObj = (typeof REF_LIEUX !== 'undefined') ? REF_LIEUX.find(x => x.value === lCode) : null;
                 const name = lObj ? (lObj.label || lObj.nomOfficiel || lCode) : lCode;
-                return `<div class="lieu-header-cell" title="${esc(name)}">${esc(name)}</div>`;
+                return `<div class="lieu-header-cell" id="lh-${day.jour.replace(/\s+/g,'')}-${lCode}" title="${esc(name)}">${esc(name)}</div>`;
               }).join('')}
             </div>
           </div>
@@ -1515,11 +1515,24 @@
     function applyEventFilters() {
       const fType = document.getElementById('filterEventType').value;
       const fLieu = document.getElementById('filterEventLieu').value;
+
+      // Filtre lieu : masquer/afficher les colonnes entières
+      FESTIVAL_DAYS.forEach(day => {
+        const dayKey = day.jour.replace(/\s+/g, '');
+        CONFIG.selectedLieux.forEach(lCode => {
+          const col  = document.getElementById(`col-${dayKey}-${lCode}`);
+          const head = document.getElementById(`lh-${dayKey}-${lCode}`);
+          const show = !fLieu || lCode === fLieu;
+          if (col)  col.style.display  = show ? '' : 'none';
+          if (head) head.style.display = show ? '' : 'none';
+        });
+      });
+
+      // Filtre type : opacité sur les événements
       document.querySelectorAll('.placed-event').forEach(card => {
         const matchType = !fType || card.getAttribute('data-ev-type') === fType;
-        const matchLieu = !fLieu || card.getAttribute('data-ev-lieu') === fLieu;
-        card.style.opacity = (matchType && matchLieu) ? '1' : '0.15';
-        card.style.pointerEvents = (matchType && matchLieu) ? '' : 'none';
+        card.style.opacity = matchType ? '1' : '0.15';
+        card.style.pointerEvents = matchType ? '' : 'none';
       });
     }
 
