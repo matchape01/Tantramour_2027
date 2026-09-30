@@ -2135,7 +2135,8 @@
           type: item.type || 'ATELIERS TANTRA',
           animateurs: anims,
           descFr: '',
-          descEn: ''
+          descEn: '',
+          locked: item.locked === true
         });
       });
     }
@@ -2156,7 +2157,7 @@
         const anim4 = ev.animateurs[3] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => String(r.id) === String(ev.animateurs[3]))) || {}).value || '' : '';
         const anim4Id = ev.animateurs[3] || '';
 
-        return `  {id:"${escJs(ev.atelierId || ev.id)}",jour:"${escJs(ev.jour)}",date:"${escJs(ev.date)}",heure:"${escJs(heureStr)}",type:"${escJs(ev.type)}",atelier:"${escJs(ev.nom)}",lieu:"${escJs(ev.lieu)}",fac1:"${escJs(anim1)}",fac1Id:"${escJs(anim1Id)}",fac2:"${escJs(anim2)}",fac2Id:"${escJs(anim2Id)}",fac3:"${escJs(anim3)}",fac3Id:"${escJs(anim3Id)}",fac4:"${escJs(anim4)}",fac4Id:"${escJs(anim4Id)}",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:""}`;
+        return `  {id:"${escJs(ev.atelierId || ev.id)}",jour:"${escJs(ev.jour)}",date:"${escJs(ev.date)}",heure:"${escJs(heureStr)}",type:"${escJs(ev.type)}",atelier:"${escJs(ev.nom)}",lieu:"${escJs(ev.lieu)}",fac1:"${escJs(anim1)}",fac1Id:"${escJs(anim1Id)}",fac2:"${escJs(anim2)}",fac2Id:"${escJs(anim2Id)}",fac3:"${escJs(anim3)}",fac3Id:"${escJs(anim3Id)}",fac4:"${escJs(anim4)}",fac4Id:"${escJs(anim4Id)}",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",locked:${ev.locked ? 'true' : 'false'}}`;
       });
 
       return header + lines.join(',\n') + '\n];\n';
