@@ -1620,8 +1620,13 @@
 
         const tCss = typeCssClass(a.type);
         const cardCls = ['atelier-card', tCss ? 'has-type ' + tCss : '', isPlaced ? 'is-placed' : ''].filter(Boolean).join(' ');
+        let colorStyle = '';
+        if (tCss && typeof REF_TYPE_COLORS !== 'undefined') {
+          const cd = REF_TYPE_COLORS.find(c => c.cssClass === tCss);
+          if (cd) colorStyle = `--tc:${cd.color};--tbg:${cd.colorBg};--tbd:${cd.colorBd};`;
+        }
         return `
-          <div class="${cardCls}"
+          <div class="${cardCls}" style="${colorStyle}"
                draggable="true"
                ondragstart="handleDragStart(event, '${esc(a.id)}')"
                data-id="${esc(a.id)}">
@@ -1973,6 +1978,15 @@
         card.className = 'placed-event' + (evTCss ? ' has-type ' + evTCss : '') + (ev.locked ? ' is-locked' : '');
         card.style.top = topPx + 'px';
         card.style.height = heightPx + 'px';
+        // Injecter les couleurs en inline pour ne pas dépendre du timing de buildTypeCssVars
+        if (evTCss && typeof REF_TYPE_COLORS !== 'undefined') {
+          const colorDef = REF_TYPE_COLORS.find(c => c.cssClass === evTCss);
+          if (colorDef) {
+            card.style.setProperty('--tc',  colorDef.color);
+            card.style.setProperty('--tbg', colorDef.colorBg);
+            card.style.setProperty('--tbd', colorDef.colorBd);
+          }
+        }
         card.setAttribute('data-ev-id', ev.id);
         card.setAttribute('data-ev-type', ev.type || '');
         card.setAttribute('data-ev-lieu', ev.lieu || '');
