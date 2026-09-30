@@ -311,13 +311,12 @@ function _showConflictDialog(filename) {
         '</div>' +
         '<p style="font-size:13px;color:#57606a;line-height:1.7;margin-bottom:18px;">' +
           'Le fichier <code style="font-family:monospace;background:#f0f0f0;padding:1px 5px;border-radius:3px;">' + filename + '</code> ' +
-          'a été <strong style="color:#d97706;">modifié par un autre utilisateur</strong> depuis que vous avez chargé cette page.<br><br>' +
-          'Si vous continuez, <strong>vos modifications écraseront les leurs</strong>. ' +
-          'Il est recommandé de <strong>recharger la page</strong> pour partir des données les plus récentes.' +
+          'a été <strong style="color:#d97706;">mis à jour</strong> depuis le chargement de la page (probablement par une sauvegarde précédente).<br><br>' +
+          'Vos modifications en cours seront <strong>ajoutées par-dessus</strong> — les données précédentes ne seront pas perdues.' +
         '</p>' +
         '<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">' +
           '<button id="tm-conflict-cancel" style="cursor:pointer;padding:8px 18px;border-radius:6px;border:1px solid #e5e7eb;background:#f7f8fa;font-size:13px;font-weight:600;color:#1f2328;font-family:inherit;">↩ Recharger la page</button>' +
-          '<button id="tm-conflict-force" style="cursor:pointer;padding:8px 18px;border-radius:6px;border:none;background:#dc2626;color:#fff;font-size:13px;font-weight:600;font-family:inherit;">⚠ Écraser quand même</button>' +
+          '<button id="tm-conflict-force" style="cursor:pointer;padding:8px 18px;border-radius:6px;border:none;background:#3b82d4;color:#fff;font-size:13px;font-weight:600;font-family:inherit;">✅ Continuer</button>' +
         '</div>' +
       '</div>';
 

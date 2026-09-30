@@ -317,7 +317,7 @@ var DESCRIPTIONS_DATA  = [];  // copie de travail de REF_DESCRIPTIONS
 // Init : cloner le référentiel chargé
 function initData() {
   data = REF_RESSOURCES.map(function(r) {
-    return { id: r.id, value: r.value, roles: r.roles.slice(), langues: (r.langues || []).slice(), tel: r.tel || '', email: r.email || '' };
+    return { id: r.id, value: r.value, roles: r.roles.slice(), langues: (r.langues || []).slice(), tel: r.tel || '', email: r.email || '', lien: r.lien || '' };
   });
 }
 
