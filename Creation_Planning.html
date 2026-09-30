@@ -1841,7 +1841,15 @@
       _evDetailId = null;
     }
 
-    function saveEventDetail() {
+    function buildAteliersJs() {
+      const header = '/**\n * TANTRAMOUR 2027 — Référentiel : Ateliers Proposés\n * Fichier géré via Rapport_Ateliers_Proposes.html\n */\nvar ATELIERS = [\n';
+      const lines = (typeof ATELIERS !== 'undefined' ? ATELIERS : []).map(a =>
+        `  {id:"${escJs(a.id)}",nomFr:"${escJs(a.nomFr)}",nomEn:"${escJs(a.nomEn||'')}",animateurs:${JSON.stringify(a.animateurs||[])},type:"${escJs(a.type)}",dureeH:${parseInt(a.dureeH)||0},dureeMin:${parseInt(a.dureeMin)||0},prepDuration:${parseInt(a.prepDuration)||0},rangeDuration:${parseInt(a.rangeDuration)||0},descFr:"${escJs(a.descFr||'')}",descEn:"${escJs(a.descEn||'')}",statut:"${escJs(a.statut||'')}",createdAt:"${escJs(a.createdAt||'')}",updatedAt:"${escJs(a.updatedAt||'')}"}`
+      );
+      return header + lines.join(',\n') + '\n];\n';
+    }
+
+    async function saveEventDetail() {
       if (!_evDetailId) return;
       const ev = PLACED_EVENTS.find(e => e.id === _evDetailId);
       if (!ev) return;
@@ -1867,7 +1875,7 @@
       // Trouver le dateLabel du jour sélectionné
       const jourObj = FESTIVAL_DAYS.find(d => d.jour === newJour);
 
-      // Appliquer
+      // ── 1. Mettre à jour PLACED_EVENTS ──
       ev.nom          = newNom || ev.nom;
       ev.nomEn        = newNomEn;
       ev.type         = newType;
@@ -1885,8 +1893,33 @@
 
       renderPlacedEvents();
       renderAteliersSidebar();
-      toast(`✅ "${ev.nom}" mis à jour.`);
       closeEventDetail();
+
+      // ── 2. Propager dans ATELIERS (Ateliers.js) si l'atelier existe ──
+      const atIdx = (typeof ATELIERS !== 'undefined' ? ATELIERS : [])
+        .findIndex(a => a.id === ev.atelierId);
+
+      if (atIdx !== -1) {
+        ATELIERS[atIdx].nomFr        = ev.nom;
+        ATELIERS[atIdx].nomEn        = newNomEn;
+        ATELIERS[atIdx].type         = newType;
+        ATELIERS[atIdx].animateurs   = newAnims;
+        ATELIERS[atIdx].dureeH       = Math.floor(newDuree / 60);
+        ATELIERS[atIdx].dureeMin     = newDuree % 60;
+        ATELIERS[atIdx].prepDuration = newPrep;
+        ATELIERS[atIdx].rangeDuration= newRange;
+        ATELIERS[atIdx].descFr       = newDescFr;
+        ATELIERS[atIdx].descEn       = newDescEn;
+        ATELIERS[atIdx].updatedAt    = new Date().toISOString();
+        try {
+          await saveFile('Ateliers.js', buildAteliersJs());
+          toast(`✅ "${ev.nom}" mis à jour (planning + Ateliers.js).`);
+        } catch (err) {
+          toast(`⚠️ Planning mis à jour, mais erreur Ateliers.js : ${err.message}`, true);
+        }
+      } else {
+        toast(`✅ "${ev.nom}" mis à jour dans le planning.`);
+      }
     }
 
     function toggleEventLock() {
