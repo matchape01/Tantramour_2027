@@ -1903,6 +1903,14 @@
       const atIdx = (typeof ATELIERS !== 'undefined' ? ATELIERS : [])
         .findIndex(a => a.id === ev.atelierId);
 
+      // Toujours sauvegarder data.js (position + infos de l'atelier dans la grille)
+      try {
+        await saveFile('data.js', buildDataJsContent());
+      } catch (err) {
+        toast(`❌ Erreur sauvegarde data.js : ${err.message}`, true);
+        return;
+      }
+
       if (atIdx !== -1) {
         ATELIERS[atIdx].nomFr        = ev.nom;
         ATELIERS[atIdx].nomEn        = newNomEn;
@@ -1917,12 +1925,12 @@
         ATELIERS[atIdx].updatedAt    = new Date().toISOString();
         try {
           await saveFile('Ateliers.js', buildAteliersJs());
-          toast(`✅ "${ev.nom}" mis à jour (planning + Ateliers.js).`);
+          toast(`✅ "${ev.nom}" mis à jour (data.js + Ateliers.js).`);
         } catch (err) {
-          toast(`⚠️ Planning mis à jour, mais erreur Ateliers.js : ${err.message}`, true);
+          toast(`⚠️ data.js sauvegardé, mais erreur Ateliers.js : ${err.message}`, true);
         }
       } else {
-        toast(`✅ "${ev.nom}" mis à jour dans le planning.`);
+        toast(`✅ "${ev.nom}" mis à jour (data.js).`);
       }
     }
 
