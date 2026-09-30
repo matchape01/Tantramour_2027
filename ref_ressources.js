@@ -1,15 +1,15 @@
-﻿/**
- * TANTRAMOUR 2026  Référentiel Unifié : Ressources
+/**
+ * TANTRAMOUR 2026 — Référentiel Unifié : Ressources
  *
- * ??  Ce fichier doit être chargé APRÈS ref_resource_types.js
+ * ⚠️  Ce fichier doit être chargé APRÈS ref_resource_types.js
  *
  * Chaque entrée : { id, value, roles }
- *   id    : clé unique (stable, ne jamais changer)  préfixe "R_"
+ *   id    : clé unique (stable, ne jamais changer) — préfixe "R_"
  *   value : nom exact tel qu'il apparaît dans AGENDA
  *   roles : tableau des rôles possibles pour cette personne
  *           Valeurs acceptées : "animateur" | "helper" | "traducteur" | "angel"
  *
- * ??  Pour les rapports existants, les alias de compatibilité en bas de fichier
+ * ⚠️  Pour les rapports existants, les alias de compatibilité en bas de fichier
  *     reconstituent automatiquement REF_ANIMATEURS, REF_HELPERS,
  *     REF_TRADUCTEURS et REF_ANGELS depuis cette liste.
  */
@@ -32,7 +32,7 @@ var REF_RESSOURCES = [
   { id: 489353,            value: "Delphine Dupré",                            roles: ["helper", "traducteur"],                                 langues: ["FR", "EN"], tel: "", email: "", lien: "" },
   { id: 846170,            value: "Dipti - Mirabai India Sagrada",             roles: ["stand"],                                                langues: ["FR"], tel: "", email: "", lien: "" },
   { id: 553197,            value: "DJ Surprise",                               roles: ["animateur", "artist"],                                  langues: ["FR", "EN"], tel: "", email: "", lien: "" },
-  { id: 902885,            value: "Dorian Vallet",                             roles: ["animateur", "helper", "traducteur", "manager", "Mi-Colibri"], langues: ["FR", "EN"], tel: "06 27 91 88 51", email: "onemovevallet@gmail.com", lien: "" },
+  { id: 902885,            value: "Dorian Vallet",                             roles: ["animateur", "helper", "traducteur", "admin", "manager", "Mi-Colibri"], langues: ["FR", "EN"], tel: "06 27 91 88 51", email: "onemovevallet@gmail.com", lien: "" },
   { id: 319168,            value: "Echo Clem (Clément)",                       roles: ["helper", "manager"],                                    langues: ["FR"], tel: "", email: "", lien: "" },
   { id: 102178,            value: "Felix Ardevol",                             roles: ["animateur", "artist"],                                  langues: ["FR"], tel: "06 38 11 03 49", email: "felix@caudiovisuel.com", lien: "" },
   { id: 783745,            value: "Franz Bols thibétains",                     roles: ["stand"],                                                langues: ["FR"], tel: "", email: "", lien: "" },
@@ -78,9 +78,9 @@ var REF_RESSOURCES = [
 ];
 
 
-// --- Alias de compatibilité ---------------------------------------------------
+// ─── Alias de compatibilité ───────────────────────────────────────────────────
 // Ces 4 variables reconstituent les anciens référentiels depuis REF_RESSOURCES.
-// Les IDs sont désormais numériques  l'ID est utilisé directement.
+// Les IDs sont désormais numériques — l'ID est utilisé directement.
 var REF_ANIMATEURS = REF_RESSOURCES
   .filter(function(r){ return r.roles.indexOf("animateur") !== -1; })
   .map(function(r){ return { id: r.id, value: r.value }; });
