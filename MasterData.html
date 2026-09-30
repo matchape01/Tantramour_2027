@@ -221,19 +221,6 @@
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 </head>
 <body>
-<script>
-(function(){
-  var pw = sessionStorage.getItem('tm_admin_auth');
-  if (pw !== '007') {
-    var entered = prompt('🔒 Accès restreint — Mot de passe :');
-    if (entered !== '007') {
-      document.write('<div style="font-family:system-ui;padding:60px;text-align:center"><h2>Accès refusé</h2><p style="margin-top:12px;color:#57606a">Mot de passe incorrect.</p><br><a href="index_bis.html">← Retour</a></div>');
-      document.close(); throw 'access denied';
-    }
-    sessionStorage.setItem('tm_admin_auth', '007');
-  }
-})();
-</script>
 
 <div class="wrap">
 

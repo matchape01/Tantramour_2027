@@ -248,7 +248,7 @@ var REF_DISPLAY_REPORTS = [
     "titleStyle": "",
     "descStyle": "",
     "arrowStyle": "",
-    "isProtected": true,
+    "isProtected": false,
     "order": 3
   },
   {
@@ -514,7 +514,7 @@ var REF_DISPLAY_REPORTS = [
     "titleStyle": "color:#1e40af;",
     "descStyle": "color:#1e3a8a;",
     "arrowStyle": "color:#3b82d4;",
-    "isProtected": true,
+    "isProtected": false,
     "order": 1
   },
   {
@@ -533,7 +533,7 @@ var REF_DISPLAY_REPORTS = [
     "titleStyle": "color:#fff;",
     "descStyle": "color:rgba(255,255,255,.8);",
     "arrowStyle": "color:rgba(255,255,255,.7);",
-    "isProtected": true,
+    "isProtected": false,
     "order": 5
   },
   {
@@ -571,7 +571,7 @@ var REF_DISPLAY_REPORTS = [
     "titleStyle": "",
     "descStyle": "",
     "arrowStyle": "",
-    "isProtected": true,
+    "isProtected": false,
     "order": 2
   },
   {
