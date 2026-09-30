@@ -29,7 +29,7 @@ var REF_TRANSLATIONS = [
   { key: "bis_page_title", fr: "Tantramour 2027 - Dream Team", en: "Tantramour 2027 - Dream Team" },
   { key: "bis_title_1", fr: "Tantramour 2027", en: "Tantramour 2027" },
   { key: "bis_title_2", fr: "Page destinée à la DreamTeam", en: "Page for the DreamTeam" },
-  { key: "gp_page_title", fr: "Tantramour 2027 — ADMIN", en: "Tantramour 2027 — ADMIN" },
+  { key: "gp_page_title", fr: "TantrÂmour 2027 — ADMIN", en: "TantrÂmour 2027 — ADMIN" },
   { key: "gp_title_1", fr: "ADMIN — Gestion Planning (CORE TEAM)", en: "ADMIN — Schedule Management (CORE TEAM)" },
   { key: "gp_title_2", fr: "Page destinée à la CoreTeam", en: "Page for the CoreTeam" },
   { key: "home_group_general", fr: "DreamTeam", en: "DreamTeam" },
