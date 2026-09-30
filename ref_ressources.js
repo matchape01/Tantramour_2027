@@ -1,15 +1,15 @@
-/**
- * TANTRAMOUR 2026 — Référentiel Unifié : Ressources
+﻿/**
+ * TANTRAMOUR 2026  Référentiel Unifié : Ressources
  *
- * ⚠️  Ce fichier doit être chargé APRÈS ref_resource_types.js
+ * ??  Ce fichier doit être chargé APRÈS ref_resource_types.js
  *
  * Chaque entrée : { id, value, roles }
- *   id    : clé unique (stable, ne jamais changer) — préfixe "R_"
+ *   id    : clé unique (stable, ne jamais changer)  préfixe "R_"
  *   value : nom exact tel qu'il apparaît dans AGENDA
  *   roles : tableau des rôles possibles pour cette personne
  *           Valeurs acceptées : "animateur" | "helper" | "traducteur" | "angel"
  *
- * ⚠️  Pour les rapports existants, les alias de compatibilité en bas de fichier
+ * ??  Pour les rapports existants, les alias de compatibilité en bas de fichier
  *     reconstituent automatiquement REF_ANIMATEURS, REF_HELPERS,
  *     REF_TRADUCTEURS et REF_ANGELS depuis cette liste.
  */
@@ -78,9 +78,9 @@ var REF_RESSOURCES = [
 ];
 
 
-// ─── Alias de compatibilité ───────────────────────────────────────────────────
+// --- Alias de compatibilité ---------------------------------------------------
 // Ces 4 variables reconstituent les anciens référentiels depuis REF_RESSOURCES.
-// Les IDs sont désormais numériques — l'ID est utilisé directement.
+// Les IDs sont désormais numériques  l'ID est utilisé directement.
 var REF_ANIMATEURS = REF_RESSOURCES
   .filter(function(r){ return r.roles.indexOf("animateur") !== -1; })
   .map(function(r){ return { id: r.id, value: r.value }; });
