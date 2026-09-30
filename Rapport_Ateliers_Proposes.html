@@ -243,11 +243,7 @@ tbody td { padding:10px 12px; vertical-align:middle; }
         </div>
         <div class="field">
           <label>⏱ Durée *</label>
-          <div class="dur-row">
-            <select id="c_dH"><option value="0">0h</option><option value="1" selected>1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option></select>
-            <span>h</span>
-            <select id="c_dMin"><option value="0">00 min</option><option value="15">15 min</option><option value="30" selected>30 min</option><option value="45">45 min</option></select>
-          </div>
+          <select id="c_dur"></select>
         </div>
         <div class="field">
           <label>⏱ Durée Préparation</label>
@@ -315,9 +311,7 @@ tbody td { padding:10px 12px; vertical-align:middle; }
       <div class="field">
         <label>⏱ Durée *</label>
         <div class="dur-row">
-          <select id="e_dH"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option></select>
-          <span>h</span>
-          <select id="e_dMin"><option value="0">00 min</option><option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option></select>
+          <select id="e_dur"></select>
         </div>
       </div>
       <div class="field">
@@ -703,10 +697,12 @@ function buildAnimOpts() {
   if (fEl) fEl.innerHTML = '<option value="">Tous</option>'+opts;
 }
 
-function buildDurPrepOpts(selectedVal) {
-  // Génère les options 0 à 120 min par pas de 5 min
+function buildDurPrepOpts(selectedVal, maxMin, step) {
+  // Génère les options de 0 à maxMin (défaut 120) par pas de step (défaut 5) min
+  var max  = (maxMin  != null) ? maxMin : 120;
+  var inc  = (step    != null) ? step   : 5;
   var opts = '';
-  for (var v = 0; v <= 120; v += 5) {
+  for (var v = 0; v <= max; v += inc) {
     var h = Math.floor(v / 60);
     var m = v % 60;
     var label = h ? h + 'h' + (m ? (m < 10 ? '0' + m : m) + 'min' : '') : m + ' min';
@@ -817,8 +813,7 @@ function resetCreate() {
     document.getElementById(id).value = '';
   });
   document.getElementById('c_type').value        = '';
-  document.getElementById('c_dH').value          = '1';
-  document.getElementById('c_dMin').value        = '30';
+  document.getElementById('c_dur').value         = '90';
   document.getElementById('c_prepDuration').value = '0';
   document.getElementById('c_rangeDuration').value = '0';
   ['c_a1','c_a2','c_a3','c_a4'].forEach(function(id){
@@ -838,8 +833,9 @@ function generateId() {
 function createAtelier() {
   var nomFr = document.getElementById('c_nomFr').value.trim();
   var type  = document.getElementById('c_type').value;
-  var dH    = parseInt(document.getElementById('c_dH').value)||0;
-  var dMin  = parseInt(document.getElementById('c_dMin').value)||0;
+  var _cDur = parseInt(document.getElementById('c_dur').value)||0;
+  var dH    = Math.floor(_cDur / 60);
+  var dMin  = _cDur % 60;
 
   if (!nomFr) { toast('❌ Le nom en français est obligatoire.', true); return; }
   if (!type)  { toast('❌ Veuillez sélectionner un type.', true); return; }
@@ -887,8 +883,9 @@ function openEdit(id) {
   document.getElementById('e_nomFr').value        = a.nomFr  || '';
   document.getElementById('e_nomEn').value        = a.nomEn  || '';
   document.getElementById('e_type').value         = a.type   || '';
-  document.getElementById('e_dH').value           = String(a.dureeH  || 0);
-  document.getElementById('e_dMin').value         = String(a.dureeMin || 0);
+  var _eDurTotal = ((a.dureeH||0) * 60) + (a.dureeMin||0);
+  document.getElementById('e_dur').innerHTML = buildDurPrepOpts(_eDurTotal, 300, 15);
+  document.getElementById('e_dur').value     = String(_eDurTotal);
   document.getElementById('e_prepDuration').innerHTML = buildDurPrepOpts(a.prepDuration || 0);
   document.getElementById('e_prepDuration').value = String(a.prepDuration || 0);
   document.getElementById('e_rangeDuration').innerHTML = buildDurPrepOpts(a.rangeDuration || 0);
@@ -924,8 +921,9 @@ function saveEdit() {
   ATELIERS[idx].nomEn        = document.getElementById('e_nomEn').value.trim();
   ATELIERS[idx].animateurs   = getAnims('e');
   ATELIERS[idx].type         = type;
-  ATELIERS[idx].dureeH       = parseInt(document.getElementById('e_dH').value)||0;
-  ATELIERS[idx].dureeMin     = parseInt(document.getElementById('e_dMin').value)||0;
+  var _eDur = parseInt(document.getElementById('e_dur').value)||0;
+  ATELIERS[idx].dureeH       = Math.floor(_eDur / 60);
+  ATELIERS[idx].dureeMin     = _eDur % 60;
   ATELIERS[idx].prepDuration = parseInt(document.getElementById('e_prepDuration').value)||0;
   ATELIERS[idx].rangeDuration= parseInt(document.getElementById('e_rangeDuration').value)||0;
   ATELIERS[idx].descFr       = document.getElementById('e_descFr').value.trim();
@@ -1005,7 +1003,9 @@ function saveAteliers(callback) {
 loadData(['Ateliers.js', 'data.js'], function() {
   buildTypeOpts();
   buildAnimOpts();
-  // Peupler les selects durée préparation / rangement
+  // Peupler les selects durée (atelier) et durée préparation / rangement
+  var durEl = document.getElementById('c_dur');
+  if (durEl) { durEl.innerHTML = buildDurPrepOpts(90, 300, 15); durEl.value = '90'; }
   ['c_prepDuration','e_prepDuration','c_rangeDuration','e_rangeDuration'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.innerHTML = buildDurPrepOpts(0);
