@@ -2821,6 +2821,8 @@
 
       renderPlacedEvents();
       renderAteliersSidebar();
+      // Re-appliquer le mode après le rendu (sécurité : les colonnes sont inchangées, les blocs recréés)
+      applyEditMode(isEditable);
     }
 
     function goBackToVersions() {
