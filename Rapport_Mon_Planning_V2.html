@@ -627,7 +627,7 @@ window.applyFilters = function applyFilters() {
     // Filtre select nom exact
     if (fNom && fNom !== '__ALL__' && nom !== fNom) return;
     // Filtre recherche texte libre
-    if (fSearch && nom.toLowerCase().indexOf(fSearch)===-1) return;
+    if (fSearch && resolveName(nom).toLowerCase().indexOf(fSearch)===-1) return;
 
     // Vue par rôle : garder uniquement les entrées correspondant au rôle sélectionné
     var filteredEntries;
@@ -650,7 +650,7 @@ window.applyFilters = function applyFilters() {
   });
 
   // Trier alphabétiquement
-  results.sort(function(a,b){ return a.nom.localeCompare(b.nom,'fr'); });
+  results.sort(function(a,b){ return resolveName(a.nom).localeCompare(resolveName(b.nom),'fr'); });
 
   document.getElementById('stats').innerHTML = '<span>'+results.length+'</span> ressource(s) affichée(s)';
   renderList(results);
@@ -719,7 +719,7 @@ function renderList(results) {
       : '';
 
     // Avatar initiale
-    var initiale = res.nom.charAt(0).toUpperCase();
+    var initiale = resolveName(res.nom).charAt(0).toUpperCase();
 
     // Lignes par jour
     var dayRows = jours.map(function(g, gi) {
@@ -935,7 +935,7 @@ function renderList(results) {
       '<div class="resource-header" onclick="toggleResource('+ri+')">' +
         '<div class="resource-avatar">'+esc(initiale)+'</div>' +
         '<span class="resource-name-wrap">' +
-          '<span class="resource-name">'+esc(res.nom)+'</span>' +
+          '<span class="resource-name">'+esc(resolveName(res.nom))+'</span>' +
           '<span class="resource-badges">'+rolesBadges+(colibriHtml ? colibriHtml : '')+'</span>' +
         '</span>' +
         '<span class="resource-stats" style="font-weight:700">'+fmtDuree(totalMins)+' · '+totalAteliers+' <span style="font-weight:400">'+I18n.t(totalAteliers>1?'rp_ateliers_s':'rp_atelier_s')+'</span></span>' +
