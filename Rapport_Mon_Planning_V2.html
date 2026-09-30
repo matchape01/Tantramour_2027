@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tantramour 2026 â€” Mon Planning V2</title>
+<title>Tantramour 2026 — Mon Planning V2</title>
 <script src="ref_translations.js"></script>
 <script src="i18n.js"></script>
 <style>
 :root {
   --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
   --text:#1f2328; --muted:#57606a; --accent:#3b82d4;
-  /* Ligne NOM : bleu foncÃ© */
+  /* Ligne NOM : bleu foncé */
   --header-bg:#1e40af; --header-tx:#ffffff;
-  /* Ligne JOUR : gris foncÃ© */
+  /* Ligne JOUR : gris foncé */
   --day-bg:#374151;    --day-tx:#f9fafb;
-  /* En-tÃªtes colonnes : gris clair */
+  /* En-têtes colonnes : gris clair */
   --th-bg:#e5e7eb;     --th-tx:#374151;
-  /* DonnÃ©es : blanc */
+  /* Données : blanc */
   --td-bg:#ffffff;     --row-alt:#f7f8fa;
   --badge-f-bg:#dcfce7; --badge-f-tx:#166534;
   --badge-h-bg:#e0f2fe; --badge-h-tx:#0369a1;
@@ -27,13 +27,13 @@
 .dark {
   --bg:#0d1117; --surface:#161b22; --border:#30363d;
   --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
-  /* Ligne NOM : bleu foncÃ© mode nuit */
+  /* Ligne NOM : bleu foncé mode nuit */
   --header-bg:#1e3a8a; --header-tx:#bfdbfe;
-  /* Ligne JOUR : gris foncÃ© mode nuit */
+  /* Ligne JOUR : gris foncé mode nuit */
   --day-bg:#1f2937;    --day-tx:#d1d5db;
-  /* En-tÃªtes : gris mode nuit */
+  /* En-têtes : gris mode nuit */
   --th-bg:#374151;     --th-tx:#9ca3af;
-  /* DonnÃ©es */
+  /* Données */
   --td-bg:#161b22;     --row-alt:#1c2333;
   --badge-f-bg:#0a2e1a; --badge-f-tx:#4ade80;
   --badge-h-bg:#0c2d48; --badge-h-tx:#58a6ff;
@@ -45,7 +45,7 @@
 body { font-family:-apple-system,"Segoe UI",system-ui,sans-serif; font-size:14px; line-height:1.6; background:var(--bg); color:var(--text); }
 .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
 
-/* â”€â”€ HEADER â”€â”€ */
+/* ── HEADER ── */
 header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
 .logo h1 { font-size:19px; font-weight:700; }
 .logo p  { font-size:22px; font-weight:800; color:var(--accent); line-height:1.2; margin-top:2px; }
@@ -53,7 +53,7 @@ header { display:flex; align-items:center; justify-content:space-between; margin
 .btn { cursor:pointer; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:6px 14px; font-size:13px; color:var(--text); font-family:inherit; display:inline-flex; align-items:center; gap:6px; text-decoration:none; transition:background .15s; }
 .btn:hover { background:var(--border); }
 
-/* â”€â”€ FILTRES â”€â”€ */
+/* ── FILTRES ── */
 .filters { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:8px; align-items:flex-end; }
 .filter-group { display:flex; flex-direction:column; gap:4px; }
 .filter-group label { font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); font-weight:600; }
@@ -63,12 +63,12 @@ input[type="text"] { min-width:200px; }
 .stats { font-size:12px; color:var(--muted); margin-bottom:16px; }
 .stats span { color:var(--accent); font-weight:600; }
 
-/* â”€â”€ TABS VUE â”€â”€ */
+/* ── TABS VUE ── */
 .vue-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
 .vue-tabs-lbl { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-right:4px; white-space:nowrap; }
 .vtab { cursor:pointer; padding:7px 16px; border-radius:8px; font-size:13px; font-weight:600; border:2px solid var(--border); background:var(--surface); color:var(--muted); font-family:inherit; transition:all .15s; white-space:nowrap; }
 .vtab:hover { border-color:var(--accent); color:var(--accent); }
-/* Vue CombinÃ©e : violet/purple */
+/* Vue Combinée : violet/purple */
 .vtab.active-combined { border-color:#7c3aed; background:#f5f3ff; color:#7c3aed; }
 .dark .vtab.active-combined { border-color:#a78bfa; background:#1e1b4b; color:#a78bfa; }
 /* Animateur : vert */
@@ -87,17 +87,17 @@ input[type="text"] { min-width:200px; }
 .vtab.active-colibri { border-color:#db2777; background:#fce7f3; color:#db2777; }
 .dark .vtab.active-colibri { border-color:#f472b6; background:#500724; color:#f472b6; }
 
-/* â”€â”€ CARTE RESSOURCE â”€â”€ */
+/* ── CARTE RESSOURCE ── */
 .resource-list { display:flex; flex-direction:column; gap:16px; }
 .resource-card { border:1px solid var(--border); border-radius:10px; overflow:hidden; }
 .resource-header { display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--header-bg); color:var(--header-tx); cursor:pointer; user-select:none; flex-wrap:nowrap; min-width:0; }
 .resource-header:hover { filter:brightness(1.08); }
 .resource-avatar { width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.25); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; border:2px solid rgba(255,255,255,.4); }
-/* Nom + badges rÃ´les cÃ´te Ã  cÃ´te, flex:1 pour prendre l'espace dispo */
+/* Nom + badges rôles côte à côte, flex:1 pour prendre l'espace dispo */
 .resource-name-wrap { display:flex; align-items:center; gap:6px; flex:1; min-width:0; overflow:hidden; }
 .resource-name { font-size:14px; font-weight:700; color:var(--header-tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex-shrink:1; min-width:0; }
 .resource-badges { display:flex; gap:3px; flex-shrink:0; flex-wrap:nowrap; }
-/* Badges rÃ´les plus petits sur la ligne NOM */
+/* Badges rôles plus petits sur la ligne NOM */
 .resource-badges .badge { font-size:9px; padding:1px 5px; }
 .resource-stats { font-size:12px; font-weight:700; color:rgba(255,255,255,.9); white-space:nowrap; flex-shrink:0; }
 .resource-chevron { font-size:16px; color:rgba(255,255,255,.6); transition:transform .2s; flex-shrink:0; }
@@ -105,7 +105,7 @@ input[type="text"] { min-width:200px; }
 .resource-body { display:none; border-top:1px solid var(--border); }
 .resource-card.open .resource-body { display:block; }
 
-/* â”€â”€ LIGNE JOUR â”€â”€ */
+/* ── LIGNE JOUR ── */
 .day-row { display:flex; align-items:center; gap:10px; padding:8px 16px; border-bottom:1px solid rgba(255,255,255,.1); background:var(--day-bg); cursor:pointer; transition:filter .1s; }
 .day-row:last-child { border-bottom:none; }
 .day-row:hover { filter:brightness(1.1); }
@@ -117,7 +117,7 @@ input[type="text"] { min-width:200px; }
 .day-chevron { font-size:14px; color:#9ca3af; transition:transform .2s; }
 .day-row.open .day-chevron { transform:rotate(90deg); }
 
-/* â”€â”€ TABLE ATELIERS â”€â”€ */
+/* ── TABLE ATELIERS ── */
 .ateliers-wrap { border-top:1px solid var(--border); overflow-x:auto; }
 .ateliers-table { width:100%; border-collapse:collapse; font-size:12px; }
 .ateliers-table th { background:var(--th-bg); padding:6px 10px; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--th-tx); border-bottom:1px solid var(--border); white-space:nowrap; }
@@ -141,25 +141,25 @@ input[type="text"] { min-width:200px; }
 .info-btn { cursor:pointer; background:transparent; border:none; font-size:15px; padding:3px 6px; border-radius:4px; color:var(--muted); }
 .info-btn:hover { background:var(--border); color:var(--accent); }
 
-/* â”€â”€ SHIFT ANGEL BLOCK â”€â”€ */
+/* ── SHIFT ANGEL BLOCK ── */
 .angel-shift-row td { background:var(--badge-a-bg) !important; font-weight:700; color:var(--badge-a-tx) !important; }
 .angel-shift-row td.at-heure { color:var(--badge-a-tx) !important; }
 .angel-shift-row td.at-name  { color:var(--badge-a-tx) !important; }
-/* Chevron collapse intÃ©grÃ© dans la ligne shift */
+/* Chevron collapse intégré dans la ligne shift */
 .angel-shift-row .shift-chevron { display:inline-block; margin-left:8px; font-size:13px; color:var(--badge-a-tx); transition:transform .2s; vertical-align:middle; opacity:.7; }
 .angel-shift-row.shift-open .shift-chevron { transform:rotate(90deg); }
 .angel-covered-row td { background:#fdf2f8; color:#9ca3af; }
 .dark .angel-covered-row td { background:#2a0e22; color:#6b7280; }
 .angel-covered-row td.at-heure { padding-left:22px; position:relative; }
-.angel-covered-row td.at-heure::before { content:'â””'; position:absolute; left:8px; top:6px; color:#f9a8d4; font-size:12px; line-height:1; }
+.angel-covered-row td.at-heure::before { content:'└'; position:absolute; left:8px; top:6px; color:#f9a8d4; font-size:12px; line-height:1; }
 .dark .angel-covered-row td.at-heure::before { color:#9d174d; }
 .angel-shift-dur-pill { display:inline-block; font-size:10px; font-weight:700; background:var(--badge-a-tx); color:#fff; border-radius:99px; padding:1px 10px; margin-left:8px; vertical-align:middle; }
 .dark .angel-shift-dur-pill { background:var(--badge-a-tx); }
-/* Lignes couvertes masquÃ©es par dÃ©faut */
+/* Lignes couvertes masquées par défaut */
 .angel-covered-row { display:none; }
 .angel-covered-row.shift-visible { display:table-row; }
 
-/* â”€â”€ MODALE DÃ‰TAIL â”€â”€ */
+/* ── MODALE DÉTAIL ── */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9999; align-items:flex-start; justify-content:center; padding:24px 16px; overflow-y:auto; }
 .modal-overlay.open { display:flex; }
 .modal-box { position:relative; background:var(--bg); border-radius:14px; max-width:680px; width:100%; border:1px solid var(--border); box-shadow:0 12px 40px rgba(0,0,0,.2); }
@@ -204,13 +204,13 @@ footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--border); 
   <header>
     <div class="logo">
       <h1 data-i18n="bis_title_1">Tantramour 2027</h1>
-      <p data-i18n="mp_title">ðŸ“‹ Mon Planning V2</p>
+      <p data-i18n="mp_title">📋 Mon Planning V2</p>
     </div>
     <div class="header-actions" id="headerActions">
-      <a class="btn" href="index.html" data-i18n="nav_accueil">ðŸ  Accueil</a>
-      <a class="btn" href="index_bis.html" data-i18n="nav_dreamteam">ðŸŒ€ DreamTeam</a>
-      <button class="btn" onclick="hardReload()">ðŸ”„ Refresh</button>
-      <button class="btn" id="modeBtn" onclick="toggleMode()" data-i18n="mp_mode_nuit">ðŸŒ™ Mode Nuit</button>
+      <a class="btn" href="index.html" data-i18n="nav_accueil">🏠 Accueil</a>
+      <a class="btn" href="index_bis.html" data-i18n="nav_dreamteam">🌀 DreamTeam</a>
+      <button class="btn" onclick="hardReload()">🔄 Refresh</button>
+      <button class="btn" id="modeBtn" onclick="toggleMode()" data-i18n="mp_mode_nuit">🌙 Mode Nuit</button>
     </div>
   </header>
 
@@ -223,14 +223,14 @@ footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--border); 
     </div>
     <div class="filter-group">
       <label id="lbl-fSearch" data-i18n="mp_lbl_search">Recherche nom</label>
-      <input type="text" id="fSearch" placeholder="Nom de la personneâ€¦" oninput="applyFilters()">
+      <input type="text" id="fSearch" placeholder="Nom de la personne…" oninput="applyFilters()">
     </div>
   </div>
 
-  <!-- â”€â”€ TABS VUE â”€â”€ -->
+  <!-- ── TABS VUE ── -->
   <div class="vue-tabs" id="vueTabs">
     <span class="vue-tabs-lbl" data-i18n="mp_vue_label">Vue :</span>
-    <button class="vtab active-combined" data-vue="" onclick="setVue(this,'')"         data-i18n="mp_vue_combined">Tous mes rÃ´les confondus</button>
+    <button class="vtab active-combined" data-vue="" onclick="setVue(this,'')"         data-i18n="mp_vue_combined">Tous mes rôles confondus</button>
     <button class="vtab"                 data-vue="animateur" onclick="setVue(this,'animateur')" data-i18n="mp_vue_animateur">Animateur</button>
     <button class="vtab"                 data-vue="helper"    onclick="setVue(this,'helper')"    data-i18n="mp_vue_helper">Helper</button>
     <button class="vtab"                 data-vue="traducteur" onclick="setVue(this,'traducteur')" data-i18n="mp_vue_traducteur">Traducteur</button>
@@ -242,16 +242,16 @@ footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--border); 
   <div class="resource-list" id="resourceList"></div>
 </div>
 
-<!-- â”€â”€ MODALE DÃ‰TAIL ATELIER â”€â”€ -->
+<!-- ── MODALE DÉTAIL ATELIER ── -->
 <div class="modal-overlay" id="detailModal" onclick="closeModalOnOverlay(event)">
   <div class="modal-box" id="detailBox">
     <div class="modal-top">
       <div class="modal-top-left">
-        <div class="modal-atelier" id="mTitle">â€”</div>
+        <div class="modal-atelier" id="mTitle">—</div>
         <div class="modal-sub" id="mSub"></div>
       </div>
       <div class="modal-top-right">
-        <button class="modal-close" onclick="closeModal()" title="Fermer">âœ•</button>
+        <button class="modal-close" onclick="closeModal()" title="Fermer">✕</button>
         <div class="modal-lang-toggle">
           <button class="modal-lang-btn active" id="mlBtnFr" onclick="setModalLang('fr')">FR</button>
           <button class="modal-lang-btn" id="mlBtnEn" onclick="setModalLang('en')">ENG</button>
@@ -262,7 +262,7 @@ footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--border); 
   </div>
 </div>
 
-<footer>Tantramour 2026 â€” Mon Planning V2</footer>
+<footer>Tantramour 2026 — Mon Planning V2</footer>
 
 <script src="ref_piment.js"></script>
 <script src="ref_notes.js"></script>
@@ -277,13 +277,13 @@ footer { margin-top:40px; padding-top:14px; border-top:1px solid var(--border); 
 <script>
 loadData(['ref_translations.js', 'data.js','ref_descriptions.js','logistics.js','logistics.helpers.js','logistics.special.js','ref_consignes_type.js','ref_consignes_recurrentes.js'], function() {
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 // UTILITAIRES
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function lieuLabel(lieu) {
-  if (!lieu) return 'â€”';
+  if (!lieu) return '—';
   if (typeof REF_LIEUX !== 'undefined') {
     var r = REF_LIEUX.find(function(l){ return l.value === lieu; });
     if (r && r.capacite) return esc(lieu) + ' <span style="color:var(--muted);font-size:11px">(' + r.capacite + ')</span>';
@@ -298,23 +298,23 @@ function heureMin(h) {
 }
 function calcDuree(h) {
   if (!h) return null;
-  var m = String(h).replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+  var m = String(h).replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
   if (!m) return null;
   var d = (parseInt(m[3])*60+parseInt(m[4])) - (parseInt(m[1])*60+parseInt(m[2]));
   if (d < 0) d += 1440;
   return d;
 }
 
-// Extrait l'intervalle {s, e} d'une entrÃ©e Ã  partir de son heure
+// Extrait l'intervalle {s, e} d'une entrée à partir de son heure
 function parseInterval(heure) {
-  var m = String(heure||'').replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+  var m = String(heure||'').replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
   if (!m) return null;
   var s = parseInt(m[1])*60+parseInt(m[2]), e = parseInt(m[3])*60+parseInt(m[4]);
   if (e < s) e += 1440;
   return { s:s, e:e };
 }
 
-// Fusionne une liste d'intervalles {s,e} et retourne la somme des durÃ©es aprÃ¨s fusion
+// Fusionne une liste d'intervalles {s,e} et retourne la somme des durées après fusion
 function mergedDuration(intervals) {
   if (!intervals.length) return 0;
   var sorted = intervals.slice().sort(function(a,b){ return a.s-b.s; });
@@ -327,7 +327,7 @@ function mergedDuration(intervals) {
   return merged.reduce(function(t,iv){ return t+(iv.e-iv.s); }, 0);
 }
 
-// Fusionne une liste d'intervalles et retourne le nombre d'intervalles fusionnÃ©s
+// Fusionne une liste d'intervalles et retourne le nombre d'intervalles fusionnés
 function mergedCount(intervals) {
   if (!intervals.length) return 0;
   var sorted = intervals.slice().sort(function(a,b){ return a.s-b.s; });
@@ -358,7 +358,7 @@ function noteLabel(val, lang) {
   return val;
 }
 function pimentHtml(n) {
-  return n > 0 ? '<span class="piment">'+'ðŸŒ¶ï¸'.repeat(n)+'</span>' : '';
+  return n > 0 ? '<span class="piment">'+'🌶️'.repeat(n)+'</span>' : '';
 }
 function isBilingue(id) {
   if (!id || typeof REF_RESSOURCES==='undefined') return false;
@@ -366,7 +366,7 @@ function isBilingue(id) {
   return r && r.langues && r.langues.indexOf('FR')!==-1 && r.langues.indexOf('EN')!==-1;
 }
 function angelWithPhone(id) {
-  if (!id) return 'â€”';
+  if (!id) return '—';
   var nom = resolveName(id);
   if (typeof REF_RESSOURCES === 'undefined') return esc(nom);
   var r = REF_RESSOURCES.find(function(x){ return String(x.id) === String(id); });
@@ -380,9 +380,9 @@ function isColibri(id) {
 }
 var JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
 var JOUR_META = {
-  'Jour 1': { jourEn:'Day 1', date:'Samedi 29 aoÃ»t',   dateEn:'Saturday Aug 29'  },
-  'Jour 2': { jourEn:'Day 2', date:'Dimanche 30 aoÃ»t', dateEn:'Sunday Aug 30'    },
-  'Jour 3': { jourEn:'Day 3', date:'Lundi 31 aoÃ»t',    dateEn:'Monday Aug 31'    },
+  'Jour 1': { jourEn:'Day 1', date:'Samedi 29 août',   dateEn:'Saturday Aug 29'  },
+  'Jour 2': { jourEn:'Day 2', date:'Dimanche 30 août', dateEn:'Sunday Aug 30'    },
+  'Jour 3': { jourEn:'Day 3', date:'Lundi 31 août',    dateEn:'Monday Aug 31'    },
   'Jour 4': { jourEn:'Day 4', date:'Mardi 1 sept.',    dateEn:'Tuesday Sep 1'    },
   'Jour 5': { jourEn:'Day 5', date:'Mercredi 2 sept.', dateEn:'Wednesday Sep 2'  },
   'Jour 6': { jourEn:'Day 6', date:'Jeudi 3 sept.',    dateEn:'Thursday Sep 3'   },
@@ -393,15 +393,15 @@ function jourSubtitle(jour, lang) {
   if (!m) return jour;
   var j = (lang === 'en' && m.jourEn) ? m.jourEn : jour;
   var d = (lang === 'en' && m.dateEn) ? m.dateEn : m.date;
-  return j + (d ? ' â€” ' + d : '');
+  return j + (d ? ' — ' + d : '');
 }
 
-// Extrait les intervalles des SHIFT ANGEL (type === 'SHIFT ANGEL') parmi les entrÃ©es.
+// Extrait les intervalles des SHIFT ANGEL (type === 'SHIFT ANGEL') parmi les entrées.
 function getAngelShiftIntervals(entries) {
   var ivs = [];
   entries.forEach(function(x) {
     if ((x.entry.type||'').toUpperCase() !== 'SHIFT ANGEL') return;
-    var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+    var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
     if (!m) return;
     var s = parseInt(m[1])*60+parseInt(m[2]), e = parseInt(m[3])*60+parseInt(m[4]);
     if (e < s) e += 1440;
@@ -410,15 +410,15 @@ function getAngelShiftIntervals(entries) {
   return ivs;
 }
 
-// Calcule le nombre rÃ©el d'ateliers d'un groupe de jour :
+// Calcule le nombre réel d'ateliers d'un groupe de jour :
 // - Un SHIFT ANGEL compte pour 1.
-// - Les ateliers couverts par un shift angel ne sont pas comptÃ©s.
-// - Les REUNION simultanÃ©es (qui se chevauchent) comptent pour 1 seule par crÃ©neau fusionnÃ©.
-// - Si pas de shift angel : count simple (avec dÃ©dup REUNION).
+// - Les ateliers couverts par un shift angel ne sont pas comptés.
+// - Les REUNION simultanées (qui se chevauchent) comptent pour 1 seule par créneau fusionné.
+// - Si pas de shift angel : count simple (avec dédup REUNION).
 function calcNbJour(entries) {
   var shiftIvs = getAngelShiftIntervals(entries);
 
-  // Intervalles des REUNION (pour dÃ©duplication)
+  // Intervalles des REUNION (pour déduplication)
   var reunionIvs = entries
     .filter(function(x){ return (x.entry.type||'').toUpperCase() === 'REUNION'; })
     .map(function(x){ return parseInterval(x.entry.heure); })
@@ -427,7 +427,7 @@ function calcNbJour(entries) {
   var reunionRawNb    = reunionIvs.length;
 
   if (shiftIvs.length === 0) {
-    // Pas de shift angel : count simple, mais REUNION dÃ©dupliquÃ©es
+    // Pas de shift angel : count simple, mais REUNION dédupliquées
     var nonReunion = entries.filter(function(x){ return (x.entry.type||'').toUpperCase() !== 'REUNION'; }).length;
     return nonReunion + reunionMergedNb;
   }
@@ -436,14 +436,14 @@ function calcNbJour(entries) {
   var reunionMergedCounted = false;
   entries.reduce(function(n, x) {
     if ((x.entry.type||'').toUpperCase() === 'SHIFT ANGEL') { count++; return n; }
-    if ((x.entry.type||'').toUpperCase() === 'REUNION') return n; // traitÃ©es sÃ©parÃ©ment
+    if ((x.entry.type||'').toUpperCase() === 'REUNION') return n; // traitées séparément
     var iv = parseInterval(x.entry.heure);
     if (!iv) { count++; return n; }
     var covered = shiftIvs.some(function(s){ return iv.s>=s.s && iv.e<=s.e; });
     if (!covered) count++;
     return n;
   }, 0);
-  // Ajouter les REUNION dÃ©dupliquÃ©es (non couvertes par shift)
+  // Ajouter les REUNION dédupliquées (non couvertes par shift)
   if (reunionIvs.length > 0) {
     var uncoveredReunions = reunionIvs.filter(function(iv){
       return !shiftIvs.some(function(s){ return iv.s>=s.s && iv.e<=s.e; });
@@ -453,22 +453,22 @@ function calcNbJour(entries) {
   return count;
 }
 
-// Calcule la durÃ©e rÃ©elle d'un groupe de jour :
-// - Pour chaque SHIFT ANGEL : on compte la durÃ©e du shift.
-// - Pour chaque autre entrÃ©e : on ne la compte QUE si elle n'est pas couverte par un shift angel.
-// - Les REUNION simultanÃ©es (qui se chevauchent) ne comptent que la durÃ©e de l'union des crÃ©neaux.
-// - Si pas de shift angel : somme des durÃ©es avec dÃ©dup REUNION.
+// Calcule la durée réelle d'un groupe de jour :
+// - Pour chaque SHIFT ANGEL : on compte la durée du shift.
+// - Pour chaque autre entrée : on ne la compte QUE si elle n'est pas couverte par un shift angel.
+// - Les REUNION simultanées (qui se chevauchent) ne comptent que la durée de l'union des créneaux.
+// - Si pas de shift angel : somme des durées avec dédup REUNION.
 function calcDurJour(entries) {
   var shiftIvs = getAngelShiftIntervals(entries);
 
-  // Intervalles des REUNION (pour dÃ©duplication)
+  // Intervalles des REUNION (pour déduplication)
   var reunionIvs = entries
     .filter(function(x){ return (x.entry.type||'').toUpperCase() === 'REUNION'; })
     .map(function(x){ return parseInterval(x.entry.heure); })
     .filter(Boolean);
 
   if (shiftIvs.length === 0) {
-    // Pas de shift : somme normale pour les non-REUNION + durÃ©e fusionnÃ©e pour les REUNION
+    // Pas de shift : somme normale pour les non-REUNION + durée fusionnée pour les REUNION
     var nonReunionDur = entries.reduce(function(t,x) {
       if ((x.entry.type||'').toUpperCase() === 'REUNION') return t;
       return t + (calcDuree(x.entry.heure)||0);
@@ -479,26 +479,26 @@ function calcDurJour(entries) {
   // Avec shift angel
   var shiftDur = shiftIvs.reduce(function(t,iv){ return t+(iv.e-iv.s); }, 0);
   var extraDur = entries.reduce(function(t,x) {
-    if ((x.entry.type||'').toUpperCase() === 'SHIFT ANGEL') return t; // dÃ©jÃ  comptÃ©
-    if ((x.entry.type||'').toUpperCase() === 'REUNION') return t;     // traitÃ© sÃ©parÃ©ment
+    if ((x.entry.type||'').toUpperCase() === 'SHIFT ANGEL') return t; // déjà compté
+    if ((x.entry.type||'').toUpperCase() === 'REUNION') return t;     // traité séparément
     var iv = parseInterval(x.entry.heure);
     if (!iv) return t;
     var covered = shiftIvs.some(function(s){ return iv.s>=s.s && iv.e<=s.e; });
     return covered ? t : t+(iv.e-iv.s);
   }, 0);
-  // DurÃ©e des REUNION non couvertes par shift (dÃ©dupliquÃ©es)
+  // Durée des REUNION non couvertes par shift (dédupliquées)
   var uncoveredReunions = reunionIvs.filter(function(iv){
     return !shiftIvs.some(function(s){ return iv.s>=s.s && iv.e<=s.e; });
   });
   return shiftDur + extraDur + mergedDuration(uncoveredReunions);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 // INDEXATION PAR RESSOURCE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Pour chaque atelier, on dÃ©termine le(s) rÃ´le(s) de chaque personne
+// ════════════════════════════════════════════
+// Pour chaque atelier, on détermine le(s) rôle(s) de chaque personne
 function buildIndex() {
-  // Map nom â†’ [ { entry, roles[] } ]
+  // Map nom → [ { entry, roles[] } ]
   var idx = new Map();
 
   function add(nom, entry, role) {
@@ -506,7 +506,7 @@ function buildIndex() {
     var key = nom.trim();
     if (!idx.has(key)) idx.set(key, []);
     var arr = idx.get(key);
-    // Chercher si l'entry existe dÃ©jÃ  (mÃªme atelier, mÃªme jour)
+    // Chercher si l'entry existe déjà (même atelier, même jour)
     var found = arr.find(function(x){
       return x.entry.atelier===entry.atelier && x.entry.jour===entry.jour && x.entry.heure===entry.heure;
     });
@@ -515,17 +515,20 @@ function buildIndex() {
   }
 
   AGENDA.forEach(function(e) {
-    if (e.fac1)       add(e.fac1, e, 'animateur');
-    if (e.fac2)       add(e.fac2, e, 'animateur');
-    if (e.fac3)       add(e.fac3, e, 'animateur');
-    if (e.fac4)       add(e.fac4, e, 'animateur');
-    if (e.traduction) add(e.traduction, e, 'traducteur');
-    if (e.helper1)    add(e.helper1, e, 'helper');
-    if (e.helper2)    add(e.helper2, e, 'helper');
-    if (e.helper3)    add(e.helper3, e, 'helper');
-    if (e.helper4)    add(e.helper4, e, 'helper');
-    if (e.angel)      add(e.angel, e, 'angel');
-    // REUNION : diffuser Ã  toutes les personnes des rÃ´les sÃ©lectionnÃ©s
+    var _f1=e.fac1Id||e.fac1, _f2=e.fac2Id||e.fac2, _f3=e.fac3Id||e.fac3, _f4=e.fac4Id||e.fac4;
+    var _h1=e.helper1Id||e.helper1, _h2=e.helper2Id||e.helper2, _h3=e.helper3Id||e.helper3, _h4=e.helper4Id||e.helper4;
+    var _ag=e.angelId||e.angel, _tr=e.tradId||e.traduction;
+    if (_f1) add(_f1, e, 'animateur');
+    if (_f2) add(_f2, e, 'animateur');
+    if (_f3) add(_f3, e, 'animateur');
+    if (_f4) add(_f4, e, 'animateur');
+    if (_tr) add(_tr, e, 'traducteur');
+    if (_h1) add(_h1, e, 'helper');
+    if (_h2) add(_h2, e, 'helper');
+    if (_h3) add(_h3, e, 'helper');
+    if (_h4) add(_h4, e, 'helper');
+    if (_ag) add(_ag, e, 'angel');
+    // REUNION : diffuser à toutes les personnes des rôles sélectionnés
     if (e.type === 'REUNION' && e.meetingRoles) {
       var roles = e.meetingRoles.split(',').map(function(r) { return r.trim(); }).filter(Boolean);
       if (roles.length && typeof REF_RESSOURCES !== 'undefined') {
@@ -533,8 +536,8 @@ function buildIndex() {
           if (!res.value) return;
           var hasRole = roles.some(function(r) { return res.roles && res.roles.indexOf(r) !== -1; });
           if (!hasRole) return;
-          var alreadyAdded = [e.fac1,e.fac2,e.fac3,e.fac4,e.traduction,e.helper1,e.helper2,e.helper3,e.helper4,e.angel].indexOf(res.value) !== -1;
-          if (!alreadyAdded) add(res.value, e, 'reunion');
+          var alreadyAdded = [_f1,_f2,_f3,_f4,_tr,_h1,_h2,_h3,_h4,_ag].indexOf(res.id) !== -1;
+          if (!alreadyAdded) add(res.id, e, 'reunion');
         });
       }
     }
@@ -544,10 +547,10 @@ function buildIndex() {
 
 var FULL_INDEX = buildIndex();
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 // FILTRES
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// Peupler le filtre NOM â€” les clÃ©s sont des IDs, on les trie par nom affichÃ©
+// ════════════════════════════════════════════
+// Peupler le filtre NOM — les clés sont des IDs, on les trie par nom affiché
 var allNoms = [...FULL_INDEX.keys()].sort(function(a,b){ return resolveName(a).localeCompare(resolveName(b),'fr'); });
 var selNom = document.getElementById('fNom');
 var params = new URLSearchParams(location.search);
@@ -568,11 +571,11 @@ naOption.text = 'N/A';
 selNom.appendChild(naOption);
 selNom.value = '__NONE__';
 
-// â”€â”€ Ã‰tat de la vue active (gÃ©rÃ© par les tabs, pas par un select) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-var currentVue = '';   // '' = Vue CombinÃ©e
+// ── État de la vue active (géré par les tabs, pas par un select) ──────────
+var currentVue = '';   // '' = Vue Combinée
 
 window.setVue = function(btn, vue) {
-  // MÃ©moriser l'Ã©tat ouvert avant de re-rendre
+  // Mémoriser l'état ouvert avant de re-rendre
   var openCards = [];
   var openDays  = {};
   document.querySelectorAll('.resource-card').forEach(function(card, ri) {
@@ -584,7 +587,7 @@ window.setVue = function(btn, vue) {
 
   currentVue = vue;
 
-  // Mettre Ã  jour l'apparence des tabs
+  // Mettre à jour l'apparence des tabs
   document.querySelectorAll('#vueTabs .vtab').forEach(function(b) {
     b.className = 'vtab'; // reset
   });
@@ -593,7 +596,7 @@ window.setVue = function(btn, vue) {
 
   applyFilters();
 
-  // Restaurer l'Ã©tat ouvert
+  // Restaurer l'état ouvert
   openCards.forEach(function(ri) {
     var card = document.getElementById('rcard-'+ri);
     if (card) card.classList.add('open');
@@ -611,10 +614,10 @@ window.setVue = function(btn, vue) {
 window.applyFilters = function applyFilters() {
   var fNom    = document.getElementById('fNom').value;
   var fSearch = document.getElementById('fSearch').value.trim().toLowerCase();
-  var fRole   = currentVue;   // '' = Vue CombinÃ©e
+  var fRole   = currentVue;   // '' = Vue Combinée
   if (fNom === '__NONE__') {
     document.getElementById('stats').innerHTML = '<span>0</span> personne(s)';
-    document.getElementById('resourceList').innerHTML = '<div class="empty">Aucun rÃ©sultat pour ces filtres.</div>';
+    document.getElementById('resourceList').innerHTML = '<div class="empty">Aucun résultat pour ces filtres.</div>';
     return;
   }
 
@@ -626,19 +629,19 @@ window.applyFilters = function applyFilters() {
     // Filtre recherche texte libre
     if (fSearch && nom.toLowerCase().indexOf(fSearch)===-1) return;
 
-    // Vue par rÃ´le : garder uniquement les entrÃ©es correspondant au rÃ´le sÃ©lectionnÃ©
+    // Vue par rôle : garder uniquement les entrées correspondant au rôle sélectionné
     var filteredEntries;
     if (!fRole) {
-      // Vue CombinÃ©e : toutes les entrÃ©es
+      // Vue Combinée : toutes les entrées
       filteredEntries = entries;
     } else if (fRole === 'colibri') {
       if (!isColibri(nom)) return;
-      // Colibri : entrÃ©es helper ou traducteur
+      // Colibri : entrées helper ou traducteur
       filteredEntries = entries.filter(function(x) {
         return x.roles.indexOf('helper') !== -1 || x.roles.indexOf('traducteur') !== -1;
       });
     } else {
-      // Vue Animateur / Helper / Traducteur / Angel : entrÃ©es avec CE rÃ´le uniquement
+      // Vue Animateur / Helper / Traducteur / Angel : entrées avec CE rôle uniquement
       filteredEntries = entries.filter(function(x) { return x.roles.indexOf(fRole) !== -1; });
       if (!filteredEntries.length) return;
     }
@@ -646,33 +649,33 @@ window.applyFilters = function applyFilters() {
     results.push({ nom: nom, entries: filteredEntries });
   });
 
-  // Trier alphabÃ©tiquement
+  // Trier alphabétiquement
   results.sort(function(a,b){ return a.nom.localeCompare(b.nom,'fr'); });
 
-  document.getElementById('stats').innerHTML = '<span>'+results.length+'</span> ressource(s) affichÃ©e(s)';
+  document.getElementById('stats').innerHTML = '<span>'+results.length+'</span> ressource(s) affichée(s)';
   renderList(results);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 // RENDU LISTE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 var ROLE_CSS  = { animateur:'badge-f', helper:'badge-h', traducteur:'badge-t', angel:'badge-a', reunion:'badge-m' };
 function ROLE_LBL_FN(r) {
   var map = { animateur:'mp_vue_animateur', helper:'mp_vue_helper', traducteur:'mp_vue_traducteur', angel:'mp_vue_angel' };
-  return (typeof I18n!=='undefined' && map[r]) ? I18n.t(map[r]) : ({ animateur:'Animateur', helper:'Helper', traducteur:'Traducteur', angel:'Angel', reunion:'RÃ©union' }[r] || r);
+  return (typeof I18n!=='undefined' && map[r]) ? I18n.t(map[r]) : ({ animateur:'Animateur', helper:'Helper', traducteur:'Traducteur', angel:'Angel', reunion:'Réunion' }[r] || r);
 }
 
 function renderList(results) {
   var list = document.getElementById('resourceList');
   if (!results.length) {
-    list.innerHTML = '<div class="empty">Aucun rÃ©sultat pour ces filtres.</div>';
+    list.innerHTML = '<div class="empty">Aucun résultat pour ces filtres.</div>';
     return;
   }
 
   var fRole = currentVue;
 
   list.innerHTML = results.map(function(res, ri) {
-    // Grouper par jour (sur les entries dÃ©jÃ  filtrÃ©es par rÃ´le)
+    // Grouper par jour (sur les entries déjà filtrées par rôle)
     var byJour = new Map();
     res.entries.forEach(function(x) {
       var j = x.entry.jour;
@@ -683,21 +686,21 @@ function renderList(results) {
     // Trier les jours
     var jours = JOUR_ORDER.filter(function(j){ return byJour.has(j); }).map(function(j){ return byJour.get(j); });
 
-    // Total ateliers + durÃ©e â€” calculÃ©s sur les entries filtrÃ©es
-    // En vue rÃ´le simple : somme directe des durÃ©es (pas de logique angel)
-    // En vue combinÃ©e ou angel : logique calcDurJour / calcNbJour
+    // Total ateliers + durée — calculés sur les entries filtrées
+    // En vue rôle simple : somme directe des durées (pas de logique angel)
+    // En vue combinée ou angel : logique calcDurJour / calcNbJour
     var totalAteliers;
     var totalMins;
     if (!fRole || fRole === 'angel') {
       totalAteliers = jours.reduce(function(s,g){ return s + calcNbJour(g.entries); }, 0);
       totalMins     = jours.reduce(function(s,g){ return s + calcDurJour(g.entries); }, 0);
     } else {
-      // Pour Helper / Animateur / Traducteur / Colibri : somme simple des durÃ©es des entries filtrÃ©es
+      // Pour Helper / Animateur / Traducteur / Colibri : somme simple des durées des entries filtrées
       totalAteliers = res.entries.length;
       totalMins = res.entries.reduce(function(s,x){ return s + (calcDuree(x.entry.heure)||0); }, 0);
     }
 
-    // RÃ´les uniques de cette ressource (parmi les entries affichÃ©es)
+    // Rôles uniques de cette ressource (parmi les entries affichées)
     var rolesSet = new Set();
     res.entries.forEach(function(x){ x.roles.forEach(function(r){ rolesSet.add(r); }); });
     var rolesBadges = [...rolesSet].map(function(r) {
@@ -706,8 +709,8 @@ function renderList(results) {
       return '<span class="badge '+css+'">'+lbl+'</span>';
     }).join('');
 
-    // Badge COLIBRI : affichÃ© uniquement si la personne est colibri ET a au moins
-    // un atelier oÃ¹ son rÃ´le est helper ou traducteur (pas animateur)
+    // Badge COLIBRI : affiché uniquement si la personne est colibri ET a au moins
+    // un atelier où son rôle est helper ou traducteur (pas animateur)
     var hasColibriRole = isColibri(res.nom) && res.entries.some(function(x) {
       return x.roles.indexOf('helper') !== -1 || x.roles.indexOf('traducteur') !== -1;
     });
@@ -734,7 +737,7 @@ function renderList(results) {
         rBadges += '<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;">Colibri</span>';
       }
 
-      // DurÃ©e jour : mÃªme logique que pour le total
+      // Durée jour : même logique que pour le total
       var durJour;
       if (!fRole || fRole === 'angel') {
         durJour = calcDurJour(g.entries);
@@ -749,28 +752,28 @@ function renderList(results) {
       function isAngelEntry(x) { return (x.entry.type||'').toUpperCase() === 'SHIFT ANGEL'; }
       function isCoveredByAngel(x) {
         if (!angelIntervals.length) return false;
-        if (isAngelEntry(x)) return false; // le shift lui-mÃªme n'est pas grisÃ©
-        var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+        if (isAngelEntry(x)) return false; // le shift lui-même n'est pas grisé
+        var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
         if (!m) return false;
         var s=parseInt(m[1])*60+parseInt(m[2]), e=parseInt(m[3])*60+parseInt(m[4]);
         if (e<s) e+=1440;
         return angelIntervals.some(function(iv){ return s>=iv.s && e<=iv.e; });
       }
 
-      // â”€â”€ Tri et regroupement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      // RÃ¨gle : ordre chronologique global.
-      // Exception : un SHIFT ANGEL entraÃ®ne juste aprÃ¨s lui, dans l'ordre chrono,
-      // tous les ateliers couverts par ce shift (grisÃ©s).
-      // Les ateliers couverts sont retirÃ©s de leur position naturelle.
+      // ── Tri et regroupement ──────────────────────────────────────────────────
+      // Règle : ordre chronologique global.
+      // Exception : un SHIFT ANGEL entraîne juste après lui, dans l'ordre chrono,
+      // tous les ateliers couverts par ce shift (grisés).
+      // Les ateliers couverts sont retirés de leur position naturelle.
 
       function entryStart(x) {
-        return heureMin(String(x.entry.heure||'').replace(/[â€“â€”]/g,'-').split('-')[0].trim()) || 9999;
+        return heureMin(String(x.entry.heure||'').replace(/[–—]/g,'-').split('-')[0].trim()) || 9999;
       }
 
-      // Trouver le shift angel (s'il y en a) qui couvre une entrÃ©e donnÃ©e
+      // Trouver le shift angel (s'il y en a) qui couvre une entrée donnée
       function shiftFor(x) {
         if (!angelIntervals.length) return null;
-        var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+        var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
         if (!m) return null;
         var s=parseInt(m[1])*60+parseInt(m[2]), e=parseInt(m[3])*60+parseInt(m[4]);
         if (e<s) e+=1440;
@@ -780,7 +783,7 @@ function renderList(results) {
         return null;
       }
 
-      // SÃ©parer : shifts, entrÃ©es couvertes (par shift), entrÃ©es libres
+      // Séparer : shifts, entrées couvertes (par shift), entrées libres
       var shiftEntries   = g.entries.filter(function(x){ return isAngelEntry(x); });
       var coveredEntries = g.entries.filter(function(x){ return !isAngelEntry(x) && shiftFor(x); });
       var freeEntries    = g.entries.filter(function(x){ return !isAngelEntry(x) && !shiftFor(x); });
@@ -789,24 +792,24 @@ function renderList(results) {
       shiftEntries.sort(function(a,b){ return entryStart(a)-entryStart(b); });
       freeEntries.sort(function(a,b){  return entryStart(a)-entryStart(b); });
 
-      // Construire la sÃ©quence finale :
-      // MÃ©langer shifts et libres dans l'ordre chrono ; aprÃ¨s chaque shift, insÃ©rer ses couverts
+      // Construire la séquence finale :
+      // Mélanger shifts et libres dans l'ordre chrono ; après chaque shift, insérer ses couverts
       var sequence = [];
       var usedShiftIdxs = [];
 
-      // Tous les "points de dÃ©part" : shifts + libres, triÃ©s
+      // Tous les "points de départ" : shifts + libres, triés
       var anchors = shiftEntries.concat(freeEntries).sort(function(a,b){ return entryStart(a)-entryStart(b); });
       anchors.forEach(function(x) {
         sequence.push({ x:x, covered:false });
         if (isAngelEntry(x)) {
           // Chercher le shift interval correspondant
-          var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+          var m = String(x.entry.heure||'').replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
           if (m) {
             var ss=parseInt(m[1])*60+parseInt(m[2]), se=parseInt(m[3])*60+parseInt(m[4]);
             if (se<ss) se+=1440;
-            // InsÃ©rer les ateliers couverts par CE shift, triÃ©s chrono
+            // Insérer les ateliers couverts par CE shift, triés chrono
             var kids = coveredEntries.filter(function(c){
-              var cm = String(c.entry.heure||'').replace(/\./g,':').replace(/[â€“â€”]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+              var cm = String(c.entry.heure||'').replace(/\./g,':').replace(/[–—]/g,'-').match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
               if (!cm) return false;
               var cs=parseInt(cm[1])*60+parseInt(cm[2]), ce=parseInt(cm[3])*60+parseInt(cm[4]);
               if (ce<cs) ce+=1440;
@@ -817,7 +820,7 @@ function renderList(results) {
         }
       });
 
-      // GÃ©nÃ¨re un ID stable pour un shift (basÃ© sur l'index dans AGENDA)
+      // Génère un ID stable pour un shift (basé sur l'index dans AGENDA)
       function shiftGroupId(shiftEntry) {
         return 'sg-'+ri+'-'+gi+'-'+AGENDA.indexOf(shiftEntry.entry);
       }
@@ -827,17 +830,17 @@ function renderList(results) {
         var e = x.entry;
         var isShift = isAngelEntry(x);
         var dur = calcDuree(e.heure);
-        var langBadge = (e.traduction || isBilingue(e.fac1) || isBilingue(e.fac2) || isBilingue(e.fac3) || isBilingue(e.fac4))
+        var langBadge = ((e.tradId||e.traduction) || isBilingue(e.fac1Id||e.fac1) || isBilingue(e.fac2Id||e.fac2) || isBilingue(e.fac3Id||e.fac3) || isBilingue(e.fac4Id||e.fac4))
           ? '<span class="badge badge-lang badge-en">FR/EN</span>'
           : '<span class="badge badge-lang badge-fr">FR</span>';
-        var facs = [e.fac1,e.fac2,e.fac3,e.fac4].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & ');
+        var facs = [e.fac1Id||e.fac1,e.fac2Id||e.fac2,e.fac3Id||e.fac3,e.fac4Id||e.fac4].filter(Boolean).map(function(id){ return resolveName(id); }).join(' & ');
         var pm = parseInt(e.piment)||0;
         var roleBadge = x.roles.map(function(r){
           return '<span class="badge '+(ROLE_CSS[r]||'badge-x')+'">'+ROLE_LBL_FN(r)+'</span>';
         }).join('');
         var agendaIdx = AGENDA.indexOf(e);
 
-        // Pill de durÃ©e + nombre ateliers couverts + chevron pour la ligne shift
+        // Pill de durée + nombre ateliers couverts + chevron pour la ligne shift
         var shiftDurPill = '';
         if (isShift) {
           var nbCovered = 0;
@@ -849,14 +852,14 @@ function renderList(results) {
           }
           shiftDurPill = (dur ? '<span class="angel-shift-dur-pill">'+fmtDuree(dur)+'</span>' : '') +
             (nbCovered > 0 ? '<span style="display:inline-block;font-size:10px;font-weight:600;color:var(--badge-a-tx);margin-left:6px;opacity:.8;">'+nbCovered+' atelier'+(nbCovered>1?'s':'')+'</span>' : '') +
-            '<span class="shift-chevron">â€º</span>';
+            '<span class="shift-chevron">›</span>';
         }
 
         // Classe de ligne selon type
         var rowClass, rowAttrs;
         if (isShift) {
           rowClass = 'angel-shift-row';
-          // Clic sur la ligne shift â†’ toggle groupe couvert (pas ouverture modale)
+          // Clic sur la ligne shift → toggle groupe couvert (pas ouverture modale)
           rowAttrs = ' class="'+rowClass+'" data-shift-group="'+(groupId||'')+'" style="cursor:pointer"'+
             ' onclick="toggleAngelShift(this)"';
         } else if (covered) {
@@ -873,24 +876,24 @@ function renderList(results) {
              REF_DESCRIPTIONS.find(function(d){ return d.atelier && d.atelier.trim()===(e.atelier||'').trim(); }))
           : null;
         var _langRow = (typeof I18n!=='undefined') ? I18n.getLang() : 'fr';
-        var _nomRow = (_langRow==='en' && _descRow && _descRow.nomEn && _descRow.nomEn.trim()) ? _descRow.nomEn.trim() : (e.atelier||'â€”');
+        var _nomRow = (_langRow==='en' && _descRow && _descRow.nomEn && _descRow.nomEn.trim()) ? _descRow.nomEn.trim() : (e.atelier||'—');
         return '<tr'+rowAttrs+'>'+
-          '<td style="width:32px;padding:4px 6px;" onclick="event.stopPropagation()"><button class="info-btn" title="DÃ©tails" onclick="openDetail('+agendaIdx+',\''+ri+'\')">â„¹ï¸</button></td>'+
-          '<td class="at-heure">'+esc(e.heure||'â€”')+'</td>'+
-          '<td class="at-duree">'+((!isShift && dur) ? fmtDuree(dur) : (isShift ? '' : 'â€”'))+'</td>'+
+          '<td style="width:32px;padding:4px 6px;" onclick="event.stopPropagation()"><button class="info-btn" title="Détails" onclick="openDetail('+agendaIdx+',\''+ri+'\')">ℹ️</button></td>'+
+          '<td class="at-heure">'+esc(e.heure||'—')+'</td>'+
+          '<td class="at-duree">'+((!isShift && dur) ? fmtDuree(dur) : (isShift ? '' : '—'))+'</td>'+
           '<td>'+roleBadge+'</td>'+
           '<td class="at-name">'+esc(_nomRow)+shiftDurPill+
             (pm?'<span style="margin-left:4px;font-size:11px">'+pimentHtml(pm)+'</span>':'')+
             (isColibri(res.nom) && (x.roles.indexOf('helper')!==-1 || x.roles.indexOf('traducteur')!==-1) ? '<span class="badge" style="margin-left:5px;background:#fff7ed;color:#c2410c;border:1px solid #fdba74;font-size:9px;">Colibri</span>' : '')+
           '</td>'+
           '<td>'+lieuLabel(e.lieu)+'</td>'+
-          '<td>'+esc(facs||'â€”')+'</td>'+
+          '<td>'+esc(facs||'—')+'</td>'+
           '<td>'+langBadge+'</td>'+
           '<td>'+(e.note?'<span style="font-size:11px;color:#d97706">'+esc(e.note)+'</span>':'')+'</td>'+
         '</tr>';
       }
 
-      // Enrichir la sÃ©quence avec parentGroupId sur les entrÃ©es couvertes
+      // Enrichir la séquence avec parentGroupId sur les entrées couvertes
       (function() {
         var currentShiftGroupId = null;
         sequence.forEach(function(item) {
@@ -913,14 +916,14 @@ function renderList(results) {
           '<span class="day-label">'+esc(g.jour)+'</span>' +
           '<span class="day-date">'+esc(g.date)+'</span>' +
           '<span class="day-roles">'+rBadges+'</span>' +
-          '<span class="day-meta"><span>'+fmtDuree(durJour)+'</span>&nbsp;Â·&nbsp;<strong>'+nb+'</strong>&nbsp;<span style="font-weight:400">'+I18n.t(nb>1?'rp_ateliers_s':'rp_atelier_s')+'</span></span>' +
-          '<span class="day-chevron">â€º</span>' +
+          '<span class="day-meta"><span>'+fmtDuree(durJour)+'</span>&nbsp;·&nbsp;<strong>'+nb+'</strong>&nbsp;<span style="font-weight:400">'+I18n.t(nb>1?'rp_ateliers_s':'rp_atelier_s')+'</span></span>' +
+          '<span class="day-chevron">›</span>' +
         '</div>' +
         '<div id="'+tableId+'" style="display:none">' +
           '<div class="ateliers-wrap">' +
             '<table class="ateliers-table">' +
               '<thead><tr>' +
-                '<th></th><th>Heure</th><th>DurÃ©e</th><th>RÃ´le</th><th>Atelier</th><th>Lieu</th><th>Animateur(s)</th><th>Lang.</th><th>Note</th>' +
+                '<th></th><th>Heure</th><th>Durée</th><th>Rôle</th><th>Atelier</th><th>Lieu</th><th>Animateur(s)</th><th>Lang.</th><th>Note</th>' +
               '</tr></thead>' +
               '<tbody>'+tableRows+'</tbody>' +
             '</table>' +
@@ -935,8 +938,8 @@ function renderList(results) {
           '<span class="resource-name">'+esc(res.nom)+'</span>' +
           '<span class="resource-badges">'+rolesBadges+(colibriHtml ? colibriHtml : '')+'</span>' +
         '</span>' +
-        '<span class="resource-stats" style="font-weight:700">'+fmtDuree(totalMins)+' Â· '+totalAteliers+' <span style="font-weight:400">'+I18n.t(totalAteliers>1?'rp_ateliers_s':'rp_atelier_s')+'</span></span>' +
-        '<span class="resource-chevron">â€º</span>' +
+        '<span class="resource-stats" style="font-weight:700">'+fmtDuree(totalMins)+' · '+totalAteliers+' <span style="font-weight:400">'+I18n.t(totalAteliers>1?'rp_ateliers_s':'rp_atelier_s')+'</span></span>' +
+        '<span class="resource-chevron">›</span>' +
       '</div>' +
       '<div class="resource-body">'+dayRows+'</div>' +
     '</div>';
@@ -971,9 +974,9 @@ window.toggleDay = function(ri, gi) {
   row.classList.toggle('open', !open);
 };
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// MODALE DÃ‰TAIL
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
+// MODALE DÉTAIL
+// ════════════════════════════════════════════
 var _modalLang = 'fr';
 var _modalEntry = null;
 
@@ -983,13 +986,13 @@ window.setModalLang = function(lang) {
   document.getElementById('mlBtnEn').classList.toggle('active', lang==='en');
   if (_modalEntry) {
     document.getElementById('mSub').textContent = jourSubtitle(_modalEntry.jour, lang);
-    // Mettre Ã  jour le titre (nom FR / nom EN)
+    // Mettre à jour le titre (nom FR / nom EN)
     var _d = (typeof REF_DESCRIPTIONS!=='undefined')
       ? ((_modalEntry.id && REF_DESCRIPTIONS.find(function(d){ return d.atelierId===_modalEntry.id; })) ||
          REF_DESCRIPTIONS.find(function(d){ return d.atelier && d.atelier.trim()===(_modalEntry.atelier||'').trim(); }))
       : null;
     var pm = parseInt(_modalEntry.piment)||0;
-    var titleFr = _modalEntry.atelier||'â€”';
+    var titleFr = _modalEntry.atelier||'—';
     var titleEn = (_d && _d.nomEn && _d.nomEn.trim()) ? _d.nomEn.trim() : titleFr;
     document.getElementById('mTitle').innerHTML = esc(lang==='en' ? titleEn : titleFr) + (pm ? ' '+pimentHtml(pm) : '');
   }
@@ -1009,7 +1012,7 @@ window.openDetail = function(agendaIdx, ri) {
     ? ((e.id && REF_DESCRIPTIONS.find(function(d){ return d.atelierId===e.id; })) ||
        REF_DESCRIPTIONS.find(function(d){ return d.atelier && d.atelier.trim()===(e.atelier||'').trim(); }))
     : null;
-  var _titleFr = e.atelier||'â€”';
+  var _titleFr = e.atelier||'—';
   var _titleEn = (_descInit && _descInit.nomEn && _descInit.nomEn.trim()) ? _descInit.nomEn.trim() : _titleFr;
   document.getElementById('mTitle').innerHTML = esc(_modalLang==='en' ? _titleEn : _titleFr) + (pm ? ' '+pimentHtml(pm) : '');
   document.getElementById('mSub').textContent = jourSubtitle(e.jour, _modalLang);
@@ -1030,7 +1033,7 @@ document.addEventListener('keydown', function(ev) {
   if (ev.key==='Escape') closeModal();
 });
 
-// â”€â”€ Swipe horizontal sur la modal (mobile) â†’ fermer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Swipe horizontal sur la modal (mobile) → fermer ──────────────────────────
 (function() {
   var box = document.getElementById('detailBox');
   var startX = 0, startY = 0;
@@ -1043,7 +1046,7 @@ document.addEventListener('keydown', function(ev) {
   box.addEventListener('touchend', function(ev) {
     var dx = ev.changedTouches[0].clientX - startX;
     var dy = ev.changedTouches[0].clientY - startY;
-    // Swipe horizontal > 60px ET plus horizontal que vertical â†’ fermer
+    // Swipe horizontal > 60px ET plus horizontal que vertical → fermer
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
       closeModal();
     }
@@ -1065,53 +1068,53 @@ function renderModalBody() {
     : null;
 
   var dur   = calcDuree(e.heure);
-  var prep  = (logE && logE.prepDuration  != null) ? logE.prepDuration  : 15; // 15 min par dÃ©faut
-  var range = (logE && logE.rangeDuration != null) ? logE.rangeDuration : 0;  // 0 min par dÃ©faut
+  var prep  = (logE && logE.prepDuration  != null) ? logE.prepDuration  : 15; // 15 min par défaut
+  var range = (logE && logE.rangeDuration != null) ? logE.rangeDuration : 0;  // 0 min par défaut
   var debut = heureMin(e.heure);
   var arrivee = (debut!==null) ? fmtHeure(debut-prep) : '';
 
-  var facs    = [e.fac1,e.fac2,e.fac3,e.fac4].filter(Boolean).map(function(id){ return resolveName(id); });
-  var helpers = [e.helper1,e.helper2,e.helper3,e.helper4].filter(Boolean).map(function(id){ return resolveName(id); });
-  var hasBilingue = isBilingue(e.fac1) || isBilingue(e.fac2) || isBilingue(e.fac3) || isBilingue(e.fac4);
-  var langBadge = (e.traduction || hasBilingue)
+  var facs    = [e.fac1Id||e.fac1,e.fac2Id||e.fac2,e.fac3Id||e.fac3,e.fac4Id||e.fac4].filter(Boolean).map(function(id){ return resolveName(id); });
+  var helpers = [e.helper1Id||e.helper1,e.helper2Id||e.helper2,e.helper3Id||e.helper3,e.helper4Id||e.helper4].filter(Boolean).map(function(id){ return resolveName(id); });
+  var hasBilingue = isBilingue(e.fac1Id||e.fac1) || isBilingue(e.fac2Id||e.fac2) || isBilingue(e.fac3Id||e.fac3) || isBilingue(e.fac4Id||e.fac4);
+  var langBadge = ((e.tradId||e.traduction) || hasBilingue)
     ? '<span class="badge badge-lang badge-en">FR / EN</span>'
     : '<span class="badge badge-lang badge-fr">FR</span>';
 
   var noteVal = e.note ? noteLabel(e.note, lang) : '';
-  var nomAtelierVal = esc((lang==='en' && desc && desc.nomEn && desc.nomEn.trim()) ? desc.nomEn.trim() : (e.atelier||'â€”')) + ' ' + langBadge;
-  var typeVal = e.type ? esc(e.type) : 'â€”';
+  var nomAtelierVal = esc((lang==='en' && desc && desc.nomEn && desc.nomEn.trim()) ? desc.nomEn.trim() : (e.atelier||'—')) + ' ' + langBadge;
+  var typeVal = e.type ? esc(e.type) : '—';
   var jourDate = jourSubtitle(e.jour, lang);
-  var horaireVal = esc(e.heure||'â€”') + (dur ? ' <span style="color:var(--muted);font-size:11px">('+fmtDuree(dur)+')</span>' : '');
+  var horaireVal = esc(e.heure||'—') + (dur ? ' <span style="color:var(--muted);font-size:11px">('+fmtDuree(dur)+')</span>' : '');
 
-  // â”€â”€ Section 1 : Infos gÃ©nÃ©rales â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Section 1 : Infos générales ─────────────────────────────────────────
   var rows1 = [];
-  rows1.push(['ðŸ§˜ '+(lang==='en'?'Workshop (FR/ENG)':'Nom atelier (FR/ENG)'), nomAtelierVal]);
-  rows1.push(['ðŸ· '+(lang==='en'?'Type':'Type'), typeVal]);
-  rows1.push(['ðŸ“… '+(lang==='en'?'Day - Date':'Jour - Date'), jourDate]);
-  rows1.push(['ðŸ• '+(lang==='en'?'Schedule':'Horaire'), horaireVal]);
-  if (arrivee) rows1.push(['â° '+(lang==='en'?'Arrive at':'ArrivÃ©e'), '<strong style="color:#dc2626">'+arrivee+'</strong>']);
-  rows1.push(['ðŸ“ '+(lang==='en'?'Venue':'Lieu'), e.lieu ? lieuLabel(e.lieu) : 'â€”']);
-  rows1.push(['ðŸŽ“ '+(lang==='en'?'Teacher(s)':'Animateur(s)'), facs.length ? facs.map(esc).join(' &amp; ') : 'â€”']);
-  rows1.push(['ðŸ™Œ '+(lang==='en'?'Helper(s)':'Helper(s)'), helpers.length ? helpers.map(esc).join(', ') : 'â€”']);
-  rows1.push(['ðŸŒ '+(lang==='en'?'Translator':'Traducteur'), e.traduction ? esc(resolveName(e.traduction)) : 'â€”']);
-  rows1.push(['ðŸ‘¼ Angel', angelWithPhone(e.angel)]);
-  rows1.push(['ðŸ· Note', noteVal ? esc(noteVal) : 'â€”']);
+  rows1.push(['🧘 '+(lang==='en'?'Workshop (FR/ENG)':'Nom atelier (FR/ENG)'), nomAtelierVal]);
+  rows1.push(['🏷 '+(lang==='en'?'Type':'Type'), typeVal]);
+  rows1.push(['📅 '+(lang==='en'?'Day - Date':'Jour - Date'), jourDate]);
+  rows1.push(['🕐 '+(lang==='en'?'Schedule':'Horaire'), horaireVal]);
+  if (arrivee) rows1.push(['⏰ '+(lang==='en'?'Arrive at':'Arrivée'), '<strong style="color:#dc2626">'+arrivee+'</strong>']);
+  rows1.push(['📍 '+(lang==='en'?'Venue':'Lieu'), e.lieu ? lieuLabel(e.lieu) : '—']);
+  rows1.push(['🎓 '+(lang==='en'?'Teacher(s)':'Animateur(s)'), facs.length ? facs.map(esc).join(' &amp; ') : '—']);
+  rows1.push(['🙌 '+(lang==='en'?'Helper(s)':'Helper(s)'), helpers.length ? helpers.map(esc).join(', ') : '—']);
+  rows1.push(['🌐 '+(lang==='en'?'Translator':'Traducteur'), (e.tradId||e.traduction) ? esc(resolveName(e.tradId||e.traduction)) : '—']);
+  rows1.push(['👼 Angel', angelWithPhone(e.angelId||e.angel)]);
+  rows1.push(['🏷 Note', noteVal ? esc(noteVal) : '—']);
 
   var gridHtml1 = rows1.map(function(r){
     return '<div class="modal-lbl">'+r[0]+'</div><div class="modal-val">'+r[1]+'</div>';
   }).join('');
 
-  var noTxt = lang==='en' ? '<span class="no-content">â€”</span>' : '<span class="no-content">â€”</span>';
+  var noTxt = lang==='en' ? '<span class="no-content">—</span>' : '<span class="no-content">—</span>';
   var dark = document.body.classList.contains('dark');
 
-  // Description + consigne (toujours affichÃ©es)
+  // Description + consigne (toujours affichées)
   var descTxt = (lang==='en' && desc && desc.descEn && desc.descEn.trim())
     ? desc.descEn : (desc && desc.descFr && desc.descFr.trim() ? desc.descFr : '');
   var consigneTxt = (lang==='en' && desc && desc.consigneEn && desc.consigneEn.trim())
     ? desc.consigneEn : (desc && desc.consigne && desc.consigne.trim() ? desc.consigne : '');
-  var consigneLabel = lang==='en' ? 'âš ï¸ Participant instructions' : 'âš ï¸ Instructions participants';
+  var consigneLabel = lang==='en' ? '⚠️ Participant instructions' : '⚠️ Instructions participants';
 
-  // â”€â”€ Consignes type actives pour cet atelier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Consignes type actives pour cet atelier ──────────────────────────────
   var _disabled = e._consignesDisabled || {};
   function _consignesTypeBlock(placement) {
     if (typeof REF_CONSIGNES_TYPE === 'undefined') return '';
@@ -1131,7 +1134,7 @@ function renderModalBody() {
     return html ? '<span style="color:#92400e;font-size:13px;">' + html + '</span>' : '';
   }
 
-  // â”€â”€ Consignes rÃ©currentes sÃ©lectionnÃ©es pour cet atelier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Consignes récurrentes sélectionnées pour cet atelier ─────────────────
   var _corecSel = e._corecSelected || {};
   function _consignesRecurrentesBlock(placement) {
     if (typeof REF_CONSIGNES_RECURRENTES === 'undefined') return '';
@@ -1149,8 +1152,8 @@ function renderModalBody() {
     return html ? '<span style="color:#166534;font-size:13px;">' + html + '</span>' : '';
   }
 
-  // â”€â”€ Palettes blocs (identiques Ã  Saisie Ateliers) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // Jaune  : INFO GÃ‰NÃ‰RAL
+  // ── Palettes blocs (identiques à Saisie Ateliers) ───────────────────────
+  // Jaune  : INFO GÉNÉRAL
   var S_INFO   = dark
     ? 'background:#2d2500;border:2px solid #92400e;border-radius:12px;padding:16px 18px;margin-bottom:0'
     : 'background:#fefce8;border:2px solid #fde68a;border-radius:12px;padding:16px 18px;margin-bottom:0';
@@ -1165,12 +1168,12 @@ function renderModalBody() {
     ? 'background:#052e16;border:2px solid #16a34a;border-radius:12px;padding:16px 18px;margin-bottom:0'
     : 'background:#f0fdf4;border:2px solid #4ade80;border-radius:12px;padding:16px 18px;margin-bottom:0';
   var S_LOG_TL   = dark ? 'color:#4ade80' : 'color:#166534';
-  // Violet : BESOINS SPÃ‰CIFIQUES
+  // Violet : BESOINS SPÉCIFIQUES
   var S_SPEC   = dark
     ? 'background:#1a0533;border:2px solid #9333ea;border-radius:12px;padding:16px 18px;margin-bottom:0'
     : 'background:#faf5ff;border:2px solid #c084fc;border-radius:12px;padding:16px 18px;margin-bottom:0';
   var S_SPEC_TL  = dark ? 'color:#c084fc' : 'color:#7e22ce';
-  // Teal   : Ã‰QUIPEMENTS
+  // Teal   : ÉQUIPEMENTS
   var S_EQ     = dark
     ? 'background:#042f2e;border:2px solid #0d9488;border-radius:12px;padding:16px 18px;margin-bottom:0'
     : 'background:#f0fdfa;border:2px solid #2dd4bf;border-radius:12px;padding:16px 18px;margin-bottom:0';
@@ -1183,10 +1186,10 @@ function renderModalBody() {
 
   var titleStyle = 'font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;padding-bottom:8px;margin-bottom:14px;border-bottom:2px solid;';
 
-  // â”€â”€ Bloc 1) INFORMATIONS GÃ‰NÃ‰RALES (jaune) â€” inclut description atelier â”€â”€
+  // ── Bloc 1) INFORMATIONS GÉNÉRALES (jaune) — inclut description atelier ──
   var sec1 = '<div style="'+S_INFO+'">'+
     '<div style="'+titleStyle+S_INFO_TL+';border-bottom-color:'+(dark?'#92400e':'#fde68a')+'">'+
-      '1) '+(lang==='en'?'General information':'Informations gÃ©nÃ©rales')+
+      '1) '+(lang==='en'?'General information':'Informations générales')+
     '</div>'+
     '<div class="modal-grid">'+gridHtml1+'</div>'+
     '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">'+
@@ -1203,21 +1206,21 @@ function renderModalBody() {
     '</div>'+
   '</div>';
 
-  // sec_desc supprimÃ© â€” description maintenant dans sec1
+  // sec_desc supprimé — description maintenant dans sec1
   var sec_desc = '';
 
-  // â”€â”€ Bloc 2) INFORMATIONS LOGISTIQUES (vert fluo) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // Contient uniquement : PrÃ©paration â†’ ArrivÃ©e + Informations logistiques
+  // ── Bloc 2) INFORMATIONS LOGISTIQUES (vert fluo) ─────────────────────────
+  // Contient uniquement : Préparation → Arrivée + Informations logistiques
   var isDefaultPrep = !(logE && logE.prepDuration != null);
   var prepVal = prep+' min'+
-    (isDefaultPrep ? ' <span style="font-size:10px;color:var(--muted);font-style:italic;">('+( lang==='en'?'default':'dÃ©faut')+')</span>' : '')+
-    (arrivee ? ' &rarr; '+(lang==='en'?'arrival':'arrivÃ©e')+' <strong style="color:#dc2626">'+arrivee+'</strong>' : '');
+    (isDefaultPrep ? ' <span style="font-size:10px;color:var(--muted);font-style:italic;">('+( lang==='en'?'default':'défaut')+')</span>' : '')+
+    (arrivee ? ' &rarr; '+(lang==='en'?'arrival':'arrivée')+' <strong style="color:#dc2626">'+arrivee+'</strong>' : '');
 
   var validBadge = logE
     ? (logE.validatedByFac
-        ? '<span class="validated-badge validated-yes">&#10003; '+(lang==='en'?'Validated by teacher':'ValidÃ© par animateur')+'</span>'
-        : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validÃ©')+'</span>')
-    : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validÃ©')+'</span>';
+        ? '<span class="validated-badge validated-yes">&#10003; '+(lang==='en'?'Validated by teacher':'Validé par animateur')+'</span>'
+        : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validé')+'</span>')
+    : '<span class="validated-badge validated-no">&#8987; '+(lang==='en'?'Not yet validated':'Non encore validé')+'</span>';
 
   var updatedAt = logE && logE.updatedAt ? logE.updatedAt : (logH && logH.updatedAt ? logH.updatedAt : '');
 
@@ -1232,7 +1235,7 @@ function renderModalBody() {
       '2) '+(lang==='en'?'Logistics information':'Informations logistiques')+
     '</div>'+
     '<div class="modal-grid" style="margin-bottom:10px">'+
-      '<div class="modal-lbl" style="white-space:nowrap">'+(lang==='en'?'Preparation':'PrÃ©paration')+'</div>'+
+      '<div class="modal-lbl" style="white-space:nowrap">'+(lang==='en'?'Preparation':'Préparation')+'</div>'+
       '<div class="modal-val" style="white-space:nowrap">'+prepVal+'</div>'+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:8px;">'+
@@ -1245,17 +1248,17 @@ function renderModalBody() {
     '</div>'+
   '</div>';
 
-  // â”€â”€ Bloc 3) BESOINS LOGISTIQUES SPÃ‰CIFIQUES (violet) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Bloc 3) BESOINS LOGISTIQUES SPÉCIFIQUES (violet) ─────────────────────
   var sec_spec = '<div style="'+S_SPEC+'">'+
     '<div style="'+titleStyle+S_SPEC_TL+';border-bottom-color:'+(dark?'#9333ea':'#c084fc')+'">'+
-      '3) '+(lang==='en'?'Specific logistics needs':'Besoins logistiques spÃ©cifiques')+
+      '3) '+(lang==='en'?'Specific logistics needs':'Besoins logistiques spécifiques')+
     '</div>'+
     '<div style="color:#1d4ed8;font-weight:700">'+(logSpecTxt ? logSpecTxt : noTxt)+'</div>'+
-    _consignesRecurrentesBlock('SpÃ©cifique')+
-    _consignesTypeBlock('SpÃ©cifique')+
+    _consignesRecurrentesBlock('Spécifique')+
+    _consignesTypeBlock('Spécifique')+
   '</div>';
 
-  // â”€â”€ Bloc 4) Ã‰QUIPEMENTS (teal) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Bloc 4) ÉQUIPEMENTS (teal) ───────────────────────────────────────────
   var eqAgenda  = e._equipements || {};
   var eqLogist  = (logId && logE && logE._equipements) || {};
   var eqAll     = Object.assign({}, eqLogist, eqAgenda); // AGENDA prime
@@ -1265,14 +1268,14 @@ function renderModalBody() {
   if (!eqKeys.length) {
     sec_eq = '<div style="'+S_EQ+'">'+
       '<div style="'+titleStyle+S_EQ_TL+';border-bottom-color:'+(dark?'#0d9488':'#2dd4bf')+'">'+
-        '4) '+(lang==='en'?'Equipment':'Ã‰quipements')+
+        '4) '+(lang==='en'?'Equipment':'Équipements')+
       '</div>'+
-      '<span style="font-size:13px;color:var(--muted)">â€”</span>'+
+      '<span style="font-size:13px;color:var(--muted)">—</span>'+
     '</div>';
   } else {
-    // Regrouper par catÃ©gorie puis par fournisseur
+    // Regrouper par catégorie puis par fournisseur
     var TYPE_ORDER  = ['Hameau', 'Tantramour', 'Animateur'];
-    // Ordre des catÃ©gories depuis REF_EQUIP_CAT (triÃ© par .ordre), puis inconnues Ã  la fin
+    // Ordre des catégories depuis REF_EQUIP_CAT (trié par .ordre), puis inconnues à la fin
     var catRefOrder = (typeof REF_EQUIP_CAT !== 'undefined')
       ? REF_EQUIP_CAT.slice().sort(function(a,b){ return (parseInt(a.ordre)||0)-(parseInt(b.ordre)||0); }).map(function(c){ return c.value; })
       : [];
@@ -1286,14 +1289,14 @@ function renderModalBody() {
       if (!byCat[cat][type]) byCat[cat][type] = [];
       byCat[cat][type].push(nom + ' (' + eqAll[eqId] + ')');
     });
-    // CatÃ©gories dans l'ordre REF_EQUIP_CAT, puis inconnues Ã  la fin (ordre alpha)
+    // Catégories dans l'ordre REF_EQUIP_CAT, puis inconnues à la fin (ordre alpha)
     var orderedCats = catRefOrder.filter(function(c){ return byCat[c]; })
       .concat(Object.keys(byCat).filter(function(c){ return catRefOrder.indexOf(c) === -1; }).sort());
     var html = '';
     orderedCats.forEach(function(cat) {
       html += '<div style="margin-bottom:8px;">';
-      html += '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">â€¢ '+esc(cat)+' :</div>';
-      // Fournisseurs dans l'ordre fixe, puis valeurs inconnues Ã  la fin
+      html += '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">• '+esc(cat)+' :</div>';
+      // Fournisseurs dans l'ordre fixe, puis valeurs inconnues à la fin
       var knownTypes = TYPE_ORDER.filter(function(t){ return byCat[cat][t]; });
       var otherTypes = Object.keys(byCat[cat]).filter(function(t){ return TYPE_ORDER.indexOf(t) === -1; }).sort();
       knownTypes.concat(otherTypes).forEach(function(type) {
@@ -1306,45 +1309,45 @@ function renderModalBody() {
     });
     sec_eq = '<div style="'+S_EQ+'">'+
       '<div style="'+titleStyle+S_EQ_TL+';border-bottom-color:'+(dark?'#0d9488':'#2dd4bf')+'">'+
-        '4) '+(lang==='en'?'Equipment':'Ã‰quipements')+
+        '4) '+(lang==='en'?'Equipment':'Équipements')+
       '</div>'+
       html+
     '</div>';
   }
 
-  // â”€â”€ Bloc 5) CONSIGNES HELPERS (bleu foncÃ©) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Bloc 5) CONSIGNES HELPERS (bleu foncé) ───────────────────────────────
   var sec_help = '<div style="'+S_HELP+'">'+
     '<div style="'+titleStyle+S_HELP_TL+';border-bottom-color:'+(dark?'#2563eb':'#3b82f6')+'">'+
       '5) '+(lang==='en'?'Helper instructions':'Consignes helpers')+
     '</div>'+
     '<div style="display:flex;flex-direction:column;gap:8px;">'+
       '<div class="modal-desc-box">'+
-        '<div class="modal-desc-lbl">'+(lang==='en'?'To do before':'Ã€ faire avant')+'</div>'+
+        '<div class="modal-desc-lbl">'+(lang==='en'?'To do before':'À faire avant')+'</div>'+
         '<div style="color:#1d4ed8;font-weight:700">'+(avantTxt ? avantTxt : noTxt)+'</div>'+
         _consignesRecurrentesBlock('Avant')+
         _consignesTypeBlock('Avant')+
       '</div>'+
       '<div class="modal-desc-box">'+
-        '<div class="modal-desc-lbl">'+(lang==='en'?'To do during':'Ã€ faire pendant')+'</div>'+
+        '<div class="modal-desc-lbl">'+(lang==='en'?'To do during':'À faire pendant')+'</div>'+
         '<div style="color:#1d4ed8;font-weight:700">'+(pendantTxt ? pendantTxt : noTxt)+'</div>'+
         _consignesRecurrentesBlock('Pendant')+
         _consignesTypeBlock('Pendant')+
       '</div>'+
       '<div class="modal-desc-box">'+
-        '<div class="modal-desc-lbl">'+(lang==='en'?'To do after':'Ã€ faire aprÃ¨s')+'</div>'+
-        (range > 0 ? '<div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 8px;margin-bottom:6px;">ðŸ§¹ '+(lang==='en'?'Tidying up':'Rangement')+' : <strong style="color:var(--text)">'+range+' min</strong></div>' : '')+
+        '<div class="modal-desc-lbl">'+(lang==='en'?'To do after':'À faire après')+'</div>'+
+        (range > 0 ? '<div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 8px;margin-bottom:6px;">🧹 '+(lang==='en'?'Tidying up':'Rangement')+' : <strong style="color:var(--text)">'+range+' min</strong></div>' : '')+
         '<div style="color:#1d4ed8;font-weight:700">'+(apresTxt ? apresTxt : noTxt)+'</div>'+
-        _consignesRecurrentesBlock('AprÃ¨s')+
-        _consignesTypeBlock('AprÃ¨s')+
+        _consignesRecurrentesBlock('Après')+
+        _consignesTypeBlock('Après')+
       '</div>'+
     '</div>'+
   '</div>';
 
-  // â”€â”€ Pied de popup : ValidÃ© par animateur + DerniÃ¨re modification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Pied de popup : Validé par animateur + Dernière modification ──────────
   var sec_footer =
     '<div style="padding:10px 4px 2px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px;">'+
       validBadge+
-      '<div style="font-size:11px;color:var(--muted)">'+(lang==='en'?'Last updated':'DerniÃ¨re modification')+' : '+(updatedAt ? esc(updatedAt) : 'â€”')+'</div>'+
+      '<div style="font-size:11px;color:var(--muted)">'+(lang==='en'?'Last updated':'Dernière modification')+' : '+(updatedAt ? esc(updatedAt) : '—')+'</div>'+
     '</div>';
 
   document.getElementById('mBody').innerHTML =
@@ -1353,9 +1356,9 @@ function renderModalBody() {
     '</div>';
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 // INIT
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ════════════════════════════════════════════
 applyFilters();
 
 if (typeof I18n !== 'undefined') {
@@ -1364,7 +1367,7 @@ if (typeof I18n !== 'undefined') {
     // Traduire le label et les options du filtre Vue
     updateVueFilterLabels();
 
-    // MÃ©moriser quelles cartes et quels jours sont ouverts
+    // Mémoriser quelles cartes et quels jours sont ouverts
     var openCards = [];
     var openDays  = {};
     document.querySelectorAll('.resource-card').forEach(function(card, ri) {
@@ -1374,15 +1377,15 @@ if (typeof I18n !== 'undefined') {
       if (el.style.display !== 'none') openDays[el.id] = true;
     });
 
-    // Re-rendre la liste complÃ¨te
+    // Re-rendre la liste complète
     applyFilters();
 
-    // Restaurer l'Ã©tat ouvert des cartes
+    // Restaurer l'état ouvert des cartes
     openCards.forEach(function(ri) {
       var card = document.getElementById('rcard-'+ri);
       if (card) card.classList.add('open');
     });
-    // Restaurer l'Ã©tat ouvert des tables jour
+    // Restaurer l'état ouvert des tables jour
     Object.keys(openDays).forEach(function(id) {
       var tbl  = document.getElementById(id);
       var parts = id.split('-'); // tbl-ri-gi
@@ -1393,7 +1396,7 @@ if (typeof I18n !== 'undefined') {
     });
 
     var modeBtn = document.getElementById('modeBtn');
-    if (modeBtn) modeBtn.textContent = document.body.classList.contains('dark') ? 'â˜€ï¸ Mode Jour' : 'ðŸŒ™ Mode Nuit';
+    if (modeBtn) modeBtn.textContent = document.body.classList.contains('dark') ? '☀️ Mode Jour' : '🌙 Mode Nuit';
   });
 }
 
@@ -1401,7 +1404,7 @@ if (typeof I18n !== 'undefined') {
 function updateVueFilterLabels() {
   // Titre "Mon Planning V2"
   var titleEl = document.querySelector('.logo p[data-i18n="mp_title"]');
-  if (titleEl) titleEl.textContent = 'ðŸ“‹ ' + I18n.t('mp_title');
+  if (titleEl) titleEl.textContent = '📋 ' + I18n.t('mp_title');
   // Label "Nom"
   var lblNom = document.getElementById('lbl-fNom');
   if (lblNom) lblNom.textContent = I18n.t('mp_lbl_nom');
