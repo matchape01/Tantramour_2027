@@ -1057,7 +1057,10 @@
   <div class="ev-modal-backdrop" id="evDetailBackdrop">
     <div class="ev-modal" id="evDetailModal">
       <div class="ev-modal-header">
-        <h3 id="evModalTitle">Détail de l'atelier</h3>
+        <div style="flex:1;min-width:0;">
+          <h3 id="evModalTitle">Détail de l'atelier</h3>
+          <div id="evModalId" style="font-family:monospace;font-size:11px;color:var(--muted);margin-top:3px;"></div>
+        </div>
         <button class="event-del-btn" style="position:static;display:flex;flex-shrink:0;" title="Fermer" onclick="closeEventDetail()">✕</button>
       </div>
       <div class="ev-modal-body">
@@ -1754,6 +1757,7 @@
 
       // ── Champs texte ──
       document.getElementById('evModalTitle').textContent = ev.nom || 'Atelier';
+      document.getElementById('evModalId').textContent = ev.atelierId ? 'ID : ' + ev.atelierId : '';
       document.getElementById('evFieldNom').value   = ev.nom || '';
       document.getElementById('evFieldNomEn').value = ev.nomEn || (atRef ? atRef.nomEn || '' : '');
       document.getElementById('evFieldDescFr').value = ev.descFr || (atRef ? atRef.descFr || '' : '');
