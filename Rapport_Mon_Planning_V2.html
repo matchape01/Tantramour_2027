@@ -614,11 +614,12 @@ window.applyFilters = function applyFilters() {
   var fNom    = document.getElementById('fNom').value;
   var fSearch = document.getElementById('fSearch').value.trim().toLowerCase();
   var fRole   = currentVue;   // '' = Vue Combinée
-  if (fNom === '__NONE__') {
+  if (fNom === '__NONE__' && !fSearch) {
     document.getElementById('stats').innerHTML = '<span>0</span> personne(s)';
     document.getElementById('resourceList').innerHTML = '<div class="empty">Aucun résultat pour ces filtres.</div>';
     return;
   }
+  if (fNom === '__NONE__') fNom = ''; // recherche texte sans nom sélectionné = toutes les personnes
 
   // Filtrer les noms de ressources
   var results = [];
