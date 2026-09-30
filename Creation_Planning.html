@@ -682,9 +682,134 @@
   .event-anim {
     font-size: 10px;
     color: #475569;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+  }
+  /* Carte lockée */
+  .placed-event.is-locked {
+    outline: 2px solid #f59e0b;
+    outline-offset: -2px;
+  }
+  .placed-event.is-locked .event-lock-icon {
+    display: block;
+  }
+  .event-lock-icon {
+    display: none;
+    position: absolute;
+    bottom: 3px;
+    right: 4px;
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  /* ── MODALE DÉTAIL ATELIER ── */
+  .ev-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .ev-modal-backdrop.open { display: flex; }
+  .ev-modal {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    width: 520px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .ev-modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .ev-modal-header h3 {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .ev-modal-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .ev-modal-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .ev-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ev-modal-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .ev-modal-field { display: flex; flex-direction: column; gap: 4px; }
+  .ev-modal-field.full { grid-column: 1 / -1; }
+  .ev-modal-field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .ev-modal-field input,
+  .ev-modal-field select,
+  .ev-modal-field textarea {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+    transition: border-color .15s;
+  }
+  .ev-modal-field input:focus,
+  .ev-modal-field select:focus,
+  .ev-modal-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .ev-modal-field textarea { resize: vertical; min-height: 70px; }
+  .ev-modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .btn-lock {
+    margin-right: auto;
+    background: var(--warning-light);
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-lock.is-locked {
+    background: #fef3c7;
+    color: #b45309;
+    border-color: #f59e0b;
+  }
+  .ev-modal-sep {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 2px 0;
   }
   .event-duree {
     font-size: 10px;
@@ -725,6 +850,8 @@
   }
   .placed-event:hover .event-del-btn { display: flex; }
   .event-del-btn:hover { background: #dc2626; color: #fff; }
+  .placed-event.is-locked { cursor: default; }
+  .placed-event.is-locked .event-del-btn { display: none !important; }
 
   /* ── INDICATEUR DE DROP PREVIEW ── */
   .drop-preview {
@@ -925,6 +1052,106 @@
   </div>
 
   <div id="toast"></div>
+
+  <!-- MODALE DÉTAIL / ÉDITION ATELIER PLACÉ -->
+  <div class="ev-modal-backdrop" id="evDetailBackdrop">
+    <div class="ev-modal" id="evDetailModal">
+      <div class="ev-modal-header">
+        <h3 id="evModalTitle">Détail de l'atelier</h3>
+        <button class="event-del-btn" style="position:static;display:flex;flex-shrink:0;" title="Fermer" onclick="closeEventDetail()">✕</button>
+      </div>
+      <div class="ev-modal-body">
+
+        <!-- Nom & Type -->
+        <div>
+          <div class="ev-modal-section-title">📋 Informations générales</div>
+          <div class="ev-modal-grid">
+            <div class="ev-modal-field full">
+              <label>Nom de l'atelier (FR)</label>
+              <input type="text" id="evFieldNom" />
+            </div>
+            <div class="ev-modal-field full">
+              <label>Nom de l'atelier (EN)</label>
+              <input type="text" id="evFieldNomEn" />
+            </div>
+            <div class="ev-modal-field">
+              <label>Type</label>
+              <select id="evFieldType"></select>
+            </div>
+            <div class="ev-modal-field">
+              <label>Animateurs</label>
+              <select id="evFieldAnimateurs" multiple size="3"></select>
+            </div>
+          </div>
+        </div>
+
+        <hr class="ev-modal-sep" />
+
+        <!-- Durées -->
+        <div>
+          <div class="ev-modal-section-title">⏱ Durées</div>
+          <div class="ev-modal-grid three">
+            <div class="ev-modal-field">
+              <label>Durée atelier (min)</label>
+              <input type="number" id="evFieldDuree" min="15" max="480" step="15" />
+            </div>
+            <div class="ev-modal-field">
+              <label>Préparation (min)</label>
+              <input type="number" id="evFieldPrep" min="0" max="120" step="5" />
+            </div>
+            <div class="ev-modal-field">
+              <label>Rangement (min)</label>
+              <input type="number" id="evFieldRange" min="0" max="120" step="5" />
+            </div>
+          </div>
+        </div>
+
+        <hr class="ev-modal-sep" />
+
+        <!-- Position dans le planning -->
+        <div>
+          <div class="ev-modal-section-title">📍 Position dans le planning</div>
+          <div class="ev-modal-grid three">
+            <div class="ev-modal-field">
+              <label>Jour</label>
+              <select id="evFieldJour"></select>
+            </div>
+            <div class="ev-modal-field">
+              <label>Heure de début</label>
+              <select id="evFieldHeure"></select>
+            </div>
+            <div class="ev-modal-field">
+              <label>Lieu</label>
+              <select id="evFieldLieu"></select>
+            </div>
+          </div>
+        </div>
+
+        <hr class="ev-modal-sep" />
+
+        <!-- Description -->
+        <div>
+          <div class="ev-modal-section-title">📝 Description</div>
+          <div class="ev-modal-grid">
+            <div class="ev-modal-field full">
+              <label>Description (FR)</label>
+              <textarea id="evFieldDescFr"></textarea>
+            </div>
+            <div class="ev-modal-field full">
+              <label>Description (EN)</label>
+              <textarea id="evFieldDescEn"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="ev-modal-footer">
+        <button class="btn-lock" id="evBtnLock" onclick="toggleEventLock()">🔓 Verrouiller</button>
+        <button class="btn btn-outline" onclick="closeEventDetail()">Fermer</button>
+        <button class="btn btn-primary" onclick="saveEventDetail()">💾 Sauvegarder</button>
+      </div>
+    </div>
+  </div>
 
   <!-- CHARGEMENT DES RÉFÉRENTIELS ET LIBRAIRIES -->
   <script src="ref_lieux.js"></script>
@@ -1466,6 +1693,167 @@
     }
 
     // ═══════════════════════════════════════════════════════════════
+    // POPUP DÉTAIL / ÉDITION ATELIER PLACÉ
+    // ═══════════════════════════════════════════════════════════════
+    let _evDetailId = null; // ID de l'événement en cours d'édition
+
+    function openEventDetail(evId) {
+      const ev = PLACED_EVENTS.find(e => e.id === evId);
+      if (!ev) return;
+      _evDetailId = evId;
+
+      // Récupérer les données complémentaires depuis ATELIERS si disponible
+      const atRef = (typeof ATELIERS !== 'undefined' ? ATELIERS : []).find(a => a.id === ev.atelierId);
+
+      // ── Remplir champs texte ──
+      document.getElementById('evModalTitle').textContent = ev.nom || 'Atelier';
+      document.getElementById('evFieldNom').value = ev.nom || '';
+      document.getElementById('evFieldNomEn').value = ev.nomEn || (atRef ? atRef.nomEn || '' : '');
+      document.getElementById('evFieldDescFr').value = ev.descFr || (atRef ? atRef.descFr || '' : '');
+      document.getElementById('evFieldDescEn').value = ev.descEn || (atRef ? atRef.descEn || '' : '');
+      document.getElementById('evFieldDuree').value = ev.dureeMin || (atRef ? (atRef.dureeH||0)*60+(atRef.dureeMin||0) : 60);
+      document.getElementById('evFieldPrep').value = ev.prepDuration !== undefined ? ev.prepDuration : (atRef ? atRef.prepDuration || 0 : 0);
+      document.getElementById('evFieldRange').value = ev.rangeDuration !== undefined ? ev.rangeDuration : (atRef ? atRef.rangeDuration || 0 : 0);
+
+      // ── Select Type ──
+      const selType = document.getElementById('evFieldType');
+      selType.innerHTML = '';
+      const types = (typeof REF_TYPES !== 'undefined' ? REF_TYPES : []).map(t => t.value || t.label || t.id);
+      if (types.length === 0) selType.innerHTML = `<option value="${esc(ev.type)}">${esc(ev.type)}</option>`;
+      else types.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t; opt.textContent = t;
+        if (t === ev.type) opt.selected = true;
+        selType.appendChild(opt);
+      });
+
+      // ── Select Animateurs (multiple) ──
+      const selAnim = document.getElementById('evFieldAnimateurs');
+      selAnim.innerHTML = '';
+      const animSelected = new Set((ev.animateurs || []).map(String));
+      const animeurs = (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
+        .filter(r => r.roles && r.roles.includes('animateur'));
+      animeurs.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id; opt.textContent = r.value;
+        if (animSelected.has(String(r.id))) opt.selected = true;
+        selAnim.appendChild(opt);
+      });
+
+      // ── Select Jour ──
+      const selJour = document.getElementById('evFieldJour');
+      selJour.innerHTML = '';
+      FESTIVAL_DAYS.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.jour;
+        opt.textContent = d.jour + ' — ' + d.dateLabel;
+        if (d.jour === ev.jour) opt.selected = true;
+        selJour.appendChild(opt);
+      });
+
+      // ── Select Heure ──
+      const selHeure = document.getElementById('evFieldHeure');
+      selHeure.innerHTML = '';
+      for (let m = CONFIG.hStart * 60; m < CONFIG.hEnd * 60; m += 15) {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = minToTimeStr(m);
+        if (m === ev.startMin) opt.selected = true;
+        selHeure.appendChild(opt);
+      }
+
+      // ── Select Lieu ──
+      const selLieu = document.getElementById('evFieldLieu');
+      selLieu.innerHTML = '';
+      CONFIG.selectedLieux.forEach(lCode => {
+        const lObj = (typeof REF_LIEUX !== 'undefined' ? REF_LIEUX : []).find(x => x.value === lCode);
+        const lbl = lObj ? (lObj.label || lObj.value) : lCode;
+        const opt = document.createElement('option');
+        opt.value = lCode; opt.textContent = lbl;
+        if (lCode === ev.lieu) opt.selected = true;
+        selLieu.appendChild(opt);
+      });
+
+      // ── Bouton Lock ──
+      _refreshLockBtn(ev.locked);
+
+      // ── Ouvrir ──
+      document.getElementById('evDetailBackdrop').classList.add('open');
+    }
+
+    function _refreshLockBtn(locked) {
+      const btn = document.getElementById('evBtnLock');
+      if (locked) {
+        btn.textContent = '🔒 Déverrouiller';
+        btn.classList.add('is-locked');
+      } else {
+        btn.textContent = '🔓 Verrouiller';
+        btn.classList.remove('is-locked');
+      }
+    }
+
+    function closeEventDetail() {
+      document.getElementById('evDetailBackdrop').classList.remove('open');
+      _evDetailId = null;
+    }
+
+    function saveEventDetail() {
+      if (!_evDetailId) return;
+      const ev = PLACED_EVENTS.find(e => e.id === _evDetailId);
+      if (!ev) return;
+
+      // Récupérer valeurs
+      const newNom    = document.getElementById('evFieldNom').value.trim();
+      const newNomEn  = document.getElementById('evFieldNomEn').value.trim();
+      const newType   = document.getElementById('evFieldType').value;
+      const newDuree  = parseInt(document.getElementById('evFieldDuree').value, 10) || ev.dureeMin;
+      const newPrep   = parseInt(document.getElementById('evFieldPrep').value, 10) || 0;
+      const newRange  = parseInt(document.getElementById('evFieldRange').value, 10) || 0;
+      const newDescFr = document.getElementById('evFieldDescFr').value;
+      const newDescEn = document.getElementById('evFieldDescEn').value;
+      const newJour   = document.getElementById('evFieldJour').value;
+      const newStartMin = parseInt(document.getElementById('evFieldHeure').value, 10);
+      const newLieu   = document.getElementById('evFieldLieu').value;
+
+      // Animateurs sélectionnés
+      const selAnim = document.getElementById('evFieldAnimateurs');
+      const newAnims = Array.from(selAnim.selectedOptions).map(o => o.value);
+
+      // Trouver le dateLabel du jour sélectionné
+      const jourObj = FESTIVAL_DAYS.find(d => d.jour === newJour);
+
+      // Appliquer
+      ev.nom          = newNom || ev.nom;
+      ev.nomEn        = newNomEn;
+      ev.type         = newType;
+      ev.dureeMin     = newDuree;
+      ev.prepDuration = newPrep;
+      ev.rangeDuration= newRange;
+      ev.descFr       = newDescFr;
+      ev.descEn       = newDescEn;
+      ev.animateurs   = newAnims;
+      ev.jour         = newJour;
+      ev.date         = jourObj ? jourObj.dateLabel : ev.date;
+      ev.startMin     = newStartMin;
+      ev.endMin       = newStartMin + newDuree;
+      ev.lieu         = newLieu;
+
+      renderPlacedEvents();
+      renderAteliersSidebar();
+      toast(`✅ "${ev.nom}" mis à jour.`);
+      closeEventDetail();
+    }
+
+    function toggleEventLock() {
+      if (!_evDetailId) return;
+      const ev = PLACED_EVENTS.find(e => e.id === _evDetailId);
+      if (!ev) return;
+      ev.locked = !ev.locked;
+      _refreshLockBtn(ev.locked);
+      renderPlacedEvents();
+      toast(ev.locked ? `🔒 "${ev.nom}" verrouillé.` : `🔓 "${ev.nom}" déverrouillé.`);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // RENDU DES ATELIERS SUR LA GRILLE
     // ═══════════════════════════════════════════════════════════════
     function renderPlacedEvents() {
@@ -1491,7 +1879,7 @@
 
         const card = document.createElement('div');
         const evTCss = typeCssClass(ev.type);
-        card.className = 'placed-event' + (evTCss ? ' has-type ' + evTCss : '');
+        card.className = 'placed-event' + (evTCss ? ' has-type ' + evTCss : '') + (ev.locked ? ' is-locked' : '');
         card.style.top = topPx + 'px';
         card.style.height = heightPx + 'px';
         card.setAttribute('data-ev-id', ev.id);
@@ -1509,28 +1897,37 @@
           <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
           ${animNamesList.length > 0 ? `<div class="event-anim">${animNamesList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
           ${ev.type ? `<div class="event-type">${esc(ev.type)}</div>` : ''}
+          <span class="event-lock-icon" title="Atelier verrouillé">🔒</span>
         `;
 
-        // Permettre le déplacement sur la grille
-        card.draggable = true;
-        card.ondragstart = (e) => {
-          const at = getApprovedAteliers().find(a => a.id === ev.atelierId) || {
-            id: ev.atelierId,
-            nomFr: ev.nom,
-            dureeH: Math.floor(ev.dureeMin / 60),
-            dureeMin: ev.dureeMin % 60,
-            type: ev.type,
-            animateurs: ev.animateurs,
-            descFr: ev.descFr,
-            descEn: ev.descEn
-          };
-          currentDragAtelier = at;
-          e.dataTransfer.setData('text/plain', at.id);
-          // Retirer l'ancien emplacement lors du re-drop
-          setTimeout(() => {
-            removePlacedEvent(ev.id, null, true);
-          }, 0);
+        // Ouvrir popup au clic (sauf si clic sur le bouton ✕)
+        card.onclick = (e) => {
+          if (e.target.classList.contains('event-del-btn')) return;
+          openEventDetail(ev.id);
         };
+
+        // Drag désactivé pour les ateliers verrouillés
+        card.draggable = !ev.locked;
+        if (!ev.locked) {
+          card.ondragstart = (e) => {
+            const at = getApprovedAteliers().find(a => a.id === ev.atelierId) || {
+              id: ev.atelierId,
+              nomFr: ev.nom,
+              dureeH: Math.floor(ev.dureeMin / 60),
+              dureeMin: ev.dureeMin % 60,
+              type: ev.type,
+              animateurs: ev.animateurs,
+              descFr: ev.descFr,
+              descEn: ev.descEn
+            };
+            currentDragAtelier = at;
+            e.dataTransfer.setData('text/plain', at.id);
+            // Retirer l'ancien emplacement lors du re-drop
+            setTimeout(() => {
+              removePlacedEvent(ev.id, null, true);
+            }, 0);
+          };
+        }
 
         col.appendChild(card);
       });
