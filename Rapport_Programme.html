@@ -833,7 +833,7 @@ function cardHtml(e, globalIdx, opts) {
   /* opts.noHeader = true  → masquer le bandeau TYPE/Détails (déjà affiché en sous-titre de groupe) */
   var noHeader = opts && opts.noHeader;
   var css       = TYPE_CSS[e.type] || '';
-  var facs      = [e.fac1, e.fac2].filter(Boolean);
+  var facs      = [e.fac1Id||e.fac1, e.fac2Id||e.fac2, e.fac3Id||e.fac3, e.fac4Id||e.fac4].filter(Boolean);
   var pimentStr = e.piment > 0 ? '🌶️'.repeat(e.piment) : '';
   var desc      = findDesc(e.atelier, e.id);
   var lang      = I18n.getLang();
@@ -842,7 +842,7 @@ function cardHtml(e, globalIdx, opts) {
   // Ligne Lieu + FR/ENG
   var lieuLangHtml =
     (e.lieu ? '<span class="badge badge-lieu">📍 ' + esc(e.lieu) + '</span>' : '') +
-    (e.traduction || isBilingue(e.fac1) || isBilingue(e.fac2)
+    (e.traduction || isBilingue(e.fac1Id||e.fac1) || isBilingue(e.fac2Id||e.fac2)
       ? '<span class="badge badge-trad" title="' + (e.traduction ? esc(resolveName(e.traduction)) : 'FR / ENG') + '">FR / ENG</span>'
       : '<span class="badge badge-trad-fr" title="Atelier en français">FR</span>');
 
@@ -1059,12 +1059,12 @@ function renderModalContent() {
       rows.push([tModal('rp_horaire'), esc(e.heure) + (duree ? ' <span style="color:var(--muted);font-weight:400">(' + duree + ')</span>' : '')]);
     }
     if (e.lieu)  rows.push([tModal('rp_lieu'), esc(e.lieu)]);
-    var facs = [e.fac1, e.fac2].filter(Boolean);
+    var facs = [e.fac1Id||e.fac1, e.fac2Id||e.fac2, e.fac3Id||e.fac3, e.fac4Id||e.fac4].filter(Boolean);
     if (facs.length) rows.push([facs.length > 1 ? tModal('rp_facilitateurs') : tModal('rp_facilitateur'), facs.map(nomAvecLien).join(' &amp; ')]);
     var tradLabel = lang === 'en' ? 'Translator' : 'Traducteur';
     var tradVal   = e.traduction
       ? nomAvecLien(e.traduction)
-      : (isBilingue(e.fac1) || isBilingue(e.fac2)
+      : (isBilingue(e.fac1Id||e.fac1) || isBilingue(e.fac2Id||e.fac2)
           ? (lang === 'en' ? 'Bilingual teacher' : 'Animateur bilingue')
           : '<span class="no-desc">' + (lang === 'en' ? 'None' : 'Aucun') + '</span>');
     rows.push([tradLabel, tradVal]);
