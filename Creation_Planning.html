@@ -447,7 +447,7 @@
 
   /* Toolbar de vue (Zoom, jour actif, etc.) */
   .agenda-toolbar {
-    height: 42px;
+    min-height: 42px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     display: flex;
@@ -455,8 +455,15 @@
     justify-content: space-between;
     padding: 0 14px;
     font-size: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
   }
-  .days-pill-list { display: flex; gap: 4px; }
+  .days-pill-list { display: flex; gap: 4px; flex-wrap: wrap; }
+  .toolbar-filters { display: flex; gap: 6px; align-items: center; }
+  .toolbar-filters select {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    padding: 3px 8px; font-size: 11px; color: var(--text); font-family: inherit; cursor: pointer;
+  }
   .day-pill {
     padding: 3px 10px;
     border-radius: 14px;
@@ -796,6 +803,14 @@
       <div class="agenda-toolbar">
         <div class="days-pill-list" id="daysFilterPills">
           <!-- Pilules de jours -->
+        </div>
+        <div class="toolbar-filters">
+          <select id="filterEventType" onchange="applyEventFilters()" title="Filtrer par type">
+            <option value="">Tous les types</option>
+          </select>
+          <select id="filterEventLieu" onchange="applyEventFilters()" title="Filtrer par lieu">
+            <option value="">Tous les lieux</option>
+          </select>
         </div>
         <div style="color:var(--muted); font-size:11px;">
           💡 Glissez un atelier sur une salle et une heure (alignement automatique 15 min).
@@ -1460,6 +1475,8 @@
         card.style.top = topPx + 'px';
         card.style.height = heightPx + 'px';
         card.setAttribute('data-ev-id', ev.id);
+        card.setAttribute('data-ev-type', ev.type || '');
+        card.setAttribute('data-ev-lieu', ev.lieu || '');
 
         card.innerHTML = `
           <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
@@ -1491,6 +1508,46 @@
 
         col.appendChild(card);
       });
+      populateEventFilters();
+      applyEventFilters();
+    }
+
+    function applyEventFilters() {
+      const fType = document.getElementById('filterEventType').value;
+      const fLieu = document.getElementById('filterEventLieu').value;
+      document.querySelectorAll('.placed-event').forEach(card => {
+        const matchType = !fType || card.getAttribute('data-ev-type') === fType;
+        const matchLieu = !fLieu || card.getAttribute('data-ev-lieu') === fLieu;
+        card.style.opacity = (matchType && matchLieu) ? '1' : '0.15';
+        card.style.pointerEvents = (matchType && matchLieu) ? '' : 'none';
+      });
+    }
+
+    function populateEventFilters() {
+      // Types
+      const typesSeen = [...new Set(PLACED_EVENTS.map(e => e.type).filter(Boolean))];
+      const tSel = document.getElementById('filterEventType');
+      if (tSel) {
+        tSel.innerHTML = '<option value="">Tous les types</option>' +
+          (typeof REF_TYPES !== 'undefined' ? REF_TYPES : [])
+            .filter(t => typesSeen.includes(t.value))
+            .map(t => `<option value="${esc(t.value)}">${esc(t.label || t.value)}</option>`)
+            .join('');
+      }
+      // Lieux
+      const lieuxSeen = [...new Set(PLACED_EVENTS.map(e => e.lieu).filter(Boolean))];
+      const lSel = document.getElementById('filterEventLieu');
+      if (lSel) {
+        lSel.innerHTML = '<option value="">Tous les lieux</option>' +
+          CONFIG.selectedLieux
+            .filter(lCode => lieuxSeen.includes(lCode))
+            .map(lCode => {
+              const lObj = (typeof REF_LIEUX !== 'undefined') ? REF_LIEUX.find(x => x.value === lCode) : null;
+              const lbl = lObj ? (lObj.label || lObj.value) : lCode;
+              return `<option value="${esc(lCode)}">${esc(lbl)}</option>`;
+            })
+            .join('');
+      }
     }
 
     function removePlacedEvent(evId, clickEv, silent) {
