@@ -705,7 +705,7 @@ function buildDurPrepOpts(selectedVal, maxMin, step) {
   for (var v = 0; v <= max; v += inc) {
     var h = Math.floor(v / 60);
     var m = v % 60;
-    var label = h ? h + 'h' + (m ? (m < 10 ? '0' + m : m) + 'min' : '') : m + ' min';
+    var label = h ? h + 'h' + (m ? (m < 10 ? '0' + m : m) : '') : m + ' min';
     if (v === 0) label = '0 min';
     opts += '<option value="' + v + '"' + (v === (selectedVal||0) ? ' selected' : '') + '>' + label + '</option>';
   }
