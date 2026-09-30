@@ -8,7 +8,7 @@
  *   capacite    : capacité d'accueil (nombre de personnes)
  */
 var REF_LIEUX = [
-  { id: "L_SHIVA", value: "SHIVA", label: "SHIVA — Chapiteau principal", nomOfficiel: "Chapiteau", description: "", capacite: 60 },
+  { id: "L_SHIVA", value: "SHIVA", label: "SHIVA", nomOfficiel: "Chapiteau", description: "", capacite: 60 },
   { id: "L_CHENREZIG", value: "CHENREZIG", label: "CHENREZIG", nomOfficiel: "Orion", description: "", capacite: 50 },
   { id: "L_SHAKTI", value: "SHAKTI", label: "SHAKTI", nomOfficiel: "Grange", description: "", capacite: 50 },
   { id: "L_TARA", value: "TARA", label: "TARA", nomOfficiel: "Grande Bergerie", description: "", capacite: 40 },
