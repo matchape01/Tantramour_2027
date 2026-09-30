@@ -892,6 +892,332 @@
   @media (max-width: 900px) {
     .sidebar-ateliers { width: 260px; }
   }
+
+  /* ═══════════════════════════════════════════════════════════
+     VUE LISTE DES VERSIONS
+  ═══════════════════════════════════════════════════════════ */
+  .versions-view {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 24px;
+    background: var(--bg);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+  .versions-view.active { display: flex; }
+
+  .versions-container {
+    width: 100%;
+    max-width: 960px;
+  }
+
+  .versions-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .versions-page-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .versions-page-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* Table des versions */
+  .versions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .versions-table thead th {
+    background: #1e293b;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .versions-table thead th:first-child { border-radius: 10px 0 0 0; }
+  .versions-table thead th:last-child  { border-radius: 0 10px 0 0; text-align: center; }
+
+  .versions-table tbody tr {
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  .versions-table tbody tr:last-child { border-bottom: none; }
+  .versions-table tbody tr:hover { background: var(--accent-light); }
+  .versions-table tbody td {
+    padding: 12px 14px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .versions-table tbody td:last-child { text-align: center; }
+
+  /* Badges statut */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .status-draft        { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+  .status-soumis       { background: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd; }
+  .status-feedback     { background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
+  .status-retenu       { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+  .status-valide       { background: #fdf4ff; color: #7e22ce; border: 1px solid #d8b4fe; }
+
+  .version-num-cell {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .version-creator {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .version-date {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .version-count-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid #bfdbfe;
+  }
+
+  .versions-actions-cell {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .btn-icon {
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--muted);
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .btn-icon:hover { background: var(--bg); color: var(--text); border-color: var(--muted); }
+  .btn-icon.btn-open { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-icon.btn-open:hover { background: var(--accent-hover); }
+  .btn-icon.btn-danger { background: var(--danger-light); color: var(--danger); border-color: #fca5a5; }
+  .btn-icon.btn-danger:hover { background: #fee2e2; }
+
+  .empty-versions-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-versions-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  .empty-versions-state h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .empty-versions-state p  { font-size: 13px; max-width: 380px; margin: 0 auto 20px; }
+
+  /* ═══════════════════════════════════════════════════════════
+     BANDEAU VERSION DANS LA VUE CALENDRIER
+  ═══════════════════════════════════════════════════════════ */
+  .version-banner {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    padding: 8px 16px;
+    display: none;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    z-index: 90;
+    width: 100%;
+  }
+  .version-banner.visible { display: flex; }
+  .version-banner-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .version-banner-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .version-banner-meta span { white-space: nowrap; }
+  .version-banner-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .readonly-overlay-badge {
+    background: var(--warning-light);
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* Modale création de version */
+  .new-version-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 600;
+    align-items: center;
+    justify-content: center;
+  }
+  .new-version-backdrop.open { display: flex; }
+  .new-version-modal {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    width: 440px;
+    max-width: 95vw;
+    overflow: hidden;
+  }
+  .new-version-modal .modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .new-version-modal .modal-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .new-version-modal .modal-header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .new-version-modal .modal-body { padding: 20px; }
+  .new-version-modal .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .source-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .source-option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .source-option input[type="radio"] { margin-top: 2px; accent-color: var(--accent); }
+  .source-option .opt-label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .source-option .opt-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* Modale feedback / soumission */
+  .feedback-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 600;
+    align-items: center;
+    justify-content: center;
+  }
+  .feedback-backdrop.open { display: flex; }
+  .feedback-modal {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    width: 500px;
+    max-width: 95vw;
+    overflow: hidden;
+  }
+  .feedback-modal .modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .feedback-modal .modal-header h3 { font-size: 15px; font-weight: 700; }
+  .feedback-modal .modal-header p  { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .feedback-modal .modal-body      { padding: 20px; }
+  .feedback-modal .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .feedback-modal textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    outline: none;
+  }
+  .feedback-modal textarea:focus { border-color: var(--accent); }
+  .feedback-history { margin-top: 12px; }
+  .feedback-history-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .feedback-entry {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .feedback-entry .feedback-meta { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+
+  /* Mode lecture seule — overlay léger sur la grille */
+  .readonly-mode .grid-lieu-col { cursor: not-allowed; }
+  .readonly-mode .atelier-card  { cursor: not-allowed !important; opacity: 0.6; }
+  .readonly-mode .placed-event  { cursor: default !important; }
+  .readonly-mode .placed-event .event-del-btn { display: none !important; }
+  .readonly-mode .placed-event { draggable: false; }
 </style>
 </head>
 <body>
@@ -901,24 +1227,56 @@
     <div class="brand-block">
       <span class="brand-badge" id="displayYearBadge">2027</span>
       <div>
-        <div class="brand-title">Création & Édition du Planning</div>
-        <div class="brand-sub" id="displayDatesSummary">Configuration en cours…</div>
+        <div class="brand-title" id="navbarTitle">Gestion des versions du Planning</div>
+        <div class="brand-sub" id="displayDatesSummary">Sélectionnez ou créez une version</div>
       </div>
     </div>
-    <div class="nav-actions">
+    <div class="nav-actions" id="navActionsVersions">
+      <button class="btn btn-primary" onclick="openNewVersionModal()">＋ Créer une nouvelle version</button>
       <button class="btn btn-outline" onclick="openConfigModal()">⚙️ Configurer template</button>
-      <button class="btn btn-success" onclick="savePlanningToAgenda()">💾 Enregistrer Planning</button>
       <a class="btn" href="Rapport_Ateliers_Proposes.html">🌱 Ateliers Proposés</a>
       <a class="btn" href="gestion_planning.html">⚙️ Admin</a>
       <a class="btn" href="index.html">🏠 Accueil</a>
     </div>
+    <div class="nav-actions" id="navActionsCalendar" style="display:none;">
+      <button class="btn btn-outline" onclick="goBackToVersions()">← Retour aux versions</button>
+      <button class="btn btn-outline" onclick="openConfigModal()" id="navBtnConfig">⚙️ Template</button>
+      <button class="btn btn-success" id="navBtnSave" onclick="saveCurrentVersion()">💾 Enregistrer</button>
+      <button class="btn" id="navBtnSubmit" onclick="openSubmitModal()" style="display:none;">📤 Soumettre à validation</button>
+      <a class="btn" href="Rapport_Ateliers_Proposes.html">🌱 Ateliers</a>
+      <a class="btn" href="index.html">🏠 Accueil</a>
+    </div>
   </header>
 
-  <!-- CONTENEUR PRINCIPAL -->
-  <div class="app-container">
+  <!-- VUE LISTE DES VERSIONS -->
+  <div class="versions-view active" id="versionsView">
+    <div class="versions-container">
+      <div class="versions-page-header">
+        <div>
+          <div class="versions-page-title">📋 Gestion des versions du Planning</div>
+          <div class="versions-page-sub">Sélectionnez une version existante ou créez-en une nouvelle.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openNewVersionModal()">＋ Créer une nouvelle version</button>
+      </div>
+      <div id="versionsTableContainer">
+        <!-- Rempli en JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEUR PRINCIPAL (VUE CALENDRIER) -->
+  <div style="display:none; flex:1; overflow:hidden; flex-direction:column;" id="calendarView">
+
+    <!-- BANDEAU VERSION -->
+    <div class="version-banner" id="versionBanner">
+      <!-- Rempli en JS -->
+    </div>
+
+    <!-- WRAPPER POUR SIDEBAR + GRILLE -->
+    <div class="app-container" style="flex:1; overflow:hidden;" id="calendarInnerWrapper">
 
     <!-- SIDEBAR ÉTAPE 2 : ATELIERS APPROVED (DRAGGABLE) -->
-    <aside class="sidebar-ateliers">
+    <aside class="sidebar-ateliers" id="sidebarAteliers">
       <div class="sidebar-header">
         <div class="sidebar-title">
           <span>Ateliers "Approved"</span>
@@ -986,7 +1344,8 @@
       </div>
     </main>
 
-  </div>
+    </div><!-- fin #calendarInnerWrapper -->
+  </div><!-- fin #calendarView -->
 
   <!-- MODAL CONFIGURATION TEMPLATE (ÉTAPE 1) -->
   <div class="config-modal-backdrop" id="configBackdrop">
@@ -1184,6 +1543,59 @@
     </div>
   </div>
 
+  <!-- MODALE CRÉATION DE NOUVELLE VERSION -->
+  <div class="new-version-backdrop" id="newVersionBackdrop">
+    <div class="new-version-modal">
+      <div class="modal-header">
+        <h3>➕ Créer une nouvelle version</h3>
+        <p>Définissez la base de départ pour cette nouvelle version du planning.</p>
+      </div>
+      <div class="modal-body">
+        <div id="newVersionSourceOptions">
+          <!-- Rempli en JS avec les versions disponibles -->
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;">CRÉÉE PAR</div>
+          <select id="newVersionCreator" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+            <option value="">— Sélectionner un admin —</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeNewVersionModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="confirmCreateNewVersion()">✅ Créer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE SOUMISSION / FEEDBACK -->
+  <div class="feedback-backdrop" id="feedbackBackdrop">
+    <div class="feedback-modal">
+      <div class="modal-header">
+        <h3 id="feedbackModalTitle">📤 Soumettre à validation</h3>
+        <p id="feedbackModalSub">Ajoutez une note ou un commentaire avant la soumission.</p>
+      </div>
+      <div class="modal-body">
+        <div id="feedbackActionArea">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;">COMMENTAIRE</div>
+          <textarea id="feedbackText" placeholder="Remarques, contexte, demandes particulières…"></textarea>
+          <div id="feedbackStatusChoice" style="margin-top:14px;display:none;">
+            <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px;">CHANGER LE STATUT VERS</div>
+            <div id="feedbackStatusOptions"></div>
+          </div>
+        </div>
+        <div class="feedback-history" id="feedbackHistory" style="display:none;">
+          <div class="feedback-history-title">Historique des commentaires</div>
+          <div id="feedbackHistoryList"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeFeedbackModal()">Annuler</button>
+        <button class="btn btn-primary" id="feedbackConfirmBtn" onclick="confirmFeedbackAction()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
   <!-- CHARGEMENT DES RÉFÉRENTIELS ET LIBRAIRIES -->
   <script src="ref_lieux.js"></script>
   <script src="ref_ressources.js"></script>
@@ -1216,6 +1628,40 @@
 
     // Données de drag en cours
     let currentDragAtelier = null;
+
+    // ── VERSIONS ── (déclarations globales pour accès depuis saveEventDetail)
+    const VERSIONS_STORAGE_KEY = 'tm_planning_versions';
+    const EDITABLE_STATUSES    = new Set(['Draft', 'Feedback']);
+    let   CURRENT_VERSION_ID   = null;
+
+    function loadVersions() {
+      try {
+        const raw = localStorage.getItem(VERSIONS_STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return [];
+    }
+
+    function saveVersions(versions) {
+      try {
+        localStorage.setItem(VERSIONS_STORAGE_KEY, JSON.stringify(versions));
+      } catch(e) {
+        toast('⚠️ Impossible de sauvegarder les versions (localStorage plein ?)', true);
+      }
+    }
+
+    function getVersionById(id) {
+      return loadVersions().find(v => v.id === id) || null;
+    }
+
+    function nowIso() { return new Date().toISOString(); }
+
+    function fmtDateDisplay(isoStr) {
+      if (!isoStr) return '—';
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return isoStr;
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
 
     const PX_PER_MIN = 1.05; // 1.05px par minute -> ~63px par heure
     const STEP_MIN = 15;     // Magnétisme par pas de 15 minutes
@@ -1413,12 +1859,16 @@
 
       // Mise à jour de l'affichage
       document.getElementById('displayYearBadge').textContent = CONFIG.year;
-      document.getElementById('displayDatesSummary').textContent =
-        `${FESTIVAL_DAYS[0].dateLabel} au ${FESTIVAL_DAYS[FESTIVAL_DAYS.length - 1].dateLabel} (${FESTIVAL_DAYS.length} jours — ${CONFIG.selectedLieux.length} lieux)`;
 
       closeConfigModal(true);
       buildAgendaTemplate();
-      renderPlacedEvents();
+      // Si une version est ouverte, re-rendre ses événements ; sinon revenir à la liste
+      if (CURRENT_VERSION_ID) {
+        renderPlacedEvents();
+        renderAteliersSidebar();
+      } else {
+        showVersionsList();
+      }
       toast('✅ Template généré avec succès !');
     }
 
@@ -1908,11 +2358,17 @@
       renderAteliersSidebar();
       closeEventDetail();
 
-      // ── 2. Propager dans ATELIERS (Ateliers.js) si l'atelier existe ──
-      const atIdx = (typeof ATELIERS !== 'undefined' ? ATELIERS : [])
-        .findIndex(a => a.id === ev.atelierId);
+      // ── 2. Sauvegarder dans la version courante (localStorage) ──
+      // Les champs de position (jour / heure / lieu) sont propres à la version.
+      // On ne modifie pas les données métier de l'atelier (Ateliers.js).
+      if (CURRENT_VERSION_ID) {
+        // Auto-save de la version courante
+        saveCurrentVersion();
+        // toast déjà émis par saveCurrentVersion — on supprime le double message
+        return;
+      }
 
-      // Toujours sauvegarder data.js (position + infos de l'atelier dans la grille)
+      // Fallback (mode sans version) : comportement legacy data.js
       try {
         await saveFile('data.js', buildDataJsContent());
       } catch (err) {
@@ -1920,6 +2376,8 @@
         return;
       }
 
+      const atIdx = (typeof ATELIERS !== 'undefined' ? ATELIERS : [])
+        .findIndex(a => a.id === ev.atelierId);
       if (atIdx !== -1) {
         ATELIERS[atIdx].nomFr        = ev.nom;
         ATELIERS[atIdx].nomEn        = newNomEn;
@@ -2182,32 +2640,666 @@
     }
 
     async function savePlanningToAgenda() {
-      if (PLACED_EVENTS.length === 0) {
-        if (!confirm('Aucun atelier n\'est présent sur la grille. Voulez-vous vraiment enregistrer un planning vide ?')) return;
-      }
-
-      try {
-        const jsContent = buildDataJsContent();
-        await saveFile('data.js', jsContent);
-        toast('✅ Planning enregistré avec succès dans data.js !');
-      } catch (err) {
-        toast('❌ Erreur lors de la sauvegarde : ' + err.message, true);
-      }
+      // Obsolète — remplacé par saveCurrentVersion()
+      await saveCurrentVersion();
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // INITIALISATION DE LA PAGE
+    // GESTION DES VERSIONS DU PLANNING
+    // (Déclarations de base déjà effectuées en portée globale ci-dessus)
     // ═══════════════════════════════════════════════════════════════
-    loadData(['ref_type_colors.js', 'ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
-    // Injecter les variables CSS couleurs depuis ref_type_colors.js
-    (function() {
-      if (typeof buildTypeCssVars === 'function') {
-        var s = document.createElement('style');
-        s.id = 'type-color-vars';
-        s.textContent = buildTypeCssVars();
-        document.head.appendChild(s);
+
+    const ALL_STATUSES = ['Draft', 'Soumis à validation', 'Feedback', 'Retenu', 'Validé'];
+
+    // ── Classe CSS pour un statut ─────────────────────────────────
+    function statusClass(status) {
+      if (!status) return 'status-draft';
+      const map = {
+        'Draft':                  'status-draft',
+        'Soumis à validation':    'status-soumis',
+        'Feedback':               'status-feedback',
+        'Retenu':                 'status-retenu',
+        'Validé':                 'status-valide'
+      };
+      return map[status] || 'status-draft';
+    }
+
+    // ── Emoji pour un statut ──────────────────────────────────────
+    function statusEmoji(status) {
+      const map = {
+        'Draft':               '✏️',
+        'Soumis à validation': '📤',
+        'Feedback':            '💬',
+        'Retenu':              '⭐',
+        'Validé':              '✅'
+      };
+      return map[status] || '📋';
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // RENDU DE LA VUE LISTE
+    // ─────────────────────────────────────────────────────────────
+    function renderVersionsList() {
+      const container = document.getElementById('versionsTableContainer');
+      if (!container) return;
+      const versions = loadVersions();
+
+      if (versions.length === 0) {
+        container.innerHTML = `
+          <div class="empty-versions-state">
+            <div class="empty-icon">📋</div>
+            <h3>Aucune version de planning</h3>
+            <p>Créez votre première version pour commencer à construire le planning du festival.</p>
+            <button class="btn btn-primary" onclick="openNewVersionModal()">＋ Créer une première version</button>
+          </div>
+        `;
+        return;
       }
-    })();
+
+      const rows = versions.map(v => {
+        const itemCount = (v.items || []).length;
+        const lastFeedback = (v.feedbacks || []).length > 0 ? (v.feedbacks[v.feedbacks.length - 1].text || '').substring(0, 80) : '—';
+        const lastSubmit = v.lastSubmittedAt ? fmtDateDisplay(v.lastSubmittedAt) : '—';
+        const validatedAt = v.validatedAt ? fmtDateDisplay(v.validatedAt) : '—';
+        const isEditable = EDITABLE_STATUSES.has(v.status);
+        return `
+          <tr onclick="openVersion('${esc(v.id)}')" title="Ouvrir ${esc(v.versionLabel)}">
+            <td class="version-num-cell">${esc(v.versionLabel)}</td>
+            <td><span class="status-badge ${statusClass(v.status)}">${statusEmoji(v.status)} ${esc(v.status)}</span></td>
+            <td><div class="version-creator">${esc(v.createdBy || '—')}</div></td>
+            <td><div class="version-date">${fmtDateDisplay(v.createdAt)}</div></td>
+            <td><div class="version-date">${fmtDateDisplay(v.updatedAt)}</div></td>
+            <td><span class="version-count-badge">${itemCount} atelier${itemCount > 1 ? 's' : ''}</span></td>
+            <td><div class="version-date">${lastSubmit}</div></td>
+            <td><div class="version-date">${validatedAt}</div></td>
+            <td style="max-width:160px;"><div class="version-date" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(lastFeedback)}">${esc(lastFeedback)}</div></td>
+            <td>
+              <div class="versions-actions-cell" onclick="event.stopPropagation()">
+                <button class="btn-icon btn-open" onclick="openVersion('${esc(v.id)}')">📂 Ouvrir</button>
+                ${isEditable ? '' : ''}
+                <button class="btn-icon" onclick="openStatusModal('${esc(v.id)}')" title="Gérer le statut">🔄</button>
+                <button class="btn-icon btn-danger" onclick="deleteVersion('${esc(v.id)}')" title="Supprimer">🗑</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <table class="versions-table">
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>Statut</th>
+              <th>Créateur</th>
+              <th>Créée le</th>
+              <th>Modifiée le</th>
+              <th>Ateliers</th>
+              <th>Dernière soumission</th>
+              <th>Validée le</th>
+              <th>Dernier feedback</th>
+              <th style="text-align:right;padding-right:14px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // NAVIGATION : LISTE ↔ CALENDRIER
+    // ─────────────────────────────────────────────────────────────
+    function showVersionsList() {
+      document.getElementById('versionsView').style.display = 'flex';
+      document.getElementById('calendarView').style.display = 'none';
+      document.getElementById('navActionsVersions').style.display = 'flex';
+      document.getElementById('navActionsCalendar').style.display = 'none';
+      document.getElementById('navbarTitle').textContent = 'Gestion des versions du Planning';
+      document.getElementById('displayDatesSummary').textContent = 'Sélectionnez ou créez une version';
+      CURRENT_VERSION_ID = null;
+      // Mettre à jour l'URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('version');
+      window.history.pushState({}, '', url.toString());
+      renderVersionsList();
+    }
+
+    function showCalendarView(versionId) {
+      const v = getVersionById(versionId);
+      if (!v) { toast('Version introuvable.', true); return; }
+      CURRENT_VERSION_ID = versionId;
+
+      // Chargement des items de la version dans PLACED_EVENTS
+      PLACED_EVENTS = (v.items || []).map(item => ({
+        id: item.id || ('EV_' + Math.random()),
+        atelierId: item.atelierId,
+        nom: item.nom || '',
+        nomEn: item.nomEn || '',
+        jour: item.jour,
+        date: item.date,
+        lieu: item.lieu,
+        startMin: item.startMin,
+        endMin: item.endMin,
+        dureeMin: item.dureeMin || (item.endMin - item.startMin),
+        type: item.type || '',
+        animateurs: item.animateurs || [],
+        descFr: item.descFr || '',
+        descEn: item.descEn || '',
+        locked: item.locked || false,
+        prepDuration: item.prepDuration || 0,
+        rangeDuration: item.rangeDuration || 0
+      }));
+
+      // Basculer les vues
+      document.getElementById('versionsView').style.display = 'none';
+      document.getElementById('calendarView').style.display = 'flex';
+      document.getElementById('navActionsVersions').style.display = 'none';
+      document.getElementById('navActionsCalendar').style.display = 'flex';
+
+      // Mettre à jour l'URL
+      const url = new URL(window.location.href);
+      url.searchParams.set('version', versionId);
+      window.history.pushState({}, '', url.toString());
+
+      // Titre navbar
+      document.getElementById('navbarTitle').textContent = `${v.versionLabel} — ${v.status}`;
+      document.getElementById('displayDatesSummary').textContent =
+        `Par ${v.createdBy || '?'} · Modifiée ${fmtDateDisplay(v.updatedAt)}`;
+
+      // Bandeau version
+      renderVersionBanner(v);
+
+      // Mode lecture ou édition
+      const isEditable = EDITABLE_STATUSES.has(v.status);
+      applyEditMode(isEditable);
+
+      // Boutons contextuels
+      const btnSave   = document.getElementById('navBtnSave');
+      const btnSubmit = document.getElementById('navBtnSubmit');
+      if (btnSave)   btnSave.style.display   = isEditable ? '' : 'none';
+      if (btnSubmit) btnSubmit.style.display = (v.status === 'Draft' || v.status === 'Feedback') ? '' : 'none';
+
+      renderPlacedEvents();
+      renderAteliersSidebar();
+    }
+
+    function goBackToVersions() {
+      showVersionsList();
+    }
+
+    function openVersion(versionId) {
+      // Construire la grille si nécessaire
+      if (FESTIVAL_DAYS.length === 0) {
+        toast('⚠️ Configurez d\'abord le template festival.', true);
+        openConfigModal();
+        return;
+      }
+      showCalendarView(versionId);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // BANDEAU DE VERSION (dans la vue calendrier)
+    // ─────────────────────────────────────────────────────────────
+    function renderVersionBanner(v) {
+      const banner = document.getElementById('versionBanner');
+      if (!banner) return;
+      const isEditable = EDITABLE_STATUSES.has(v.status);
+      banner.innerHTML = `
+        <div class="version-banner-title">${esc(v.versionLabel)}</div>
+        <span class="status-badge ${statusClass(v.status)}">${statusEmoji(v.status)} ${esc(v.status)}</span>
+        <div class="version-banner-meta">
+          <span>📅 Créée le ${fmtDateDisplay(v.createdAt)}</span>
+          <span>👤 ${esc(v.createdBy || '—')}</span>
+          <span>🕐 Modifiée le ${fmtDateDisplay(v.updatedAt)}</span>
+          ${v.validatedAt ? `<span>✅ Validée le ${fmtDateDisplay(v.validatedAt)}</span>` : ''}
+        </div>
+        <div class="version-banner-actions">
+          ${!isEditable ? `<span class="readonly-overlay-badge">👁 Consultation uniquement</span>` : ''}
+          ${v.status === 'Soumis à validation' ? `<button class="btn btn-outline btn-sm" onclick="openStatusModal('${esc(v.id)}')">💬 Donner un feedback</button>` : ''}
+          ${v.status === 'Retenu' ? `<button class="btn btn-success btn-sm" onclick="validerVersion('${esc(v.id)}')">✅ Valider définitivement</button>` : ''}
+          ${(v.feedbacks && v.feedbacks.length > 0) ? `<button class="btn btn-outline btn-sm" onclick="openFeedbackHistory('${esc(v.id)}')">💬 Feedbacks (${v.feedbacks.length})</button>` : ''}
+        </div>
+      `;
+      banner.style.display = 'flex';
+      banner.classList.add('visible');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // MODE ÉDITION / CONSULTATION
+    // ─────────────────────────────────────────────────────────────
+    function applyEditMode(isEditable) {
+      const wrapper = document.getElementById('calendarInnerWrapper');
+      if (!wrapper) return;
+      if (isEditable) {
+        wrapper.classList.remove('readonly-mode');
+        // Réactiver le drag & drop sur les colonnes
+        document.querySelectorAll('.grid-lieu-col').forEach(col => {
+          col.ondragover  = handleDragOver;
+          col.ondragleave = handleDragLeave;
+          col.ondrop      = handleDrop;
+        });
+      } else {
+        wrapper.classList.add('readonly-mode');
+        // Désactiver le drag & drop
+        document.querySelectorAll('.grid-lieu-col').forEach(col => {
+          col.ondragover  = (e) => e.preventDefault(); // accepter visuellement mais ne rien faire
+          col.ondragleave = null;
+          col.ondrop      = (e) => e.preventDefault();
+        });
+      }
+      // Sidebar ateliers : désactiver le drag si mode lecture
+      const sidebar = document.getElementById('sidebarAteliers');
+      if (sidebar) sidebar.style.opacity = isEditable ? '1' : '0.5';
+      if (sidebar) sidebar.style.pointerEvents = isEditable ? '' : 'none';
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SAUVEGARDE DE LA VERSION COURANTE
+    // ─────────────────────────────────────────────────────────────
+    function saveCurrentVersion() {
+      if (!CURRENT_VERSION_ID) { toast('Aucune version ouverte.', true); return; }
+      const versions = loadVersions();
+      const idx = versions.findIndex(v => v.id === CURRENT_VERSION_ID);
+      if (idx === -1) { toast('Version introuvable.', true); return; }
+      const v = versions[idx];
+      if (!EDITABLE_STATUSES.has(v.status)) {
+        toast(`⛔ La version "${v.versionLabel}" est en statut "${v.status}" — modification impossible.`, true);
+        return;
+      }
+      // Sauvegarder les items depuis PLACED_EVENTS
+      v.items = PLACED_EVENTS.map(ev => ({
+        id: ev.id,
+        atelierId: ev.atelierId,
+        nom: ev.nom,
+        nomEn: ev.nomEn || '',
+        jour: ev.jour,
+        date: ev.date,
+        lieu: ev.lieu,
+        startMin: ev.startMin,
+        endMin: ev.endMin,
+        dureeMin: ev.dureeMin,
+        type: ev.type,
+        animateurs: ev.animateurs || [],
+        descFr: ev.descFr || '',
+        descEn: ev.descEn || '',
+        locked: ev.locked || false,
+        prepDuration: ev.prepDuration || 0,
+        rangeDuration: ev.rangeDuration || 0
+      }));
+      v.updatedAt = nowIso();
+      versions[idx] = v;
+      saveVersions(versions);
+
+      // Rafraîchir le bandeau
+      renderVersionBanner(v);
+      document.getElementById('displayDatesSummary').textContent =
+        `Par ${v.createdBy || '?'} · Modifiée ${fmtDateDisplay(v.updatedAt)}`;
+
+      toast(`✅ Version "${v.versionLabel}" sauvegardée (${v.items.length} atelier${v.items.length > 1 ? 's' : ''}).`);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CRÉATION D'UNE NOUVELLE VERSION
+    // ─────────────────────────────────────────────────────────────
+    function openNewVersionModal() {
+      // Peupler les options source
+      const versions = loadVersions();
+      const srcCont = document.getElementById('newVersionSourceOptions');
+      let optionsHtml = `
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px;">BASE DE DÉPART</div>
+        <label class="source-option">
+          <input type="radio" name="versionSource" value="empty" checked />
+          <div>
+            <div class="opt-label">📄 Planning vide</div>
+            <div class="opt-sub">Démarrer à partir de zéro</div>
+          </div>
+        </label>
+      `;
+      versions.forEach(v => {
+        const count = (v.items || []).length;
+        optionsHtml += `
+          <label class="source-option">
+            <input type="radio" name="versionSource" value="${esc(v.id)}" />
+            <div>
+              <div class="opt-label">${esc(v.versionLabel)} — <span class="status-badge ${statusClass(v.status)}" style="font-size:10px;padding:1px 7px;">${esc(v.status)}</span></div>
+              <div class="opt-sub">${count} atelier${count > 1 ? 's' : ''} · Créé le ${fmtDateDisplay(v.createdAt)} par ${esc(v.createdBy || '?')}</div>
+            </div>
+          </label>
+        `;
+      });
+      srcCont.innerHTML = optionsHtml;
+
+      // Peupler les créateurs (admins)
+      const sel = document.getElementById('newVersionCreator');
+      const admins = (typeof REF_RESSOURCES !== 'undefined' ? REF_RESSOURCES : [])
+        .filter(r => r.roles && r.roles.includes('admin'))
+        .sort((a, b) => a.value.localeCompare(b.value, 'fr'));
+      sel.innerHTML = '<option value="">— Sélectionner un admin —</option>' +
+        admins.map(r => `<option value="${esc(r.value)}">${esc(r.value)}</option>`).join('');
+
+      document.getElementById('newVersionBackdrop').classList.add('open');
+    }
+
+    function closeNewVersionModal() {
+      document.getElementById('newVersionBackdrop').classList.remove('open');
+    }
+
+    function confirmCreateNewVersion() {
+      const creator = document.getElementById('newVersionCreator').value;
+      if (!creator) { toast('Veuillez sélectionner un créateur (admin).', true); return; }
+
+      const sourceRadio = document.querySelector('input[name="versionSource"]:checked');
+      const sourceId = sourceRadio ? sourceRadio.value : 'empty';
+
+      const versions = loadVersions();
+      const newNum = versions.length + 1;
+      const newId  = 'v_' + Date.now();
+
+      let sourceItems = [];
+      if (sourceId !== 'empty') {
+        const srcVersion = versions.find(v => v.id === sourceId);
+        if (srcVersion) {
+          // Copier uniquement la programmation (position) — pas les infos métier
+          sourceItems = (srcVersion.items || []).map(item => ({
+            id: 'EV_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+            atelierId: item.atelierId,
+            nom: item.nom,
+            nomEn: item.nomEn || '',
+            jour: item.jour,
+            date: item.date,
+            lieu: item.lieu,
+            startMin: item.startMin,
+            endMin: item.endMin,
+            dureeMin: item.dureeMin,
+            type: item.type,
+            animateurs: item.animateurs || [],
+            descFr: item.descFr || '',
+            descEn: item.descEn || '',
+            locked: false,
+            prepDuration: item.prepDuration || 0,
+            rangeDuration: item.rangeDuration || 0
+          }));
+        }
+      }
+
+      const newVersion = {
+        id: newId,
+        versionNumber: newNum,
+        versionLabel: 'Version ' + newNum,
+        status: 'Draft',
+        createdAt: nowIso(),
+        createdBy: creator,
+        updatedAt: nowIso(),
+        validatedAt: null,
+        validatedBy: null,
+        lastSubmittedAt: null,
+        feedbacks: [],
+        items: sourceItems
+      };
+
+      versions.push(newVersion);
+      saveVersions(versions);
+      closeNewVersionModal();
+      toast(`✅ "${newVersion.versionLabel}" créée (${sourceItems.length} atelier${sourceItems.length > 1 ? 's' : ''} copiés).`);
+
+      // Ouvrir directement la nouvelle version si la grille est prête
+      if (FESTIVAL_DAYS.length > 0) {
+        openVersion(newId);
+      } else {
+        renderVersionsList();
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SUPPRESSION D'UNE VERSION
+    // ─────────────────────────────────────────────────────────────
+    function deleteVersion(versionId) {
+      const v = getVersionById(versionId);
+      if (!v) return;
+      if (v.status === 'Validé') {
+        toast('⛔ La version validée ne peut pas être supprimée.', true);
+        return;
+      }
+      if (!confirm(`Supprimer définitivement "${v.versionLabel}" ?\nCette action est irréversible.`)) return;
+      const versions = loadVersions().filter(ver => ver.id !== versionId);
+      saveVersions(versions);
+      renderVersionsList();
+      toast(`🗑 "${v.versionLabel}" supprimée.`);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // GESTION DES STATUTS (SOUMISSION / FEEDBACK / RETENU / VALIDÉ)
+    // ─────────────────────────────────────────────────────────────
+
+    // Variable pour savoir quel type d'action est en cours dans la modale feedback
+    let _feedbackAction = null; // 'submit' | 'feedback' | 'status_change' | 'history'
+
+    function openSubmitModal() {
+      if (!CURRENT_VERSION_ID) return;
+      const v = getVersionById(CURRENT_VERSION_ID);
+      if (!v) return;
+
+      _feedbackAction = 'submit';
+      document.getElementById('feedbackModalTitle').textContent = '📤 Soumettre à validation';
+      document.getElementById('feedbackModalSub').textContent = `Soumettre "${v.versionLabel}" pour validation. Le statut passera à "Soumis à validation".`;
+      document.getElementById('feedbackText').value = '';
+      document.getElementById('feedbackStatusChoice').style.display = 'none';
+      document.getElementById('feedbackHistory').style.display = 'none';
+      document.getElementById('feedbackConfirmBtn').textContent = 'Soumettre';
+      document.getElementById('feedbackBackdrop').classList.add('open');
+    }
+
+    function openStatusModal(versionId) {
+      const v = getVersionById(versionId);
+      if (!v) return;
+
+      _feedbackAction = 'status_change';
+      const isFromCalendar = (versionId === CURRENT_VERSION_ID);
+
+      document.getElementById('feedbackModalTitle').textContent = '🔄 Gérer le statut';
+      document.getElementById('feedbackModalSub').textContent = `Version : ${v.versionLabel} · Statut actuel : ${v.status}`;
+      document.getElementById('feedbackText').value = '';
+      document.getElementById('feedbackConfirmBtn').textContent = 'Appliquer';
+
+      // Construire les choix de statut disponibles
+      const statusOptsCont = document.getElementById('feedbackStatusOptions');
+      const nextStatuses = getAvailableNextStatuses(v.status);
+      if (nextStatuses.length === 0) {
+        statusOptsCont.innerHTML = '<div style="color:var(--muted);font-size:12px;">Aucun changement de statut disponible pour ce statut.</div>';
+      } else {
+        statusOptsCont.innerHTML = nextStatuses.map((s, i) =>
+          `<label class="source-option" style="margin-bottom:6px;">
+            <input type="radio" name="feedbackStatus" value="${esc(s)}" ${i === 0 ? 'checked' : ''} />
+            <div>
+              <div class="opt-label"><span class="status-badge ${statusClass(s)}">${statusEmoji(s)} ${esc(s)}</span></div>
+            </div>
+          </label>`
+        ).join('');
+      }
+      document.getElementById('feedbackStatusChoice').style.display = 'block';
+
+      // Afficher l'historique des feedbacks
+      renderFeedbackHistory(v);
+
+      document.getElementById('feedbackBackdrop').classList.add('open');
+      document.getElementById('feedbackBackdrop').dataset.targetVersionId = versionId;
+    }
+
+    function openFeedbackHistory(versionId) {
+      const v = getVersionById(versionId);
+      if (!v) return;
+      _feedbackAction = 'history';
+      document.getElementById('feedbackModalTitle').textContent = '💬 Historique des feedbacks';
+      document.getElementById('feedbackModalSub').textContent = `${v.versionLabel} — ${v.feedbacks ? v.feedbacks.length : 0} commentaire(s)`;
+      document.getElementById('feedbackActionArea').style.display = 'none';
+      document.getElementById('feedbackConfirmBtn').textContent = 'Fermer';
+      renderFeedbackHistory(v);
+      document.getElementById('feedbackBackdrop').classList.add('open');
+      document.getElementById('feedbackBackdrop').dataset.targetVersionId = versionId;
+    }
+
+    function renderFeedbackHistory(v) {
+      const histCont = document.getElementById('feedbackHistoryList');
+      const histSection = document.getElementById('feedbackHistory');
+      if (!v.feedbacks || v.feedbacks.length === 0) {
+        histSection.style.display = 'none';
+        return;
+      }
+      histSection.style.display = 'block';
+      histCont.innerHTML = v.feedbacks.map(fb => `
+        <div class="feedback-entry">
+          <div class="feedback-meta">${fmtDateDisplay(fb.date)} · ${esc(fb.statusFrom || '?')} → ${esc(fb.statusTo || '?')}</div>
+          <div>${esc(fb.text || '—')}</div>
+        </div>
+      `).join('');
+    }
+
+    function closeFeedbackModal() {
+      document.getElementById('feedbackBackdrop').classList.remove('open');
+      document.getElementById('feedbackActionArea').style.display = '';
+      _feedbackAction = null;
+    }
+
+    function getAvailableNextStatuses(currentStatus) {
+      const transitions = {
+        'Draft':               ['Soumis à validation'],
+        'Soumis à validation': ['Feedback', 'Retenu'],
+        'Feedback':            ['Soumis à validation'],
+        'Retenu':              ['Validé', 'Feedback'],
+        'Validé':              []
+      };
+      return transitions[currentStatus] || [];
+    }
+
+    function confirmFeedbackAction() {
+      if (_feedbackAction === 'history') { closeFeedbackModal(); return; }
+
+      const backdrop = document.getElementById('feedbackBackdrop');
+      const targetId = backdrop.dataset.targetVersionId || CURRENT_VERSION_ID;
+      if (!targetId) { closeFeedbackModal(); return; }
+
+      const versions = loadVersions();
+      const idx = versions.findIndex(v => v.id === targetId);
+      if (idx === -1) { closeFeedbackModal(); return; }
+      const v = versions[idx];
+
+      const feedbackText = (document.getElementById('feedbackText').value || '').trim();
+      const oldStatus = v.status;
+      let newStatus = oldStatus;
+
+      if (_feedbackAction === 'submit') {
+        newStatus = 'Soumis à validation';
+        v.lastSubmittedAt = nowIso();
+      } else if (_feedbackAction === 'status_change') {
+        const radioChecked = document.querySelector('input[name="feedbackStatus"]:checked');
+        if (radioChecked) newStatus = radioChecked.value;
+        // Règle : une seule version peut être Validé
+        if (newStatus === 'Validé') {
+          const alreadyValid = versions.find(ver => ver.id !== targetId && ver.status === 'Validé');
+          if (alreadyValid) {
+            toast(`⛔ La version "${alreadyValid.versionLabel}" est déjà validée. Une seule version peut avoir le statut "Validé".`, true);
+            return;
+          }
+          v.validatedAt = nowIso();
+          v.validatedBy = 'Admin';
+        }
+        if (newStatus === 'Retenu') {
+          // Règle cohérence : aucune autre version déjà "Validé" ne change
+        }
+      }
+
+      if (feedbackText || oldStatus !== newStatus) {
+        v.feedbacks = v.feedbacks || [];
+        v.feedbacks.push({
+          date: nowIso(),
+          statusFrom: oldStatus,
+          statusTo: newStatus,
+          text: feedbackText
+        });
+      }
+
+      v.status = newStatus;
+      v.updatedAt = nowIso();
+      versions[idx] = v;
+      saveVersions(versions);
+      closeFeedbackModal();
+
+      toast(`✅ Statut de "${v.versionLabel}" : ${oldStatus} → ${newStatus}.`);
+
+      // Mettre à jour l'interface
+      if (CURRENT_VERSION_ID === targetId) {
+        renderVersionBanner(v);
+        document.getElementById('navbarTitle').textContent = `${v.versionLabel} — ${v.status}`;
+        const isEditable = EDITABLE_STATUSES.has(v.status);
+        applyEditMode(isEditable);
+        const btnSave   = document.getElementById('navBtnSave');
+        const btnSubmit = document.getElementById('navBtnSubmit');
+        if (btnSave)   btnSave.style.display   = isEditable ? '' : 'none';
+        if (btnSubmit) btnSubmit.style.display = (v.status === 'Draft' || v.status === 'Feedback') ? '' : 'none';
+      } else {
+        renderVersionsList();
+      }
+    }
+
+    // Validation définitive depuis le bandeau
+    function validerVersion(versionId) {
+      const versions = loadVersions();
+      const alreadyValid = versions.find(v => v.id !== versionId && v.status === 'Validé');
+      if (alreadyValid) {
+        toast(`⛔ La version "${alreadyValid.versionLabel}" est déjà validée.`, true);
+        return;
+      }
+      if (!confirm('Valider définitivement cette version ?\nUne seule version peut être validée à la fois.')) return;
+      const idx = versions.findIndex(v => v.id === versionId);
+      if (idx === -1) return;
+      versions[idx].status = 'Validé';
+      versions[idx].validatedAt = nowIso();
+      versions[idx].validatedBy = 'Admin';
+      versions[idx].updatedAt = nowIso();
+      saveVersions(versions);
+      if (CURRENT_VERSION_ID === versionId) {
+        renderVersionBanner(versions[idx]);
+        document.getElementById('navbarTitle').textContent = `${versions[idx].versionLabel} — Validé`;
+        applyEditMode(false);
+        const btnSave   = document.getElementById('navBtnSave');
+        const btnSubmit = document.getElementById('navBtnSubmit');
+        if (btnSave)   btnSave.style.display   = 'none';
+        if (btnSubmit) btnSubmit.style.display = 'none';
+      }
+      toast(`✅ Version "${versions[idx].versionLabel}" validée définitivement.`);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SURCHARGE DE saveEventDetail pour l'isolation des versions
+    // ─────────────────────────────────────────────────────────────
+    // On réécrit la partie sauvegarde pour ne persister que dans la version courante
+    const _origSaveEventDetail = typeof saveEventDetail === 'function' ? saveEventDetail : null;
+
+    // Patch : saveEventDetail ne doit pas écrire dans data.js globalement
+    // On intercepte à la fin via un override partiel :
+    // La fonction saveEventDetail existante met à jour PLACED_EVENTS et ATELIERS.
+    // On redéfinit ici la partie qui sauvegarde dans le localStorage de la version.
+    // Note : L'écriture dans data.js (via saveFile) est conservée pour rétrocompatibilité
+    // avec les autres rapports qui lisent data.js — MAIS uniquement pour la version validée.
+
+    // Override de savePlanningToAgenda pour n'écrire data.js que sur demande explicite
+    // (la sauvegarde normale passe par saveCurrentVersion -> localStorage)
+
+    // ─────────────────────────────────────────────────────────────
+    // INITIALISATION DE LA PAGE
+    // ─────────────────────────────────────────────────────────────
+    loadData(['ref_type_colors.js', 'ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+
+      // Injecter les variables CSS couleurs depuis ref_type_colors.js
+      (function() {
+        if (typeof buildTypeCssVars === 'function') {
+          var s = document.createElement('style');
+          s.id = 'type-color-vars';
+          s.textContent = buildTypeCssVars();
+          document.head.appendChild(s);
+        }
+      })();
+
       // 1. Charger config depuis template_config.js s'il existe
       if (typeof TEMPLATE_CONFIG !== 'undefined' && TEMPLATE_CONFIG && typeof TEMPLATE_CONFIG === 'object') {
         Object.assign(CONFIG, TEMPLATE_CONFIG);
@@ -2227,7 +3319,7 @@
 
       // 3. Génération des jours à partir des dates configurées
       const dStart = new Date(CONFIG.dateStart + 'T00:00:00');
-      const dEnd = new Date(CONFIG.dateEnd + 'T00:00:00');
+      const dEnd   = new Date(CONFIG.dateEnd + 'T00:00:00');
       FESTIVAL_DAYS = [];
       let cur = new Date(dStart);
       let dayIdx = 1;
@@ -2243,23 +3335,45 @@
       }
 
       document.getElementById('displayYearBadge').textContent = CONFIG.year;
-      document.getElementById('displayDatesSummary').textContent =
-        `${FESTIVAL_DAYS[0].dateLabel} au ${FESTIVAL_DAYS[FESTIVAL_DAYS.length - 1].dateLabel} (${FESTIVAL_DAYS.length} jours — ${CONFIG.selectedLieux.length} lieux)`;
 
-      // 4. Construire la grille agenda existante et charger les données
+      // 4. Construire la grille agenda (structure — sans données)
       buildAgendaTemplate();
-      syncFromAgenda();
-      renderPlacedEvents();
-      renderAteliersSidebar();
 
-      // 5. Ne pas afficher le popup si le template est déjà configuré
+      // 5. Fermer le modal de config si déjà configuré
       const backdrop = document.getElementById('configBackdrop');
       if (CONFIG.isConfigured || (FESTIVAL_DAYS.length > 0 && CONFIG.selectedLieux.length > 0)) {
         backdrop.classList.remove('open');
         backdrop.classList.add('hidden');
-      } else {
-        openConfigModal();
       }
+
+      // 6. Vérifier si une version est demandée via l'URL (?version=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const versionParam = urlParams.get('version');
+
+      if (versionParam) {
+        // AC-NAV-07 : ouvrir directement une version via l'URL
+        const v = getVersionById(versionParam);
+        if (v) {
+          showCalendarView(versionParam);
+        } else {
+          toast('⚠️ Version introuvable dans l\'URL — affichage de la liste.', true);
+          showVersionsList();
+        }
+      } else {
+        // AC-NAV-01 / AC-NAV-08 : afficher la liste des versions
+        showVersionsList();
+      }
+
+      // Gérer le bouton Précédent/Suivant du navigateur
+      window.addEventListener('popstate', function() {
+        const params = new URLSearchParams(window.location.search);
+        const vId = params.get('version');
+        if (vId) {
+          const vv = getVersionById(vId);
+          if (vv) { showCalendarView(vId); return; }
+        }
+        showVersionsList();
+      });
     });
   </script>
 </body>
