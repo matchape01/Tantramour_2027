@@ -355,30 +355,37 @@
     border: 1px solid var(--border);
     border-left: 4px solid var(--accent);
     border-radius: 6px;
-    padding: 10px;
+    padding: 8px 10px;
     cursor: grab;
     user-select: none;
     transition: transform 0.1s, box-shadow 0.1s, border-color 0.15s;
     box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
   }
   .atelier-card:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
-    border-color: var(--accent);
   }
   .atelier-card:active { cursor: grabbing; }
   .atelier-card.is-placed {
-    opacity: 0.65;
+    opacity: 0.55;
     border-left-color: var(--muted);
     background: var(--bg);
   }
-  .atelier-card-title {
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 4px;
-    color: var(--text);
+  /* Couleurs depuis --tc/--tbg/--tbd injectés en inline */
+  .atelier-card.has-type {
+    background: var(--tbg);
+    border-color: var(--tbd);
+    border-left-color: var(--tc);
   }
+  .atelier-card.has-type:hover { border-color: var(--tc); }
+  .atelier-card.has-type .event-time-badge { color: var(--tc); }
+  .atelier-card.has-type .event-title      { color: var(--tc); }
+  .atelier-card.has-type .event-anim       { color: var(--tc); opacity: .75; }
+  .atelier-card.has-type .event-type       { background: var(--tc); }
   .atelier-card-meta {
     display: flex;
     align-items: center;
@@ -1605,15 +1612,15 @@
       listCont.innerHTML = filtered.map(a => {
         // Durée
         const dH = parseInt(a.dureeH, 10) || 0;
-        const dMin = parseInt(a.dureeMin, 10) || 0;
-        const totalMin = dH * 60 + dMin;
-        const durLabel = (dH > 0 ? dH + 'h' : '') + (dMin > 0 ? (dMin < 10 ? '0' : '') + dMin : (dH === 0 ? '00' : ''));
+        const dM = parseInt(a.dureeMin, 10) || 0;
+        const totalMin = dH * 60 + dM;
+        const durStr = dH ? (dH + 'h' + (dM ? (dM < 10 ? '0'+dM : dM) : '')) : (dM + ' min');
 
-        // Animateurs
-        const animNames = (a.animateurs || []).map(id => {
+        // Animateurs — une ligne par animateur (même format grille)
+        const animList = (a.animateurs || []).map(id => {
           const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => String(x.id) === String(id)) : null;
           return r ? r.value : id;
-        }).join(', ') || '—';
+        }).filter(Boolean);
 
         // Est-il déjà placé ?
         const isPlaced = PLACED_EVENTS.some(ev => ev.atelierId === a.id);
@@ -1630,13 +1637,10 @@
                draggable="true"
                ondragstart="handleDragStart(event, '${esc(a.id)}')"
                data-id="${esc(a.id)}">
-            <div class="atelier-card-title">${esc(a.nomFr || 'Sans titre')}</div>
-            <div class="atelier-card-meta">
-              <span class="badge-tag badge-duree">⏱ ${durLabel}</span>
-              <span class="badge-tag badge-type-tag">${esc(a.type || 'Standard')}</span>
-              ${isPlaced ? '<span class="badge-tag badge-placed-tag">✓ Placé</span>' : ''}
-            </div>
-            <div style="font-size:11px;color:var(--muted);margin-top:4px;">👤 ${esc(animNames)}</div>
+            <div class="event-time-badge">⏱ <span class="event-duree">${durStr}</span>${isPlaced ? ' <span class="badge-tag badge-placed-tag" style="margin-left:4px;">✓ Placé</span>' : ''}</div>
+            <div class="event-title" title="${esc(a.nomFr || '')}">${esc(a.nomFr || 'Sans titre')}</div>
+            ${animList.length > 0 ? `<div class="event-anim">${animList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
+            ${a.type ? `<div class="event-type">${esc(a.type)}</div>` : ''}
           </div>
         `;
       }).join('');
