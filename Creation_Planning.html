@@ -1484,10 +1484,10 @@
 
         const timeLabel = minToTimeStr(ev.startMin) + ' - ' + minToTimeStr(ev.endMin);
 
-        const animNames = (ev.animateurs || []).map(id => {
-          const r = (typeof REF_RESSOURCES !== 'undefined') ? REF_RESSOURCES.find(x => String(x.id) === String(id)) : null;
-          return r ? r.value : id;
-        }).join(', ') || '';
+        const animNamesList = (ev.animateurs || [])
+          .map(id => typeof resolveName === 'function' ? resolveName(String(id)) : String(id))
+          .filter(Boolean);
+        const animNames = animNamesList.join(', ') || '';
 
         const card = document.createElement('div');
         const evTCss = typeCssClass(ev.type);
@@ -1507,7 +1507,7 @@
           <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
           <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span></div>
           <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
-          ${animNames ? `<div class="event-anim">👤 ${esc(animNames)}</div>` : ''}
+          ${animNamesList.length > 0 ? `<div class="event-anim">${animNamesList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
           ${ev.type ? `<div class="event-type">${esc(ev.type)}</div>` : ''}
         `;
 
