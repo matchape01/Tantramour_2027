@@ -15,7 +15,6 @@ var REF_LIEUX = [
   { id: "L_GANESH", value: "GANESH", label: "GANESH", nomOfficiel: "Cayla", description: "", capacite: 30 },
   { id: "L_PISCINE", value: "PISCINE", label: "PISCINE", nomOfficiel: "PISCINE", description: "", capacite: 0 },
   { id: "L_EXTERIEUR", value: "EXTERIEUR", label: "EXTERIEUR", nomOfficiel: "EXTERIEUR", description: "", capacite: 0 },
-  { id: "L_DREAM", value: "SALLE DREAM TEAM", label: "SALLE DREAM TEAM", nomOfficiel: "SALLE DREAM TEAM", description: "", capacite: 0 },
   { id: "L_TEST", value: "TEST", label: "TEST", nomOfficiel: "TEST", description: "", capacite: 0 },
   { id: "L_BUDDHA", value: "BUDDHA", label: "BUDDHA", nomOfficiel: "Petite Bergerie", description: "Support Émotionnel ", capacite: 0 },
   { id: "L_HANUMAN", value: "HANUMAN", label: "HANUMAN", nomOfficiel: "Patio", description: "Salle Dream Team", capacite: 0 },
