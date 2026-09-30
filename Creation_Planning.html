@@ -1173,7 +1173,7 @@
             <div class="day-lieux-row">
               ${CONFIG.selectedLieux.map(lCode => {
                 const lObj = (typeof REF_LIEUX !== 'undefined') ? REF_LIEUX.find(x => x.value === lCode) : null;
-                const name = lObj ? (lObj.nomOfficiel || lObj.label || lCode) : lCode;
+                const name = lObj ? (lObj.label || lObj.nomOfficiel || lCode) : lCode;
                 return `<div class="lieu-header-cell" title="${esc(name)}">${esc(name)}</div>`;
               }).join('')}
             </div>
