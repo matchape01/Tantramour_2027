@@ -3168,7 +3168,7 @@
         'Soumis à validation': ['Feedback', 'Retenu'],
         'Feedback':            ['Soumis à validation'],
         'Retenu':              ['Validé', 'Feedback'],
-        'Validé':              []
+        'Validé':              ['Retenu']
       };
       return transitions[currentStatus] || [];
     }
@@ -3205,8 +3205,10 @@
           v.validatedAt = nowIso();
           v.validatedBy = 'Admin';
         }
-        if (newStatus === 'Retenu') {
-          // Règle cohérence : aucune autre version déjà "Validé" ne change
+        if (newStatus === 'Retenu' && oldStatus === 'Validé') {
+          // Retour en arrière depuis Validé : effacer la validation
+          v.validatedAt = null;
+          v.validatedBy = null;
         }
       }
 
