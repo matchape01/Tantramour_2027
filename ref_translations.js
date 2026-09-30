@@ -604,7 +604,7 @@ var REF_TRANSLATIONS = [
   { key: "rsa_pill_log_empty", fr: "Log vide", en: "No log" },
   { key: "rsa_pill_validee", fr: "✔ Validé Fac", en: "✔ Teacher Validated" },
   { key: "rsa_footer", fr: "Tantramour 2026 — Saisie Ateliers (Descriptions & Logistique)", en: "Tantramour 2026 — Workshop Input (Descriptions & Logistics)" },
-  { key: "mp_title", fr: "Mon Planning V2", en: "My Schedule V2" },
+  { key: "mp_title", fr: "Mon Planning", en: "My Schedule" },
   { key: "mp_mode_nuit", fr: "🌙 Mode Nuit", en: "🌙 Dark Mode" },
   { key: "mp_mode_jour", fr: "☀️ Mode Jour", en: "☀️ Light Mode" },
   { key: "mp_lbl_nom", fr: "Nom", en: "Name" },
