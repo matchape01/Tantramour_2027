@@ -686,6 +686,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .event-duree {
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .event-type {
+    font-size: 9px;
+    color: #fff;
+    background: #64748b;
+    border-radius: 3px;
+    padding: 0 4px;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-self: flex-start;
+    margin-top: 1px;
+  }
+  .has-type .event-type { background: var(--tc, #64748b); }
   .event-del-btn {
     position: absolute;
     top: 2px;
@@ -1478,11 +1498,17 @@
         card.setAttribute('data-ev-type', ev.type || '');
         card.setAttribute('data-ev-lieu', ev.lieu || '');
 
+        const dureeMin = ev.endMin - ev.startMin;
+        const dureeH   = Math.floor(dureeMin / 60);
+        const dureeM   = dureeMin % 60;
+        const dureeStr = dureeH ? (dureeH + 'h' + (dureeM ? (dureeM < 10 ? '0'+dureeM : dureeM) : '')) : (dureeM + ' min');
+
         card.innerHTML = `
           <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
-          <div class="event-time-badge">${timeLabel}</div>
+          <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span></div>
           <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
           ${animNames ? `<div class="event-anim">👤 ${esc(animNames)}</div>` : ''}
+          ${ev.type ? `<div class="event-type">${esc(ev.type)}</div>` : ''}
         `;
 
         // Permettre le déplacement sur la grille
