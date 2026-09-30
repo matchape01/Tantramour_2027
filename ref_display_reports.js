@@ -25,7 +25,7 @@ var REF_DISPLAY_REPORTS = [
   },
   {
     "id": "rep_mon_planning_v2",
-    "title": "Mon Planning V2",
+    "title": "Mon Planning",
     "titleKey": "card_mon_planning_v2_title",
     "desc": "Vue par ressource — détails ateliers, logistique, popup FR/EN",
     "descKey": "card_mon_planning_v2_desc",
