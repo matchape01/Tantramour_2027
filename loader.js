@@ -237,8 +237,8 @@ function _loadScriptFile(filename, onDone) {
 async function loadData(files, callback) {
   var logHandled = false;
 
-  // Charger d'abord les ressources si elles font partie du batch pour la résolution des noms
-  if (files.indexOf('ref_ressources.js') !== -1) {
+  // Toujours s'assurer que les ressources sont disponibles pour la résolution des noms
+  if (typeof REF_RESSOURCES === 'undefined' || !REF_RESSOURCES || !REF_RESSOURCES.length) {
     try {
       await _supabaseLoaders['ref_ressources.js']();
     } catch(e) {}
