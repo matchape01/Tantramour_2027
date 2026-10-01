@@ -942,21 +942,42 @@ window.newAtelier = newAtelier;
 // ══════════════════════════════════════════════
 // RENDU FORMULAIRE
 // ══════════════════════════════════════════════
-// ── Widget heure : parse ────────────────────────────────────────────────────
+// ── Widget heure : parse & calculs ──────────────────────────────────────────
+// Convertit une chaîne "HH:MM" en minutes depuis minuit
+function timeToMin(h) {
+  if (!h) return 0;
+  const m = h.replace(/\./g, ':').match(/(\d{1,2}):(\d{2})/);
+  if (!m) return 0;
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+
+// Convertit des minutes depuis minuit en chaîne "HH:MM"
+function minToTime(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+}
+
+// Extrait la durée en minutes depuis une chaîne "HH:MM - HH:MM" (par défaut 90 minutes)
+function parseDureeMinutes(h) {
+  if (!h) return 90;
+  const norm = String(h).replace(/\./g, ':');
+  const all = norm.match(/(\d{1,2}:\d{2})/g);
+  if (!all || all.length < 2) return 90;
+  const debutMin = timeToMin(all[0]);
+  const finMin = timeToMin(all[1]);
+  if (finMin > debutMin) {
+    return finMin - debutMin;
+  }
+  return 90;
+}
+
 // Extrait HH:MM depuis une chaîne "HH:MM - HH:MM" (tolère . et espaces)
 function parseHeureDebut(h) {
   if (!h) return '';
   const m = String(h).replace(/\./g, ':').match(/(\d{1,2}:\d{2})/);
   if (!m) return '';
   const [hh, mm] = m[1].split(':');
-  return hh.padStart(2,'0') + ':' + mm.padStart(2,'0');
-}
-function parseHeureFin(h) {
-  if (!h) return '';
-  const norm = String(h).replace(/\./g, ':');
-  const all = norm.match(/(\d{1,2}:\d{2})/g);
-  if (!all || all.length < 2) return '';
-  const [hh, mm] = all[1].split(':');
   return hh.padStart(2,'0') + ':' + mm.padStart(2,'0');
 }
 
@@ -969,24 +990,34 @@ function buildHeureSelect(id, val) {
   return `<select id="${id}" onchange="onHeureChange()">${opts}</select>`;
 }
 
-// Appelé quand l'un des deux selects heure change
+// Construit un <select> pour la durée par tranches de 15 min (de 15 à 300 min)
+function buildDureeSelect(id, selectedVal) {
+  let opts = '';
+  for (let v = 15; v <= 300; v += 15) {
+    const h = Math.floor(v / 60), m = v % 60;
+    let label = h ? h + 'h' + (m ? (m < 10 ? '0'+m : m) : '') : m + ' min';
+    opts += `<option value="${v}"${v === selectedVal ? ' selected' : ''}>${label}</option>`;
+  }
+  return `<select id="${id}" onchange="onHeureChange()">${opts}</select>`;
+}
+
+// Appelé quand l'un des deux selects (heure début ou durée) change
 function onHeureChange() {
   const debut = document.getElementById('f-heure-debut').value;
-  const fin   = document.getElementById('f-heure-fin').value;
+  const duree = parseInt(document.getElementById('f-duree').value, 10) || 90;
   const prev  = document.getElementById('heure-preview');
 
-  if (debut && fin) {
+  if (debut) {
+    const startMin = timeToMin(debut);
+    const endMin = startMin + duree;
+    const fin = minToTime(endMin);
     const valeur = debut + ' - ' + fin;
     editedData.heure = valeur;
     prev.textContent = valeur;
     prev.classList.remove('empty');
-  } else if (debut) {
-    editedData.heure = debut;
-    prev.textContent = debut + ' - ?';
-    prev.classList.add('empty');
   } else {
     editedData.heure = '';
-    prev.textContent = 'Choisir début et fin';
+    prev.textContent = 'Choisir heure de début';
     prev.classList.add('empty');
   }
   // Mettre à jour les indicateurs dispo dans tous les selects de l'équipe
@@ -1310,13 +1341,13 @@ function renderEditor() {
       </div>
 
       <div class="form-group">
-        <label>Heure — Début &amp; Fin</label>
+        <label>Heure de début &amp; Durée</label>
         <div class="heure-widget">
           ${buildHeureSelect('f-heure-debut', parseHeureDebut(e.heure))}
           <span class="heure-sep">—</span>
-          ${buildHeureSelect('f-heure-fin', parseHeureFin(e.heure))}
+          ${buildDureeSelect('f-duree', parseDureeMinutes(e.heure))}
           <div class="heure-preview${!e.heure?' empty':''}" id="heure-preview">
-            ${e.heure || 'Choisir début et fin'}
+            ${e.heure || 'Choisir heure de début'}
           </div>
         </div>
       </div>
