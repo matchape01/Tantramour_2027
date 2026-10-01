@@ -676,6 +676,12 @@ var LOGISTICS_SPECIAL = {
     html: "",
     text: "",
     updatedAt: "2026-08-31 20:29"
+  },
+
+  "JOUR1_TANTRA_1": {
+    html: "",
+    text: "",
+    updatedAt: "2026-10-01 18:14"
   }
 
 };
