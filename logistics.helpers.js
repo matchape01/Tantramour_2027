@@ -800,7 +800,7 @@ var LOGISTICS_HELPERS = {
     avant: "Avant l'atelier — Préparation / Installation V1",
     pendant: "Pendant l'atelier V1",
     apres: "Après l'atelier — Désinstallation / Rangement V1",
-    updatedAt: "2026-10-01 19:07"
+    updatedAt: "2026-10-01 21:40"
   },
 
   "JOUR2_CONF_RENCE_1": {
