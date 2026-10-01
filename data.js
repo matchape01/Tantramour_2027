@@ -1,4 +1,4 @@
-// @saved:2026-10-01 18:14:57
+// @saved:2026-10-01 18:15:20
 /**
  * TANTRAMOUR 2026 — Référentiel de données commun
  * ================================================
@@ -39,7 +39,7 @@ var AGENDA = [
   // ─── Jour 1 — Vendredi 27 aout ──────────────────────────────────────
   {id:"A_5692",jour:"Jour 1",date:"Samedi 28 août",heure:"14:15 - 16:15",type:"TANTRA CAFE",atelier:"Tantra Café (TEST 1)",lieu:"CHENREZIG",fac1:"Sandrine Bettinelli",fac2:"Jivan Muti (Clément Victor)",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",statut:"APPROVED"},
   {id:"A_3781",jour:"Jour 1",date:"Samedi 28 août",heure:"16:45 - 19:15",type:"CEREMONIE & CONCERT",atelier:"Céremonie 1",lieu:"SHIVA",fac1:"Amana",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",statut:"APPROVED"},
-  {id:"A_3974",jour:"Jour 1",date:"Samedi 28 août",heure:"08:30 - 09:30",type:"ATELIER TANTRA",atelier:"TANTRA 1",lieu:"SHAKTI",fac1:"Audrey Barthélémy",fac2:"",fac3:"Atman Clochette (Matthieu)",fac4:"",traduction:"TEST",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"JOUR1_TANTRA_1",meetingRoles:"",statut:"APPROVED"},
+  {id:"A_3974",jour:"Jour 1",date:"Samedi 28 août",heure:"08:30 - 09:30",type:"ATELIER TANTRA",atelier:"TANTRA 1",lieu:"SHAKTI",fac1:"Audrey Barthélémy",fac2:"",fac3:"Atman Clochette (Matthieu)",fac4:"",traduction:"Amana",helper1:"",helper2:"Kalista",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"JOUR1_TANTRA_1",meetingRoles:"",statut:"APPROVED"},
 ];
 
 /**
