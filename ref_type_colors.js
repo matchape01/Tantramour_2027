@@ -17,7 +17,7 @@ var REF_TYPE_COLORS = [
   {
     cssClass: "t-tantra",
     label:    "Ateliers Tantra",
-    types:    ["ATELIERS TANTRA", "ATELIERS TANTRA (Matin)", "ATELIERS TANTRA (Apres-Midi)"],
+    types:    ["ATELIER TANTRA", "ATELIERS TANTRA", "ATELIERS TANTRA (Matin)", "ATELIERS TANTRA (Apres-Midi)"],
     color:    "#be185d",  colorBg:   "#fdf2f8",  colorBd:   "#fbcfe8",
     colorDark:"#fb7185",  colorBgDk: "#2d0a1e",  colorBdDk: "#9d174d"
   },
