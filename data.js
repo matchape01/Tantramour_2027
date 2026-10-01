@@ -1,4 +1,4 @@
-// @saved:2026-10-01 21:46:16
+// @saved:2026-10-01 21:46:51
 /**
  * TANTRAMOUR 2026 — Référentiel de données commun
  * ================================================
@@ -32,7 +32,7 @@ var AGENDA = [
   {id:"A_4797",jour:"Jour 1",date:"Samedi 28 août",heure:"23:15 - 26:15",type:"LOVE TEMPLE",atelier:"Love Temple 1",lieu:"CHENREZIG",fac1:"Jivan Muti (Clément Victor)",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:3,colibri:false,logisticId:"JOUR1_LOVE_TEMPLE_1",meetingRoles:"",statut:"APPROVED"},
 
   // ─── Jour 2 — Samedi 28 aout ────────────────────────────────────────
-  {id:"A_8383",jour:"Jour 2",date:"Dimanche 29 août",heure:"09:00 - 10:30",type:"MEDITATION / YOGA",atelier:"Meditation du matin",lieu:"SHIVA",fac1:"Sevda Duroy",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:3,colibri:false,logisticId:"JOUR2_MEDITATION_DU_MATIN",meetingRoles:"",statut:"APPROVED"},
+  {id:"A_8383",jour:"Jour 2",date:"Dimanche 29 août",heure:"09:00 - 10:30",type:"MEDITATION / YOGA",atelier:"Meditation du matin",lieu:"SHIVA",fac1:"Sevda Duroy",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"Alexandre Fourcault",helper3:"Alexandre Sattler",helper4:"Cédric Vesper",angel:"",note:"",piment:3,colibri:false,logisticId:"JOUR2_MEDITATION_DU_MATIN",meetingRoles:"",statut:"APPROVED"},
   {id:"A_1936",jour:"Jour 2",date:"Dimanche 29 août",heure:"14:15 - 16:15",type:"DJ Set",atelier:"Dj Set",lieu:"CHENREZIG",fac1:"DJ Surprise",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:3,colibri:false,logisticId:"JOUR2_DJ_SET",meetingRoles:"",statut:"APPROVED"},
   {id:"A_5094",jour:"Jour 2",date:"Dimanche 29 août",heure:"13:30 - 15:00",type:"CONFERENCE",atelier:"Conférence 1",lieu:"SHAKTI",fac1:"Laurent Lacoste",fac2:"Laurence Heitzmann",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:3,colibri:false,logisticId:"JOUR2_CONF_RENCE_1",meetingRoles:"",statut:"APPROVED"},
 
