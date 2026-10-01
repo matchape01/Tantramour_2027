@@ -1610,6 +1610,7 @@
   <script src="ref_ressources.js"></script>
   <script src="ref_resource_types.js"></script>
   <script src="ref_types.js"></script>
+  <script src="ref_type_colors.js"></script>
   <script src="ref_jours.js"></script>
   <script src="template_config.js"></script>
   <script src="github-api.js"></script>
@@ -2794,25 +2795,30 @@
       CURRENT_VERSION_ID = versionId;
 
       // Chargement des items de la version dans PLACED_EVENTS
-      PLACED_EVENTS = (v.items || []).map(item => ({
-        id: item.id || ('EV_' + Math.random()),
-        atelierId: item.atelierId,
-        nom: item.nom || '',
-        nomEn: item.nomEn || '',
-        jour: item.jour,
-        date: item.date,
-        lieu: item.lieu,
-        startMin: item.startMin,
-        endMin: item.endMin,
-        dureeMin: item.dureeMin || (item.endMin - item.startMin),
-        type: item.type || '',
-        animateurs: item.animateurs || [],
-        descFr: item.descFr || '',
-        descEn: item.descEn || '',
-        locked: item.locked || false,
-        prepDuration: item.prepDuration || 0,
-        rangeDuration: item.rangeDuration || 0
-      }));
+      PLACED_EVENTS = (v.items || []).map(item => {
+        const atRef = (typeof ATELIERS !== 'undefined' ? ATELIERS : []).find(a => a.id === item.atelierId);
+        const resolvedPiment = item.piment !== undefined ? item.piment : (atRef ? atRef.piment || 0 : 0);
+        return {
+          id: item.id || ('EV_' + Math.random()),
+          atelierId: item.atelierId,
+          nom: item.nom || '',
+          nomEn: item.nomEn || '',
+          jour: item.jour,
+          date: item.date,
+          lieu: item.lieu,
+          startMin: item.startMin,
+          endMin: item.endMin,
+          dureeMin: item.dureeMin || (item.endMin - item.startMin),
+          type: item.type || (atRef ? atRef.type : '') || '',
+          piment: resolvedPiment,
+          animateurs: item.animateurs || [],
+          descFr: item.descFr || '',
+          descEn: item.descEn || '',
+          locked: item.locked || false,
+          prepDuration: item.prepDuration || 0,
+          rangeDuration: item.rangeDuration || 0
+        };
+      });
 
       // Basculer les vues
       document.getElementById('versionsView').style.display = 'none';
@@ -2842,6 +2848,17 @@
       const btnSubmit = document.getElementById('navBtnSubmit');
       if (btnSave)   btnSave.style.display   = isEditable ? '' : 'none';
       if (btnSubmit) btnSubmit.style.display = (v.status === 'Draft' || v.status === 'Feedback') ? '' : 'none';
+
+      // Reconstruire les styles CSS dynamiques si disponibles
+      if (typeof buildTypeCssVars === 'function') {
+        let s = document.getElementById('type-color-vars');
+        if (!s) {
+          s = document.createElement('style');
+          s.id = 'type-color-vars';
+          document.head.appendChild(s);
+        }
+        s.textContent = buildTypeCssVars();
+      }
 
       renderPlacedEvents();
       renderAteliersSidebar();
@@ -2945,6 +2962,7 @@
         endMin: ev.endMin,
         dureeMin: ev.dureeMin,
         type: ev.type,
+        piment: ev.piment !== undefined ? ev.piment : 0,
         animateurs: ev.animateurs || [],
         descFr: ev.descFr || '',
         descEn: ev.descEn || '',
@@ -3038,6 +3056,7 @@
             endMin: item.endMin,
             dureeMin: item.dureeMin,
             type: item.type,
+            piment: item.piment !== undefined ? item.piment : 0,
             animateurs: item.animateurs || [],
             descFr: item.descFr || '',
             descEn: item.descEn || '',
