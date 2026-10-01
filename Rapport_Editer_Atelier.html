@@ -376,6 +376,18 @@
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
 <script>
+// Liaison pour mettre à jour les labels de rappel en bas en temps réel
+document.addEventListener('change', function(evt) {
+  if (evt.target.id === 'f-prepDuration') {
+    const lbl = document.getElementById('lbl-prep-duration');
+    if (lbl) lbl.textContent = evt.target.value + ' min';
+  }
+  if (evt.target.id === 'f-rangeDuration') {
+    const lbl = document.getElementById('lbl-range-duration');
+    if (lbl) lbl.textContent = evt.target.value + ' min';
+  }
+});
+
 // Initialisation par défaut — écrasée si logistics.helpers.js se charge correctement
 if (typeof LOGISTICS_HELPERS === 'undefined') window.LOGISTICS_HELPERS = {};
 loadData(['ref_id_mapping.js', 'ref_translations.js', 'data.js', 'ref_descriptions.js', 'logistics.js', 'logistics.special.js', 'logistics.helpers.js', 'ref_consignes_type.js', 'ref_equipements.js', 'ref_equip_cat.js'], function() {
@@ -1349,78 +1361,50 @@ function renderEditor() {
       ${isNew ? '＋ Nouvel atelier' : '✏️ Édition de l\'atelier'}
       <span class="badge-idx${isNew ? ' badge-new' : ''}">${isNew ? 'NOUVEAU' : '#' + selectedIdx + ' — ' + AGENDA[selectedIdx].jour}</span>
     </div>
-    <div style="margin:0 0 14px;color:var(--muted);font-size:13px;font-weight:700">🆔 ID atelier : ${e.id || '—'}</div>
 
-    <!-- ══ BLOC 1 — INFOS PLANNING ══ -->
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label data-i18n="col_jour">Jour</label>
-        ${buildSelect('f-jour', REF_JOURS.map(j=>({value:j.value,label:j.label})), e.jour, false)}
-      </div>
-
-      <div class="form-group">
-        <label>Heure de début &amp; Durée</label>
-        <div class="heure-widget">
-          ${buildHeureSelect('f-heure-debut', parseHeureDebut(e.heure))}
-          <span class="heure-sep">—</span>
-          ${buildDureeSelect('f-duree', parseDureeMinutes(e.heure))}
-          <div class="heure-preview${!e.heure?' empty':''}" id="heure-preview">
-            ${e.heure || 'Choisir heure de début'}
+    <!-- ══ BLOC 1 — INFORMATIONS GÉNÉRALES ══ -->
+    <div class="section-block" style="margin-top: 0; padding-top: 0; border-top: none;">
+      <div class="section-block-title">ℹ️ Informations générales</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>🆔 ID atelier</label>
+          <div style="padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--surface); font-size:13px; font-weight:700; color:var(--text); min-height:34px;">
+            ${e.id || '— (Sera généré)'}
           </div>
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select id="f-statut" onchange="fieldChange('f-statut')">
+            <option value="NEW"${(e.statut||'APPROVED') === 'NEW' ? ' selected' : ''}>NEW</option>
+            <option value="APPROVED"${(e.statut||'APPROVED') === 'APPROVED' ? ' selected' : ''}>APPROVED</option>
+            <option value="REJECTED"${(e.statut||'APPROVED') === 'REJECTED' ? ' selected' : ''}>REJECTED</option>
+          </select>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Type</label>
-        ${buildSelect('f-type', REF_TYPES, e.type, false)}
-      </div>
-
-      <div class="form-group">
-        <label data-i18n="col_lieu">Lieu</label>
-        ${buildSelect('f-lieu', REF_LIEUX, e.lieu, true)}
-      </div>
-
-      <div class="form-group">
-        <label>Note logistique</label>
-        ${buildPersonSelect('f-note', REF_NOTES, e.note||'')}
-      </div>
-
-      <div class="form-group">
-        <label>Niveau Piment</label>
-        <div class="piment-btns" id="piment-btns">${pimentBtns}</div>
-      </div>
-
-      <div class="form-group">
-        <label>Statut</label>
-        <select id="f-statut" onchange="fieldChange('f-statut')">
-          <option value="NEW"${(e.statut||'APPROVED') === 'NEW' ? ' selected' : ''}>NEW</option>
-          <option value="APPROVED"${(e.statut||'APPROVED') === 'APPROVED' ? ' selected' : ''}>APPROVED</option>
-          <option value="REJECTED"${(e.statut||'APPROVED') === 'REJECTED' ? ' selected' : ''}>REJECTED</option>
-        </select>
-      </div>
-
-    </div>
-
-    <!-- ══ BLOC 2 — NOM ATELIER FR + EN côte à côte ══ -->
-    <div class="section-block">
-      <div class="section-block-title">📝 Nom de l'atelier</div>
-      <div class="form-grid-2">
+      <div class="form-grid-2" style="margin-top: 14px;">
         <div class="form-group">
-          <label>🇫🇷 Nom (FR)</label>
+          <label>🇫🇷 Nom de l'atelier (FR)</label>
           <input type="text" id="f-atelier" value="${esc(e.atelier||'')}" oninput="fieldChange('f-atelier')">
         </div>
         <div class="form-group">
-          <label>🇬🇧 Nom (EN)</label>
+          <label>🇬🇧 Nom de l'atelier (EN)</label>
           <input type="text" id="f-atelierEn" value="${esc(desc && desc.nomEn ? desc.nomEn : '')}" oninput="fieldChange('f-atelierEn')">
         </div>
       </div>
-    </div>
 
-    <!-- ══ BLOC 2b — DESCRIPTION FR + EN côte à côte ══ -->
-    <div class="section-block">
-      <div class="section-block-title">📄 Description</div>
-      <div class="form-grid-2">
+      <div class="form-grid" style="margin-top: 14px;">
+        <div class="form-group">
+          <label>Type</label>
+          ${buildSelect('f-type', REF_TYPES, e.type, false)}
+        </div>
+        <div class="form-group">
+          <label>Niveau Piment</label>
+          <div class="piment-btns" id="piment-btns">${pimentBtns}</div>
+        </div>
+      </div>
+
+      <div class="form-grid-2" style="margin-top: 14px;">
         <div class="form-group">
           <label>🇫🇷 Description (FR)</label>
           <textarea class="desc-area" id="f-descFr" oninput="fieldChange('f-descFr')">${esc(desc && desc.descFr ? desc.descFr : '')}</textarea>
@@ -1428,6 +1412,66 @@ function renderEditor() {
         <div class="form-group">
           <label>🇬🇧 Description (EN)</label>
           <textarea class="desc-area" id="f-descEn" oninput="fieldChange('f-descEn')">${esc(desc && desc.descEn ? desc.descEn : '')}</textarea>
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top: 14px;">
+        <div class="form-group">
+          <label>👥 Animateur(s) affecté(s)</label>
+          <div style="padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--surface); font-size:13px; color:var(--text); min-height:34px;">
+            ${[e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).map(function(id){ return resolveName(id); }).join(', ') || '<em style="color:var(--muted)">Aucun animateur affecté</em>'}
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Note logistique</label>
+          ${buildPersonSelect('f-note', REF_NOTES, e.note||'')}
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ BLOC 2 — PLANNING ══ -->
+    <div class="section-block">
+      <div class="section-block-title">📅 Planning</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label data-i18n="col_jour">Jour</label>
+          ${buildSelect('f-jour', REF_JOURS.map(j=>({value:j.value,label:j.label})), e.jour, false)}
+        </div>
+        <div class="form-group">
+          <label>Heure de début &amp; Durée</label>
+          <div class="heure-widget">
+            ${buildHeureSelect('f-heure-debut', parseHeureDebut(e.heure))}
+            <span class="heure-sep">—</span>
+            ${buildDureeSelect('f-duree', parseDureeMinutes(e.heure))}
+            <div class="heure-preview${!e.heure?' empty':''}" id="heure-preview">
+              ${e.heure || 'Choisir heure de début'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top: 14px;">
+        <div class="form-group">
+          <label>⏱ Durée préparation</label>
+          <select id="f-prepDuration" style="padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); font-family:inherit;">
+            ${[0,10,15,20,25,30,35,40,45,50,55,60,75,80,90,100,110,120].map(v => `<option value="${v}"${(logEntry && logEntry.prepDuration===v)?'  selected':''}>${v} min</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🧹 Durée rangement</label>
+          <select id="f-rangeDuration" style="padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px; background:var(--bg); color:var(--text); font-family:inherit;">
+            ${[0,10,15,20,25,30,35,40,45,50,55,60].map(v => {
+              const rangeVal = logEntry && logEntry.rangeDuration != null ? logEntry.rangeDuration : getDefaultRangement(e.type);
+              return `<option value="${v}"${rangeVal===v?' selected':''}>${v} min</option>`;
+            }).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top: 14px;">
+        <div class="form-group">
+          <label data-i18n="col_lieu">Lieu</label>
+          ${buildSelect('f-lieu', REF_LIEUX, e.lieu, true)}
         </div>
       </div>
     </div>
@@ -1444,52 +1488,42 @@ function renderEditor() {
       ${buildMeetingRolesBlock(e)}
 
       <div class="form-grid">
-
         <div class="form-group">
           <label>Animateur principal</label>
           ${buildPersonSelect('f-fac1', REF_ANIMATEURS, e.fac1||'', busyByField.fac1)}
         </div>
-
         <div class="form-group">
           <label>Animateur secondaire</label>
           ${buildPersonSelect('f-fac2', REF_ANIMATEURS, e.fac2||'', busyByField.fac2)}
         </div>
-
         <div class="form-group">
           <label>Animateur 3</label>
           ${buildPersonSelect('f-fac3', REF_ANIMATEURS, e.fac3||'', busyByField.fac3)}
         </div>
-
         <div class="form-group">
           <label>Animateur 4</label>
           ${buildPersonSelect('f-fac4', REF_ANIMATEURS, e.fac4||'', busyByField.fac4)}
         </div>
-
         <div class="form-group">
           <label data-i18n="filter_traducteur">Traducteur</label>
           ${buildPersonSelect('f-traduction', REF_TRADUCTEURS, e.traduction||'', busyByField.traduction)}
         </div>
-
         <div class="form-group">
           <label>Helper 1</label>
           ${buildPersonSelect('f-helper1', REF_HELPERS, e.helper1||'', busyByField.helper1)}
         </div>
-
         <div class="form-group">
           <label>Helper 2</label>
           ${buildPersonSelect('f-helper2', REF_HELPERS, e.helper2||'', busyByField.helper2)}
         </div>
-
         <div class="form-group">
           <label>Helper 3</label>
           ${buildPersonSelect('f-helper3', REF_HELPERS, e.helper3||'', busyByField.helper3)}
         </div>
-
         <div class="form-group">
           <label>Helper 4</label>
           ${buildPersonSelect('f-helper4', REF_HELPERS, e.helper4||'', busyByField.helper4)}
         </div>
-
         <div class="form-group">
           <label data-i18n="col_angel">Angel${e.type !== 'SHIFT ANGEL' ? `<span style="font-size:11px;color:var(--muted);font-weight:400;margin-left:4px">(calculé automatiquement)</span>` : ''}</label>
           ${e.type === 'SHIFT ANGEL'
@@ -1497,54 +1531,45 @@ function renderEditor() {
             : `<div style="padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);font-size:13px;min-height:34px">${(()=>{const a=resolveAngelEdit(e.jour,e.heure)||e.angel||'';const name=resolveName(a);return name?`<span class="pill pill-a" style="font-size:12px">${esc(name)}</span>`:'<em>Aucun shift Angel sur cette période</em>';})()}</div>`
           }
         </div>
-
         <div class="form-group">
           <label>Options</label>
           <div class="checkbox-row">
             <input type="checkbox" id="f-colibri" ${e.colibri ? 'checked' : ''} onchange="toggleColibri(this.checked)">
             <label class="cb-label" for="f-colibri">🐦 Shift Colibri</label>
-            <span class="cb-hint">Cocher si un colibri est requis pour cet atelier</span>
+            <span class="cb-hint">Cocher si requis</span>
           </div>
         </div>
+      </div>
 
+      <!-- ⚙️ Règles de ressources -->
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border);">
+        <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px;">⚙️ Règles de ressources</div>
+        <div class="res-row">
+          <label>Min. ressources total</label>
+          <input type="number" min="0" max="9" id="f-minRes" value="${customMinRes}" oninput="fieldChange('f-minRes')">
+        </div>
+        <div class="res-row">
+          <label>Min. helpers</label>
+          <input type="number" min="0" max="9" id="f-minHelpers" value="${customMinHelpers}" oninput="fieldChange('f-minHelpers')">
+        </div>
+        <div class="res-row">
+          <label>Trad. requis</label>
+          <input type="number" min="0" max="1" id="f-minTrad" value="${customMinTrad}" oninput="fieldChange('f-minTrad')">
+        </div>
+        <div class="res-row">
+          <label>Trad. compte</label>
+          <input type="number" min="0" max="1" id="f-tradCounts" value="${customTradCounts}" oninput="fieldChange('f-tradCounts')">
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">
+          Valeurs par défaut du type : Min total = ${typeRule.minRes||0} · Min helpers = ${typeRule.minHelpers||0} · Trad requis = ${typeRule.minTrad||0} · Trad compte = ${typeRule.tradCounts||0}
+          ${(customMinRes !== (typeRule.minRes||0) || customMinHelpers !== (typeRule.minHelpers||0) || customMinTrad !== (typeRule.minTrad||0) || customTradCounts !== (typeRule.tradCounts||0))
+            ? ' <strong style="color:var(--accent)">(valeurs personnalisées actives)</strong>' : ''}
+          &nbsp;—&nbsp;<button type="button" style="font-size:11px;background:none;border:none;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline;" onclick="resetResRules()">Réinitialiser aux valeurs du type</button>
+        </div>
       </div>
     </div>
 
-    <!-- ══ BLOC 4 — RÈGLES RESSOURCES (modifiables par atelier) ══ -->
-    <div class="section-block">
-      <div class="section-block-title">⚙️ Règles de ressources
-        <span style="font-size:11px;font-weight:400;color:var(--muted)">Par défaut issues du type — modifiables pour cet atelier uniquement</span>
-      </div>
-      <div class="section-block-sub">Ces valeurs sont utilisées par le rapport « Problèmes de planning » pour détecter les ressources insuffisantes.</div>
-      <div class="res-row">
-        <label>Min. ressources total</label>
-        <input type="number" min="0" max="9" id="f-minRes" value="${customMinRes}" oninput="fieldChange('f-minRes')">
-        <span class="res-hint">Nombre total minimum de ressources (helpers + traducteur si applicable)</span>
-      </div>
-      <div class="res-row">
-        <label>Min. helpers</label>
-        <input type="number" min="0" max="9" id="f-minHelpers" value="${customMinHelpers}" oninput="fieldChange('f-minHelpers')">
-        <span class="res-hint">Nombre minimum de helpers requis</span>
-      </div>
-      <div class="res-row">
-        <label>Trad. requis</label>
-        <input type="number" min="0" max="1" id="f-minTrad" value="${customMinTrad}" oninput="fieldChange('f-minTrad')">
-        <span class="res-hint">1 = traducteur obligatoire si animateur anglophone · 0 = non requis</span>
-      </div>
-      <div class="res-row">
-        <label>Trad. compte</label>
-        <input type="number" min="0" max="1" id="f-tradCounts" value="${customTradCounts}" oninput="fieldChange('f-tradCounts')">
-        <span class="res-hint">1 = le traducteur compte dans le total Min. ressources · 0 = non</span>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;">
-        Valeurs par défaut du type : Min total = ${typeRule.minRes||0} · Min helpers = ${typeRule.minHelpers||0} · Trad requis = ${typeRule.minTrad||0} · Trad compte = ${typeRule.tradCounts||0}
-        ${(customMinRes !== (typeRule.minRes||0) || customMinHelpers !== (typeRule.minHelpers||0) || customMinTrad !== (typeRule.minTrad||0) || customTradCounts !== (typeRule.tradCounts||0))
-          ? ' <strong style="color:var(--accent)">(valeurs personnalisées actives)</strong>' : ''}
-        &nbsp;—&nbsp;<button type="button" style="font-size:11px;background:none;border:none;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline;" onclick="resetResRules()">Réinitialiser aux valeurs du type</button>
-      </div>
-    </div>
-
-    <!-- ══ BLOC 5 — INSTRUCTIONS PARTICIPANTS FR + EN côte à côte ══ -->
+    <!-- ══ BLOC 4 — INSTRUCTIONS PARTICIPANTS ══ -->
     <div class="section-block">
       <div class="section-block-title">⚠️ Instructions participants</div>
       ${(function(){
@@ -1568,17 +1593,7 @@ function renderEditor() {
       </div>
     </div>
 
-    <!-- ══ ACTIONS PRINCIPALES ══ -->
-    <div class="editor-actions" style="margin-top:28px;">
-      <button class="btn-primary" id="btnUpdate" onclick="saveUpdate()">${isNew ? '✅ Créer l\'atelier' : '✅ Update'}</button>
-      <button class="btn-secondary" onclick="resetEdit()">↩ Annuler</button>
-      ${isNew ? '' : `<button class="btn-secondary" onclick="duplicateAtelier()">📋 Dupliquer</button>`}
-      <div class="saving-indicator" id="savingIndicator"><div class="spinner"></div> Sauvegarde en cours…</div>
-      ${isNew ? '' : `<button class="btn-danger" onclick="deleteAtelier()">🗑 Supprimer cet atelier</button>`}
-    </div>
-
-    <!-- ══ BLOC 6 — INFORMATIONS LOGISTIQUES (unifié) ══ -->
-    ${isNew ? '' : `
+    <!-- ══ BLOC 5 — INFORMATIONS LOGISTIQUES ══ -->
     <div class="section-block">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
         <div class="section-block-title">📦 Informations Logistiques</div>
@@ -1589,27 +1604,12 @@ function renderEditor() {
           ${updatedAt ? `<span class="updated-stamp">Dernière modification : ${updatedAt}</span>` : ''}
         </div>
       </div>
-      <div class="section-block-sub">Durée de préparation, besoins logistiques, besoins spécifiques et consignes helpers</div>
 
-      <!-- Durée préparation + rangement -->
-      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:14px;">
-        <div class="res-row" style="margin-bottom:0;">
-          <label>⏱ Durée préparation</label>
-          <select id="f-prepDuration" style="width:90px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit;">
-            ${[0,10,15,20,25,30,35,40,45,50,55,60,75,80,90,100,110,120].map(v => `<option value="${v}"${(logEntry && logEntry.prepDuration===v)?'  selected':''}>${v} min</option>`).join('')}
-          </select>
-          <span class="res-hint">Avant l'atelier</span>
-        </div>
-        <div class="res-row" style="margin-bottom:0;">
-          <label>🧹 Durée rangement</label>
-          <select id="f-rangeDuration" style="width:90px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit;">
-            ${[0,10,15,20,25,30,35,40,45,50,55,60].map(v => {
-              const rangeVal = logEntry && logEntry.rangeDuration != null ? logEntry.rangeDuration : getDefaultRangement(e.type);
-              return `<option value="${v}"${rangeVal===v?' selected':''}>${v} min</option>`;
-            }).join('')}
-          </select>
-          <span class="res-hint">Après l'atelier</span>
-        </div>
+      <!-- Rappel des durées de préparation & rangement -->
+      <div style="display:flex;gap:16px;margin-bottom:14px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;">
+        <span>⏱ <strong>Préparation :</strong> <span id="lbl-prep-duration">${logEntry ? logEntry.prepDuration : 0} min</span></span>
+        <span style="color:var(--border);">|</span>
+        <span>🧹 <strong>Rangement :</strong> <span id="lbl-range-duration">${logEntry && logEntry.rangeDuration != null ? logEntry.rangeDuration : getDefaultRangement(e.type)} min</span></span>
       </div>
 
       <!-- Informations logistiques -->
@@ -1617,10 +1617,12 @@ function renderEditor() {
 
       <!-- Besoins logistiques spécifiques -->
       ${buildLogSection('<span style="color:#7c5cd8;">⭐ Besoins logistiques spécifiques</span>', 'log-special-rte', logSpec ? (logSpec.html||'') : '', 'Spécifique')}
+    </div>
 
-      <!-- ══ ÉQUIPEMENTS ══ -->
-      <div class="eq-block">
-        <div class="eq-block-title" id="eq-block-title-main">🔩 Équipements${(() => {
+    <!-- ══ BLOC 6 — ÉQUIPEMENTS ══ -->
+    <div class="section-block">
+      <div class="eq-block" style="margin-top: 0; border: none; padding: 0;">
+        <div class="eq-block-title" id="eq-block-title-main" style="margin-top: 0;">🔩 Équipements${(() => {
             const lieuRef = (typeof REF_LIEUX !== 'undefined' ? REF_LIEUX : []).find(l => l.value === e.lieu);
             if (!lieuRef && !e.lieu) return '';
             const nomLieu = lieuRef ? lieuRef.label : e.lieu;
@@ -1630,17 +1632,16 @@ function renderEditor() {
         <div class="eq-accordion">${(() => {
           const CAT_ORDER   = eqCategorieOptionsList();
           const MAIN_TYPES  = ['Hameau', 'Tantramour', 'Animateur'];
-          const AUTRE_TYPES = ['Autre', 'A définir'];  // regroupés dans la 4ème colonne
+          const AUTRE_TYPES = ['Autre', 'A définir'];
           const ALL_TYPES   = MAIN_TYPES.concat(AUTRE_TYPES);
           const MAIN_LABELS = {
             'Hameau':    'Hameau',
             'Tantramour':'Tantramour',
             'Animateur': 'Fourni par Animateur',
-            '__autre__': 'Autre fournisseur'  // colonne synthétique
+            '__autre__': 'Autre fournisseur'
           };
           const allEq = (typeof REF_EQUIPEMENTS !== 'undefined' ? REF_EQUIPEMENTS : []);
 
-          // ── Helper : rendu d'un item ──────────────────────────────────
           const renderItem = (eq, showBadge) => {
             const savedQty = (editedData._equipements && editedData._equipements[eq.id]) ? editedData._equipements[eq.id] : 0;
             const sel      = savedQty > 0 ? ' selected' : '';
@@ -1657,7 +1658,6 @@ function renderEditor() {
             </div>`;
           };
 
-          // ── Construire catMap = { catName: { Hameau:[…], Tantramour:[…], Animateur:[…], __autre__:[…] } }
           const catMap = {};
           allEq.filter(eq => ALL_TYPES.includes(eq.type)).forEach(eq => {
             const cat     = eq.categorie || 'Divers';
@@ -1666,11 +1666,9 @@ function renderEditor() {
             if (!catMap[cat][typeKey]) catMap[cat][typeKey] = [];
             catMap[cat][typeKey].push(eq);
           });
-          // Trier alphabétiquement dans chaque groupe
           Object.values(catMap).forEach(typeMap => {
             Object.values(typeMap).forEach(arr => arr.sort((a,b) => (a.value||'').localeCompare(b.value||'','fr',{sensitivity:'base'})));
           });
-          // Ordre catégories : REF_EQUIP_CAT, puis orphelines alpha
           const orderedCats = CAT_ORDER.filter(c => catMap[c])
             .concat(Object.keys(catMap).filter(c => CAT_ORDER.indexOf(c) === -1).sort());
 
@@ -1678,7 +1676,6 @@ function renderEditor() {
 
           const mainHtml = orderedCats.map((cat, idx) => {
             const typeMap = catMap[cat];
-            // Compter items sélectionnés dans cette catégorie (toutes colonnes)
             const allCatItems = ALL_COL_TYPES.flatMap(t => typeMap[t] || []);
             const selCount   = allCatItems.filter(eq => editedData._equipements && editedData._equipements[eq.id] > 0).length;
             const totalCount = allCatItems.length;
@@ -1726,9 +1723,11 @@ function renderEditor() {
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Consignes helpers -->
-      <div class="form-group" style="margin-bottom:8px;margin-top:18px;">
+    <!-- ══ BLOC 7 — CONSIGNES POUR HELPERS ══ -->
+    <div class="section-block">
+      <div class="form-group" style="margin-bottom:8px;">
         <label>🤝 Consignes pour Helpers</label>
       </div>
       <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;">
@@ -1736,20 +1735,17 @@ function renderEditor() {
         ${buildHelperSection('▶️ Pendant l\'atelier', 'log-helpers-pendant', logHelp ? (logHelp.pendant||'') : '', 'Pendant', true)}
         ${buildHelperSection('🧹 Après l\'atelier — Désinstallation / Rangement', 'log-helpers-apres', logHelp ? (logHelp.apres||'') : '', 'Après', true)}
       </div>
-
-      <!-- Actions logistique -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px;">
-        <button class="btn-primary" style="font-size:13px;padding:8px 18px" onclick="saveLogistique()">💾 Sauvegarder les infos logistiques</button>
-        <div class="logistics-saving" id="logSaving"><div class="spinner"></div> Sauvegarde…</div>
-      </div>
     </div>
-    `}
-  `;
 
-  // Les sections logistiques ne sont disponibles que pour les ateliers existants
-  if (!isNew) {
-    // Le nouveau renderEditor intègre le bloc logistique directement — pas besoin des sections séparées
-  }
+    <!-- ══ ACTIONS DE SAUVEGARDE GLOBALE ══ -->
+    <div class="editor-actions" style="margin-top:28px; padding-top:20px; border-top:2px solid var(--border);">
+      <button class="btn-primary" id="btnUpdate" onclick="saveUpdate()">💾 Enregistrer toutes les modifications</button>
+      <button class="btn-secondary" onclick="resetEdit()">↩ Annuler</button>
+      ${isNew ? '' : `<button class="btn-secondary" onclick="duplicateAtelier()">📋 Dupliquer</button>`}
+      <div class="saving-indicator" id="savingIndicator"><div class="spinner"></div> Sauvegarde de toutes les informations…</div>
+      ${isNew ? '' : `<button class="btn-danger" onclick="deleteAtelier()">🗑 Supprimer cet atelier</button>`}
+    </div>
+  `;
 }
 
 // ══════════════════════════════════════════════
@@ -2014,7 +2010,7 @@ async function saveUpdate() {
 
   const btn = document.getElementById('btnUpdate');
   const ind = document.getElementById('savingIndicator');
-  if (btn) btn.disabled = true;
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Sauvegarde en cours…'; }
   if (ind) ind.classList.add('show');
 
   const newEntry = Object.assign({}, editedData);
@@ -2029,6 +2025,56 @@ async function saveUpdate() {
     const ref = REF_JOURS.find(j => j.value === newEntry.jour);
     if (ref) newEntry.date = ref.date;
   }
+
+  const today = new Date().toISOString().slice(0,10) + ' ' + new Date().toTimeString().slice(0,5);
+
+  // ── Synchronisation logistique en mémoire ──
+  let logId = newEntry.logisticId;
+  if (!logId) {
+    const safeName = (newEntry.atelier||'NEW').replace(/[^a-zA-Z0-9]/g,'_').slice(0,30).toUpperCase();
+    const jourKey  = (newEntry.jour||'').replace(/\s+/g,'').toUpperCase();
+    logId = jourKey + '_' + safeName;
+    newEntry.logisticId = logId;
+  }
+
+  // Lire les RTEs
+  const logRte     = document.getElementById('log-rte');
+  const logSpecRte = document.getElementById('log-special-rte');
+  const avantRte   = document.getElementById('log-helpers-avant');
+  const pendantRte = document.getElementById('log-helpers-pendant');
+  const apresRte   = document.getElementById('log-helpers-apres');
+  const prepEl     = document.getElementById('f-prepDuration');
+  const rangeEl    = document.getElementById('f-rangeDuration');
+
+  const logHtml  = logRte     ? logRte.innerHTML.trim()     : '';
+  const specHtml = logSpecRte ? logSpecRte.innerHTML.trim() : '';
+  const prepDur  = prepEl     ? parseInt(prepEl.value, 10) || 0 : 0;
+  const rangeDur = rangeEl    ? parseInt(rangeEl.value, 10) || 0 : 0;
+
+  if (typeof LOG === 'undefined') window.LOG = {};
+  LOG[logId] = {
+    html: logHtml,
+    text: logRte ? (logRte.innerText||'').trim() : '',
+    validatedByFac: !!(REF_DESCRIPTIONS && findDesc(newEntry.atelier) && findDesc(newEntry.atelier).validatedByFac),
+    prepDuration: prepDur,
+    rangeDuration: rangeDur,
+    updatedAt: today
+  };
+
+  if (typeof LOG_SPECIAL === 'undefined') window.LOG_SPECIAL = {};
+  LOG_SPECIAL[logId] = {
+    html: specHtml,
+    text: logSpecRte ? (logSpecRte.innerText||'').trim() : '',
+    updatedAt: today
+  };
+
+  if (typeof LOGISTICS_HELPERS === 'undefined') window.LOGISTICS_HELPERS = {};
+  LOGISTICS_HELPERS[logId] = {
+    avant:   avantRte   ? avantRte.innerHTML.trim()   : '',
+    pendant: pendantRte ? pendantRte.innerHTML.trim()  : '',
+    apres:   apresRte   ? apresRte.innerHTML.trim()    : '',
+    updatedAt: today
+  };
 
   // Types d'ateliers dont le champ angel est piloté par les shifts
   const TYPES_ANGEL_PILOTES = new Set([
@@ -2224,7 +2270,12 @@ async function saveUpdate() {
     try {
       // Fusion collaborative : n'écrase que cet atelier dans la version fraîche GitHub
       await mergeAndSaveDataJs([newEntry]);
-      await saveDescIfNeeded();
+      await Promise.all([
+        saveDescIfNeeded(),
+        saveFile('logistics.js',         genererLogisticsJs()),
+        saveFile('logistics.special.js', genererLogisticsSpecialJs()),
+        saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
+      ]);
       // Libérer le verrou après sauvegarde réussie
       releaseLock(newEntry.id);
       _hideReadOnlyBanner();
@@ -2241,7 +2292,7 @@ async function saveUpdate() {
       AGENDA.pop(); // rollback
       showToast('❌ Sauvegarde impossible : ' + err.message, true);
     } finally {
-      if (btn) btn.disabled = false;
+      if (btn) { btn.disabled = false; btn.textContent = '💾 Enregistrer toutes les modifications'; }
       if (ind) ind.classList.remove('show');
     }
   } else {
@@ -2249,7 +2300,7 @@ async function saveUpdate() {
     if (newEntry.id !== AGENDA[selectedIdx].id) {
       showToast('❌ Erreur interne : l\'ID de l\'atelier a changé — sauvegarde annulée.', true);
       console.error('[Rapport11] ID mismatch', { avant: AGENDA[selectedIdx].id, apres: newEntry.id });
-      if (btn) btn.disabled = false;
+      if (btn) { btn.disabled = false; btn.textContent = '💾 Enregistrer toutes les modifications'; }
       if (ind) ind.classList.remove('show');
       return;
     }
@@ -2303,9 +2354,19 @@ async function saveUpdate() {
       await mergeAndSaveDataJs(cascadeEntries);
       // Si renommage : forcer la sauvegarde de ref_descriptions.js même sans changement de contenu
       if (isRename && !editedData._descFr && !editedData._descEn && !editedData._nomEn && !editedData._consigneFr && !editedData._consigneEn) {
-        await saveFile('ref_descriptions.js', genererRefDescJs());
+        await Promise.all([
+          saveFile('ref_descriptions.js', genererRefDescJs()),
+          saveFile('logistics.js',         genererLogisticsJs()),
+          saveFile('logistics.special.js', genererLogisticsSpecialJs()),
+          saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
+        ]);
       } else {
-        await saveDescIfNeeded();
+        await Promise.all([
+          saveDescIfNeeded(),
+          saveFile('logistics.js',         genererLogisticsJs()),
+          saveFile('logistics.special.js', genererLogisticsSpecialJs()),
+          saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
+        ]);
       }
       // Libérer le verrou après sauvegarde réussie
       releaseLock(newEntry.id);
@@ -2326,7 +2387,7 @@ async function saveUpdate() {
       showToast('❌ Sauvegarde impossible : ' + err.message, true);
       console.error('[Rapport11] Erreur saveUpdate:', err);
     } finally {
-      if (btn) btn.disabled = false;
+      if (btn) { btn.disabled = false; btn.textContent = '💾 Enregistrer toutes les modifications'; }
       if (ind) ind.classList.remove('show');
     }
   }
