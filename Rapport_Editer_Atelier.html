@@ -336,6 +336,15 @@
       </select>
     </div>
     <div class="filter-group">
+      <label>Statut</label>
+      <select id="filterStatut" onchange="renderList()">
+        <option value="">Tous les statuts</option>
+        <option value="NEW">NEW</option>
+        <option value="APPROVED" selected>APPROVED</option>
+        <option value="REJECTED">REJECTED</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>Recherche</label>
       <input type="text" id="filterSearch" placeholder="Atelier, animateur, ID…" oninput="renderList()">
     </div>
@@ -782,6 +791,7 @@ function getFiltered() {
   const t = document.getElementById('filterType').value;
   const l = document.getElementById('filterLieu').value;
   const f = document.getElementById('filterFac').value;
+  const stat = document.getElementById('filterStatut').value;
   const s = document.getElementById('filterSearch').value.trim().toLowerCase();
   return AGENDA
     .map((e, i) => ({ e, i }))
@@ -790,6 +800,7 @@ function getFiltered() {
       (!t || e.type === t) &&
       (!l || e.lieu === l) &&
       (!f || e.fac1 === f || e.fac2 === f || e.fac3 === f || e.fac4 === f) &&
+      (!stat || (e.statut || 'APPROVED') === stat) &&
       (!s || (e.id && e.id.toLowerCase().includes(s)) || e.atelier.toLowerCase().includes(s) || resolveName(e.fac1).toLowerCase().includes(s) || resolveName(e.fac2).toLowerCase().includes(s) || resolveName(e.fac3).toLowerCase().includes(s) || resolveName(e.fac4).toLowerCase().includes(s))
     )
     .sort((a, b) => {
