@@ -1468,6 +1468,14 @@ var LOGISTICS = {
     validatedByFac: false,
     prepDuration: 0,
     updatedAt: "2026-08-30 12:29"
+  },
+
+  "JOUR1_TANTRA_1": {
+    html: "",
+    text: "",
+    validatedByFac: false,
+    prepDuration: 0,
+    updatedAt: "2026-10-01 18:14"
   }
 
 };
