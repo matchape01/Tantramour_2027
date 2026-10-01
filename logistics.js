@@ -1516,6 +1516,14 @@ var LOGISTICS = {
     validatedByFac: false,
     prepDuration: 0,
     updatedAt: "2026-10-01 19:07"
+  },
+
+  "JOUR1_LOVE_TEMPLE_1": {
+    html: "",
+    text: "",
+    validatedByFac: false,
+    prepDuration: 0,
+    updatedAt: "2026-10-01 19:08"
   }
 
 };
