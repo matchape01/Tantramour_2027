@@ -1,4 +1,4 @@
-// @saved:2026-10-01 18:43:36
+// @saved:2026-10-01 19:06:08
 /**
  * TANTRAMOUR 2026 — Référentiel de données commun
  * ================================================
@@ -34,7 +34,7 @@ var AGENDA = [
   // ─── Jour 2 — Samedi 28 aout ────────────────────────────────────────
   {id:"A_8383",jour:"Jour 2",date:"Dimanche 29 août",heure:"09:00 - 10:30",type:"MEDITATION / YOGA",atelier:"Meditation du matin",lieu:"SHIVA",fac1:"Sevda Duroy",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",statut:"APPROVED"},
   {id:"A_1936",jour:"Jour 2",date:"Dimanche 29 août",heure:"14:15 - 16:15",type:"DJ Set",atelier:"Dj Set",lieu:"CHENREZIG",fac1:"DJ Surprise",fac2:"",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",statut:"APPROVED"},
-  {id:"A_5094",jour:"Jour 2",date:"Dimanche 29 août",heure:"13:30 - 15:00",type:"CONFERENCE",atelier:"Conférence 1",lieu:"SHAKTI",fac1:"Laurent Lacoste",fac2:"Laurence Heitzmann",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",statut:"APPROVED"},
+  {id:"A_5094",jour:"Jour 2",date:"Dimanche 29 août",heure:"13:30 - 15:00",type:"CONFERENCE",atelier:"Conférence 1",lieu:"SHAKTI",fac1:"Laurent Lacoste",fac2:"Laurence Heitzmann",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:3,colibri:false,logisticId:"JOUR2_CONF_RENCE_1",meetingRoles:"",statut:"APPROVED"},
 
   // ─── Jour 1 — Vendredi 27 aout ──────────────────────────────────────
   {id:"A_5692",jour:"Jour 1",date:"Samedi 28 août",heure:"14:15 - 16:15",type:"TANTRA CAFE",atelier:"Tantra Café (TEST 1)",lieu:"CHENREZIG",fac1:"Sandrine Bettinelli",fac2:"Jivan Muti (Clément Victor)",fac3:"",fac4:"",traduction:"",helper1:"",helper2:"Alexandre Sattler",helper3:"",helper4:"",angel:"",note:"N_ATELIER_LONG",piment:1,colibri:false,logisticId:"JOUR1_TANTRA_CAF___TEST_1_",meetingRoles:"",statut:"APPROVED"},
