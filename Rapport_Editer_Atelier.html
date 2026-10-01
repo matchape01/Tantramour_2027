@@ -1982,12 +1982,10 @@ async function saveLogistique() {
   };
 
   try {
-    await Promise.all([
-      saveFile('logistics.js',         genererLogisticsJs()),
-      saveFile('logistics.special.js', genererLogisticsSpecialJs()),
-      saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
-      saveFile('data.js',              genererDataJs()),
-    ]);
+    await saveFile('logistics.js',         genererLogisticsJs());
+    await saveFile('logistics.special.js', genererLogisticsSpecialJs());
+    await saveFile('logistics.helpers.js', genererLogisticsHelpersJs());
+    await saveFile('data.js',              genererDataJs());
     showToast('✅ Informations logistiques sauvegardées !');
     if (btn) { btn.disabled = false; btn.textContent = '💾 Sauvegarder les infos logistiques'; }
   } catch(err) {
@@ -2270,12 +2268,10 @@ async function saveUpdate() {
     try {
       // Fusion collaborative : n'écrase que cet atelier dans la version fraîche GitHub
       await mergeAndSaveDataJs([newEntry]);
-      await Promise.all([
-        saveDescIfNeeded(),
-        saveFile('logistics.js',         genererLogisticsJs()),
-        saveFile('logistics.special.js', genererLogisticsSpecialJs()),
-        saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
-      ]);
+      await saveDescIfNeeded();
+      await saveFile('logistics.js',         genererLogisticsJs());
+      await saveFile('logistics.special.js', genererLogisticsSpecialJs());
+      await saveFile('logistics.helpers.js', genererLogisticsHelpersJs());
       // Libérer le verrou après sauvegarde réussie
       releaseLock(newEntry.id);
       _hideReadOnlyBanner();
@@ -2354,19 +2350,15 @@ async function saveUpdate() {
       await mergeAndSaveDataJs(cascadeEntries);
       // Si renommage : forcer la sauvegarde de ref_descriptions.js même sans changement de contenu
       if (isRename && !editedData._descFr && !editedData._descEn && !editedData._nomEn && !editedData._consigneFr && !editedData._consigneEn) {
-        await Promise.all([
-          saveFile('ref_descriptions.js', genererRefDescJs()),
-          saveFile('logistics.js',         genererLogisticsJs()),
-          saveFile('logistics.special.js', genererLogisticsSpecialJs()),
-          saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
-        ]);
+        await saveFile('ref_descriptions.js', genererRefDescJs());
+        await saveFile('logistics.js',         genererLogisticsJs());
+        await saveFile('logistics.special.js', genererLogisticsSpecialJs());
+        await saveFile('logistics.helpers.js', genererLogisticsHelpersJs());
       } else {
-        await Promise.all([
-          saveDescIfNeeded(),
-          saveFile('logistics.js',         genererLogisticsJs()),
-          saveFile('logistics.special.js', genererLogisticsSpecialJs()),
-          saveFile('logistics.helpers.js', genererLogisticsHelpersJs()),
-        ]);
+        await saveDescIfNeeded();
+        await saveFile('logistics.js',         genererLogisticsJs());
+        await saveFile('logistics.special.js', genererLogisticsSpecialJs());
+        await saveFile('logistics.helpers.js', genererLogisticsHelpersJs());
       }
       // Libérer le verrou après sauvegarde réussie
       releaseLock(newEntry.id);
