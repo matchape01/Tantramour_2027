@@ -110,6 +110,12 @@
   .btn-new:hover { background:#dcfce7; }
   .editor-panel.is-new { border-color:#16a34a; }
   .badge-new { background:#16a34a !important; }
+  .badge-NEW      { background:#fef3c7; color:#d97706; border:1px solid #fcd34d; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; text-transform:uppercase; display:inline-block; margin-right:4px; vertical-align:middle; }
+  .badge-APPROVED { background:#dcfce7; color:#15803d; border:1px solid #86efac; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; text-transform:uppercase; display:inline-block; margin-right:4px; vertical-align:middle; }
+  .badge-REJECTED { background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; text-transform:uppercase; display:inline-block; margin-right:4px; vertical-align:middle; }
+  .dark .badge-NEW      { background:#78350f; color:#fde68a; border-color:#d97706; }
+  .dark .badge-APPROVED { background:#064e3b; color:#a7f3d0; border-color:#059669; }
+  .dark .badge-REJECTED { background:#7f1d1d; color:#fca5a5; border-color:#dc2626; }
   .saving-indicator { font-size:13px; color:var(--muted); display:none; align-items:center; gap:6px; }
   .saving-indicator.show { display:flex; }
   @keyframes spin { to { transform:rotate(360deg); } }
@@ -849,7 +855,8 @@ function renderList() {
     const pimentStr = e.piment > 0 ? '🌶️'.repeat(e.piment) : '<span style="color:var(--muted);font-size:11px">—</span>';
     const sel = selectedIdx === i ? ' selected' : '';
     const facs = [e.fac1, e.fac2, e.fac3, e.fac4].filter(Boolean).map(function(id){ return resolveName(id); }).join(', ');
-    const atelierLabel = e.id ? `${e.atelier||'—'} <span style="color:var(--muted);font-size:11px">(${e.id})</span>` : (e.atelier||'—');
+    const statutBadge = `<span class="badge-${e.statut || 'APPROVED'}">${e.statut || 'APPROVED'}</span>`;
+    const atelierLabel = e.id ? `${statutBadge} ${e.atelier||'—'} <span style="color:var(--muted);font-size:11px">(${e.id})</span>` : `${statutBadge} ${e.atelier||'—'}`;
     return `<div class="list-item${sel}" onclick="selectAtelier(${i})" id="li-${i}">
       <div class="li-jour">${e.jour}</div>
       <div class="li-heure">${e.heure||'—'}</div>
@@ -926,7 +933,8 @@ function newAtelier() {
     id: generateAtelierId(),
     jour:'Jour 1', date:'Vendredi 27 aout', heure:'', type: REF_TYPES[0] ? REF_TYPES[0].value : '',
     atelier:'', lieu:'', fac1:'', fac2:'', fac3:'', fac4:'', traduction:'',
-    helper1:'', helper2:'', helper3:'', helper4:'', angel:'', note:'', piment:0, colibri:false, logisticId:'', meetingRoles:''
+    helper1:'', helper2:'', helper3:'', helper4:'', angel:'', note:'', piment:0, colibri:false, logisticId:'', meetingRoles:'',
+    statut:'NEW'
   };
 
   // Désélectionner toute ligne en cours
@@ -1372,6 +1380,15 @@ function renderEditor() {
         <div class="piment-btns" id="piment-btns">${pimentBtns}</div>
       </div>
 
+      <div class="form-group">
+        <label>Statut</label>
+        <select id="f-statut" onchange="fieldChange('f-statut')">
+          <option value="NEW"${(e.statut||'APPROVED') === 'NEW' ? ' selected' : ''}>NEW</option>
+          <option value="APPROVED"${(e.statut||'APPROVED') === 'APPROVED' ? ' selected' : ''}>APPROVED</option>
+          <option value="REJECTED"${(e.statut||'APPROVED') === 'REJECTED' ? ' selected' : ''}>REJECTED</option>
+        </select>
+      </div>
+
     </div>
 
     <!-- ══ BLOC 2 — NOM ATELIER FR + EN côte à côte ══ -->
@@ -1750,7 +1767,7 @@ function fieldChange(id) {
   // Mapping id → clé AGENDA (champs standard non-ressource)
   const map = {
     'jour':'jour','atelier':'atelier','type':'type','lieu':'lieu',
-    'meetingRoles':'meetingRoles','note':'note'
+    'meetingRoles':'meetingRoles','note':'note','statut':'statut'
   };
   const key = map[field];
   if (key) editedData[key] = val;
@@ -2452,7 +2469,7 @@ var AGENDA = [`;
     // Si l'atelier n'a pas d'ID (ne devrait pas arriver), en générer un unique
     let eid = e.id;
     if (!eid) { eid = generateAtelierId(usedInSer); usedInSer.add(eid); }
-    const line = `  {id:"${escJs(eid)}",jour:"${escJs(e.jour)}",date:"${escJs(e.date)}",heure:"${escJs(e.heure)}",type:"${escJs(e.type)}",atelier:"${escJs(e.atelier)}",lieu:"${escJs(e.lieu)}",fac1:"${escJs(e.fac1)}",fac2:"${escJs(e.fac2)}",fac3:"${escJs(e.fac3||'')}",fac4:"${escJs(e.fac4||'')}",traduction:"${escJs(e.traduction)}",helper1:"${escJs(e.helper1)}",helper2:"${escJs(e.helper2)}",helper3:"${escJs(e.helper3)}",helper4:"${escJs(e.helper4||'')}",angel:"${escJs(e.angel)}",note:"${escJs(e.note)}",piment:${e.piment||0},colibri:${e.colibri?true:false},logisticId:"${escJs(e.logisticId||'')}",meetingRoles:"${escJs(e.meetingRoles||'')}"}`;
+    const line = `  {id:"${escJs(eid)}",jour:"${escJs(e.jour)}",date:"${escJs(e.date)}",heure:"${escJs(e.heure)}",type:"${escJs(e.type)}",atelier:"${escJs(e.atelier)}",lieu:"${escJs(e.lieu)}",fac1:"${escJs(e.fac1)}",fac2:"${escJs(e.fac2)}",fac3:"${escJs(e.fac3||'')}",fac4:"${escJs(e.fac4||'')}",traduction:"${escJs(e.traduction)}",helper1:"${escJs(e.helper1)}",helper2:"${escJs(e.helper2)}",helper3:"${escJs(e.helper3)}",helper4:"${escJs(e.helper4||'')}",angel:"${escJs(e.angel)}",note:"${escJs(e.note)}",piment:${e.piment||0},colibri:${e.colibri?true:false},logisticId:"${escJs(e.logisticId||'')}",meetingRoles:"${escJs(e.meetingRoles||'')}",statut:"${escJs(e.statut||'APPROVED')}"}`;
     const lineWithCustom = customParts.length
       ? line.slice(0, -1) + ',' + customParts.join(',') + '}'
       : line;
