@@ -1476,6 +1476,14 @@ var LOGISTICS = {
     validatedByFac: false,
     prepDuration: 0,
     updatedAt: "2026-10-01 18:18"
+  },
+
+  "JOUR1_TANTRA_CAF___TEST_1_": {
+    html: "",
+    text: "",
+    validatedByFac: false,
+    prepDuration: 0,
+    updatedAt: "2026-10-01 18:42"
   }
 
 };
