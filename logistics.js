@@ -1479,11 +1479,11 @@ var LOGISTICS = {
   },
 
   "JOUR1_TANTRA_CAF___TEST_1_": {
-    html: "",
-    text: "",
+    html: "Informations logistiques V1",
+    text: "Informations logistiques V1",
     validatedByFac: false,
     prepDuration: 0,
-    updatedAt: "2026-10-01 18:42"
+    updatedAt: "2026-10-01 18:43"
   }
 
 };
