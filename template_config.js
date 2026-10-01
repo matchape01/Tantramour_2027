@@ -5,7 +5,7 @@
 var TEMPLATE_CONFIG = {
   "year": 2027,
   "dateStart": "2027-08-27",
-  "dateEnd": "2027-09-03",
+  "dateEnd": "2027-09-02",
   "hStart": 7,
   "hEnd": 24,
   "selectedLieux": [
@@ -15,8 +15,11 @@ var TEMPLATE_CONFIG = {
     "TARA",
     "GANESH",
     "PISCINE",
-    "EXTERIEUR"
+    "EXTERIEUR",
+    "BUDDHA",
+    "HANUMAN",
+    "ANANDA MAALISH"
   ],
   "isConfigured": true,
-  "updatedAt": "2026-10-01T13:32:14.868Z"
+  "updatedAt": "2026-10-01T13:33:17.431Z"
 };
