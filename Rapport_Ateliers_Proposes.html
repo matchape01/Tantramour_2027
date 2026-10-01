@@ -212,7 +212,7 @@ tbody td { padding:10px 12px; vertical-align:middle; }
       <table>
         <thead><tr>
           <th>ID</th><th>Nom (FR / EN)</th><th>Animateur(s)</th>
-          <th>Type</th><th>Durée</th><th>Statut</th><th>Action</th>
+          <th>Type</th><th>Durée</th><th>🌶️ Piment</th><th>Statut</th><th>Action</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -244,6 +244,15 @@ tbody td { padding:10px 12px; vertical-align:middle; }
         <div class="field">
           <label>⏱ Durée *</label>
           <select id="c_dur"></select>
+        </div>
+        <div class="field">
+          <label>🌶️ Piment</label>
+          <select id="c_piment">
+            <option value="0">0 — Doux / Aucun</option>
+            <option value="1">1 🌶️</option>
+            <option value="2">2 🌶️🌶️</option>
+            <option value="3">3 🌶️🌶️🌶️</option>
+          </select>
         </div>
         <div class="field">
           <label>⏱ Durée Préparation</label>
@@ -313,6 +322,15 @@ tbody td { padding:10px 12px; vertical-align:middle; }
         <div class="dur-row">
           <select id="e_dur"></select>
         </div>
+      </div>
+      <div class="field">
+        <label>🌶️ Piment</label>
+        <select id="e_piment">
+          <option value="0">0 — Doux / Aucun</option>
+          <option value="1">1 🌶️</option>
+          <option value="2">2 🌶️🌶️</option>
+          <option value="3">3 🌶️🌶️🌶️</option>
+        </select>
       </div>
       <div class="field">
         <label>⏱ Durée Préparation</label>
@@ -789,6 +807,7 @@ function renderTable() {
       '<td style="font-size:12px">'+esc(animLabel(a.animateurs))+'</td>'+
       '<td style="font-size:12px;color:var(--muted)">'+esc(a.type||'—')+'</td>'+
       '<td style="font-size:12px;white-space:nowrap">'+esc(fmtDuree(a.dureeH,a.dureeMin))+'</td>'+
+      '<td style="font-size:13px">'+(a.piment > 0 ? '🌶️'.repeat(a.piment) : '—')+'</td>'+
       '<td><span class="badge badge-'+esc(a.statut||'NEW')+'">'+esc(a.statut||'NEW')+'</span></td>'+
       '<td><button class="btn btn-sm" onclick="openEdit(\''+esc(a.id)+'\')">✏️ Éditer</button></td>'+
     '</tr>';
@@ -812,6 +831,7 @@ function resetCreate() {
   ['c_nomFr','c_nomEn','c_descFr','c_descEn'].forEach(function(id){
     document.getElementById(id).value = '';
   });
+  document.getElementById('c_piment').value = '0';
   document.getElementById('c_type').value        = '';
   document.getElementById('c_dur').value         = '90';
   document.getElementById('c_prepDuration').value = '0';
@@ -852,6 +872,7 @@ function createAtelier() {
     dureeMin:     dMin,
     prepDuration: parseInt(document.getElementById('c_prepDuration').value)||0,
     rangeDuration:parseInt(document.getElementById('c_rangeDuration').value)||0,
+    piment:       parseInt(document.getElementById('c_piment').value)||0,
     descFr:       document.getElementById('c_descFr').value.trim(),
     descEn:       document.getElementById('c_descEn').value.trim(),
     statut:       'NEW',
@@ -890,6 +911,7 @@ function openEdit(id) {
   document.getElementById('e_prepDuration').value = String(a.prepDuration || 0);
   document.getElementById('e_rangeDuration').innerHTML = buildDurPrepOpts(a.rangeDuration || 0);
   document.getElementById('e_rangeDuration').value = String(a.rangeDuration || 0);
+  document.getElementById('e_piment').value       = String(a.piment || 0);
   document.getElementById('e_descFr').value       = a.descFr || '';
   document.getElementById('e_descEn').value       = a.descEn || '';
   document.getElementById('e_statut').value       = a.statut || 'NEW';
@@ -926,6 +948,7 @@ function saveEdit() {
   ATELIERS[idx].dureeMin     = _eDur % 60;
   ATELIERS[idx].prepDuration = parseInt(document.getElementById('e_prepDuration').value)||0;
   ATELIERS[idx].rangeDuration= parseInt(document.getElementById('e_rangeDuration').value)||0;
+  ATELIERS[idx].piment       = parseInt(document.getElementById('e_piment').value)||0;
   ATELIERS[idx].descFr       = document.getElementById('e_descFr').value.trim();
   ATELIERS[idx].descEn       = document.getElementById('e_descEn').value.trim();
   ATELIERS[idx].statut       = document.getElementById('e_statut').value;
@@ -975,6 +998,7 @@ function buildAteliersJs() {
       ',dureeMin:'+(parseInt(a.dureeMin)||0)+
       ',prepDuration:'+(parseInt(a.prepDuration)||0)+
       ',rangeDuration:'+(parseInt(a.rangeDuration)||0)+
+      ',piment:'+(parseInt(a.piment)||0)+
       ',descFr:"'+escJs(a.descFr)+'",descEn:"'+escJs(a.descEn)+
       '",statut:"'+escJs(a.statut)+'",createdAt:"'+escJs(a.createdAt)+
       '",updatedAt:"'+escJs(a.updatedAt)+'"}';
@@ -1053,6 +1077,7 @@ function getPrepRangeRef() {
 }
 
 var STATUTS_REF = ['NEW', 'APPROVED', 'REJECTED'];
+var PIMENTS_REF = [0, 1, 2, 3];
 
 function fmtDureeLabel(h, m) {
   h = parseInt(h)||0; m = parseInt(m)||0;
@@ -1113,6 +1138,7 @@ var XLS_COLS = [
   { key:'duree',        header:'Durée',                 width:12 },
   { key:'prepDuration', header:'Durée Préparation',     width:18 },
   { key:'rangeDuration',header:'Durée Rangement',       width:18 },
+  { key:'piment',        header:'Piment',                width:12 },
   { key:'animateur1',   header:'Animateur 1',           width:20 },
   { key:'animateur2',   header:'Animateur 2',           width:20 },
   { key:'animateur3',   header:'Animateur 3',           width:20 },
@@ -1160,6 +1186,7 @@ function exportExcel() {
       duree:         fmtDureeLabel(a.dureeH||0, a.dureeMin||0),
       prepDuration:  minToPrepLabel(a.prepDuration||0),
       rangeDuration: minToPrepLabel(a.rangeDuration||0),
+      piment:        a.piment || 0,
       animateur1:    anims[0]||'',
       animateur2:    anims[1]||'',
       animateur3:    anims[2]||'',
@@ -1213,14 +1240,16 @@ function exportExcel() {
   wsRef.getCell(1,3).value = 'Durées';
   wsRef.getCell(1,4).value = 'Prep/Range';
   wsRef.getCell(1,5).value = 'Statuts';
+  wsRef.getCell(1,6).value = 'Piments';
 
-  var maxRef = Math.max(animateursList.length, typesList.length, dureesList.length, prepList.length, STATUTS_REF.length);
+  var maxRef = Math.max(animateursList.length, typesList.length, dureesList.length, prepList.length, STATUTS_REF.length, PIMENTS_REF.length);
   for (var i=0; i<maxRef; i++) {
     wsRef.getCell(i+2,1).value = animateursList[i]||'';
     wsRef.getCell(i+2,2).value = typesList[i]||'';
     wsRef.getCell(i+2,3).value = dureesList[i]||'';
     wsRef.getCell(i+2,4).value = prepList[i]||'';
     wsRef.getCell(i+2,5).value = STATUTS_REF[i]||'';
+    wsRef.getCell(i+2,6).value = PIMENTS_REF[i] !== undefined ? PIMENTS_REF[i] : '';
   }
 
   // ── Validations de données (dropdowns) ─────────────────────
@@ -1230,6 +1259,7 @@ function exportExcel() {
   var nDurees = dureesList.length;
   var nPrep   = prepList.length;
   var nStat   = STATUTS_REF.length;
+  var nPim    = PIMENTS_REF.length;
   var nRows   = Math.max(ATELIERS.length + 200, 500); // lignes futures incluses
 
   var dropdownCols = [
@@ -1237,6 +1267,7 @@ function exportExcel() {
     { key:'duree',         formula:'Référentiels!$C$2:$C$'+(nDurees+1) },
     { key:'prepDuration',  formula:'Référentiels!$D$2:$D$'+(nPrep+1)   },
     { key:'rangeDuration', formula:'Référentiels!$D$2:$D$'+(nPrep+1)   },
+    { key:'piment',        formula:'Référentiels!$F$2:$F$'+(nPim+1)    },
     { key:'animateur1',    formula:'Référentiels!$A$2:$A$'+(nAnim+1)   },
     { key:'animateur2',    formula:'Référentiels!$A$2:$A$'+(nAnim+1)   },
     { key:'animateur3',    formula:'Référentiels!$A$2:$A$'+(nAnim+1)   },
@@ -1377,6 +1408,7 @@ function analyzeImport(wb2, fileName) {
     var duree    = cellStr(row, colMap['Durée']);
     var prep     = cellStr(row, colMap['Durée Préparation']) || '0 min';
     var range    = cellStr(row, colMap['Durée Rangement'])   || '0 min';
+    var piment   = cellStr(row, colMap['Piment'])            || '0';
     var anim1    = cellStr(row, colMap['Animateur 1']);
     var anim2    = cellStr(row, colMap['Animateur 2']);
     var anim3    = cellStr(row, colMap['Animateur 3']);
@@ -1410,6 +1442,12 @@ function analyzeImport(wb2, fileName) {
     var rangeMin = prepLabelToMin(range);
     if (isNaN(rangeMin)) rowErrors.push({row:rowNum, field:'Durée Rangement', msg:'"'+range+'" invalide.'});
 
+    // Piment
+    var pimentVal = parseInt(piment);
+    if (isNaN(pimentVal) || pimentVal < 0 || pimentVal > 3) {
+      rowErrors.push({row:rowNum, field:'Piment', msg:'"'+piment+'" invalide (doit être 0, 1, 2 ou 3).'});
+    }
+
     // Animateurs
     [anim1,anim2,anim3,anim4].forEach(function(an, i){
       if (an && !validAnimN.has(an)) rowErrors.push({row:rowNum, field:'Animateur '+(i+1), msg:'"'+an+'" inconnu dans le référentiel.'});
@@ -1431,6 +1469,7 @@ function analyzeImport(wb2, fileName) {
       dureeMin:     dureeHM ? dureeHM.m : 0,
       prepDuration: isNaN(prepMin)  ? 0 : prepMin,
       rangeDuration:isNaN(rangeMin) ? 0 : rangeMin,
+      piment:       isNaN(pimentVal)? 0 : pimentVal,
       animateurs:   animIds,
       descFr:       descFr,
       descEn:       descEn,
@@ -1460,6 +1499,7 @@ function analyzeImport(wb2, fileName) {
       chk('Durée',         fmtDureeLabel(existing.dureeH,existing.dureeMin), fmtDureeLabel(obj.dureeH,obj.dureeMin));
       chk('Durée Prép.',   existing.prepDuration,  obj.prepDuration,  function(v){ return minToPrepLabel(v); });
       chk('Durée Range.',  existing.rangeDuration, obj.rangeDuration, function(v){ return minToPrepLabel(v); });
+      chk('Piment',        existing.piment,        obj.piment);
       chk('Animateurs',    animIdsToNames(existing.animateurs||[]).join(', '), animNames.join(', '));
       chk('Description FR',existing.descFr,        obj.descFr);
       chk('Description EN',existing.descEn,        obj.descEn);
