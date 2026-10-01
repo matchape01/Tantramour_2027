@@ -1483,7 +1483,7 @@ var LOGISTICS = {
     text: "Informations logistiques V1",
     validatedByFac: false,
     prepDuration: 0,
-    updatedAt: "2026-10-01 19:07"
+    updatedAt: "2026-10-01 21:40"
   },
 
   "JOUR2_CONF_RENCE_1": {
