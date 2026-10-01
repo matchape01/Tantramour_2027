@@ -797,10 +797,10 @@ var LOGISTICS_HELPERS = {
   },
 
   "JOUR1_TANTRA_CAF___TEST_1_": {
-    avant: "",
-    pendant: "",
-    apres: "",
-    updatedAt: "2026-10-01 18:42"
+    avant: "Avant l'atelier — Préparation / Installation V1",
+    pendant: "Pendant l'atelier V1",
+    apres: "Après l'atelier — Désinstallation / Rangement V1",
+    updatedAt: "2026-10-01 18:43"
   }
 
 };
