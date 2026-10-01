@@ -1492,6 +1492,14 @@ var LOGISTICS = {
     validatedByFac: false,
     prepDuration: 0,
     updatedAt: "2026-10-01 19:06"
+  },
+
+  "JOUR2_MEDITATION_DU_MATIN": {
+    html: "",
+    text: "",
+    validatedByFac: false,
+    prepDuration: 0,
+    updatedAt: "2026-10-01 19:06"
   }
 
 };
