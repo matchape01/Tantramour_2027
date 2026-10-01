@@ -302,13 +302,13 @@
       <label data-i18n="col_jour">Jour</label>
       <select id="filterJour" onchange="renderList()">
         <option value="" data-i18n="filter_tous_jours">Tous les jours</option>
-        <option value="Jour 1" data-i18n="jour1_label">Jour 1 — Sam. 29 août</option>
-        <option value="Jour 2" data-i18n="jour2_label">Jour 2 — Dim. 30 août</option>
-        <option value="Jour 3" data-i18n="jour3_label">Jour 3 — Lun. 31 août</option>
-        <option value="Jour 4" data-i18n="jour4_label">Jour 4 — Mar. 1 sept.</option>
-        <option value="Jour 5" data-i18n="jour5_label">Jour 5 — Mer. 2 sept.</option>
-        <option value="Jour 6" data-i18n="jour6_label">Jour 6 — Jeu. 3 sept.</option>
-        <option value="Jour 7" data-i18n="jour7_label">Jour 7 — Ven. 4 sept.</option>
+        <option value="Jour 1" data-i18n="jour1_label">Jour 1 — Ven. 27 août</option>
+        <option value="Jour 2" data-i18n="jour2_label">Jour 2 — Sam. 28 août</option>
+        <option value="Jour 3" data-i18n="jour3_label">Jour 3 — Dim. 29 août</option>
+        <option value="Jour 4" data-i18n="jour4_label">Jour 4 — Lun. 30 août</option>
+        <option value="Jour 5" data-i18n="jour5_label">Jour 5 — Mar. 31 août</option>
+        <option value="Jour 6" data-i18n="jour6_label">Jour 6 — Mer. 1 sept.</option>
+        <option value="Jour 7" data-i18n="jour7_label">Jour 7 — Jeu. 2 sept.</option>
       </select>
     </div>
     <div class="filter-group">
@@ -331,7 +331,7 @@
     </div>
     <div class="filter-group">
       <label>Recherche</label>
-      <input type="text" id="filterSearch" placeholder="Nom d'atelier…" oninput="renderList()">
+      <input type="text" id="filterSearch" placeholder="Atelier, animateur, ID…" oninput="renderList()">
     </div>
   </div>
 
@@ -784,7 +784,7 @@ function getFiltered() {
       (!t || e.type === t) &&
       (!l || e.lieu === l) &&
       (!f || e.fac1 === f || e.fac2 === f || e.fac3 === f || e.fac4 === f) &&
-      (!s || e.atelier.toLowerCase().includes(s) || resolveName(e.fac1).toLowerCase().includes(s) || resolveName(e.fac2).toLowerCase().includes(s) || resolveName(e.fac3).toLowerCase().includes(s) || resolveName(e.fac4).toLowerCase().includes(s))
+      (!s || (e.id && e.id.toLowerCase().includes(s)) || e.atelier.toLowerCase().includes(s) || resolveName(e.fac1).toLowerCase().includes(s) || resolveName(e.fac2).toLowerCase().includes(s) || resolveName(e.fac3).toLowerCase().includes(s) || resolveName(e.fac4).toLowerCase().includes(s))
     )
     .sort((a, b) => {
       const dj = JOUR_ORDER.indexOf(a.e.jour) - JOUR_ORDER.indexOf(b.e.jour);
@@ -924,7 +924,7 @@ function newAtelier() {
   selectedIdx = -1;
   editedData  = {
     id: generateAtelierId(),
-    jour:'Jour 1', date:'Samedi 29 aout', heure:'', type: REF_TYPES[0] ? REF_TYPES[0].value : '',
+    jour:'Jour 1', date:'Vendredi 27 aout', heure:'', type: REF_TYPES[0] ? REF_TYPES[0].value : '',
     atelier:'', lieu:'', fac1:'', fac2:'', fac3:'', fac4:'', traduction:'',
     helper1:'', helper2:'', helper3:'', helper4:'', angel:'', note:'', piment:0, colibri:false, logisticId:'', meetingRoles:''
   };
