@@ -801,6 +801,13 @@ var LOGISTICS_HELPERS = {
     pendant: "Pendant l'atelier V1",
     apres: "Après l'atelier — Désinstallation / Rangement V1",
     updatedAt: "2026-10-01 18:43"
+  },
+
+  "JOUR2_CONF_RENCE_1": {
+    avant: "",
+    pendant: "",
+    apres: "",
+    updatedAt: "2026-10-01 19:06"
   }
 
 };
