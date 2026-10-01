@@ -815,6 +815,13 @@ var LOGISTICS_HELPERS = {
     pendant: "",
     apres: "",
     updatedAt: "2026-10-01 19:06"
+  },
+
+  "JOUR2_DJ_SET": {
+    avant: "",
+    pendant: "",
+    apres: "",
+    updatedAt: "2026-10-01 19:07"
   }
 
 };
