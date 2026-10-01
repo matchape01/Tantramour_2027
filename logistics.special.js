@@ -685,9 +685,9 @@ var LOGISTICS_SPECIAL = {
   },
 
   "JOUR1_TANTRA_CAF___TEST_1_": {
-    html: "",
-    text: "",
-    updatedAt: "2026-10-01 18:42"
+    html: "<span style=\"color:#7c5cd8;\">Besoins logistiques spécifiques V1</span>",
+    text: "Besoins logistiques spécifiques V1",
+    updatedAt: "2026-10-01 18:43"
   }
 
 };
