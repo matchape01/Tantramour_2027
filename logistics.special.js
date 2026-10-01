@@ -688,6 +688,12 @@ var LOGISTICS_SPECIAL = {
     html: "<span style=\"color:#7c5cd8;\">Besoins logistiques spécifiques V1</span>",
     text: "Besoins logistiques spécifiques V1",
     updatedAt: "2026-10-01 18:43"
+  },
+
+  "JOUR2_CONF_RENCE_1": {
+    html: "",
+    text: "",
+    updatedAt: "2026-10-01 19:06"
   }
 
 };
