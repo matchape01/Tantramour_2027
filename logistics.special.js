@@ -681,7 +681,7 @@ var LOGISTICS_SPECIAL = {
   "JOUR1_TANTRA_1": {
     html: "",
     text: "",
-    updatedAt: "2026-10-01 18:14"
+    updatedAt: "2026-10-01 18:18"
   }
 
 };
