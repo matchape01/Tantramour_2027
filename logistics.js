@@ -1484,6 +1484,14 @@ var LOGISTICS = {
     validatedByFac: false,
     prepDuration: 0,
     updatedAt: "2026-10-01 18:43"
+  },
+
+  "JOUR2_CONF_RENCE_1": {
+    html: "",
+    text: "",
+    validatedByFac: false,
+    prepDuration: 0,
+    updatedAt: "2026-10-01 19:06"
   }
 
 };
