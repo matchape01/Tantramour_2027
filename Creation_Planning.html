@@ -2476,13 +2476,16 @@
         const dureeM   = dureeMin % 60;
         const dureeStr = dureeH ? (dureeH + 'h' + (dureeM ? (dureeM < 10 ? '0'+dureeM : dureeM) : '')) : (dureeM + ' min');
 
-        const pimentSpan = ev.piment > 0 ? ` <span style="margin-left:6px;font-size:11px;">${'🌶️'.repeat(ev.piment)}</span>` : '';
+        const pimentEmojis = ev.piment > 0 ? '🌶️'.repeat(ev.piment) : '';
         card.innerHTML = `
           <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
-          <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span>${pimentSpan}</div>
+          <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span></div>
           <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
           ${animNamesList.length > 0 ? `<div class="event-anim">${animNamesList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
-          ${ev.type ? `<div class="event-type">${esc(ev.type)}</div>` : ''}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1px;">
+            ${ev.type ? `<div class="event-type" style="margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;" title="${esc(ev.type)}">${esc(ev.type)}</div>` : '<div></div>'}
+            ${pimentEmojis ? `<div style="font-size:11px; white-space:nowrap; margin-left:4px; flex-shrink:0;" title="Piment: ${ev.piment}">${pimentEmojis}</div>` : ''}
+          </div>
           <span class="event-lock-icon" title="Atelier verrouillé">🔒</span>
         `;
 
