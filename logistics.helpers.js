@@ -790,10 +790,17 @@ var LOGISTICS_HELPERS = {
   },
 
   "JOUR1_TANTRA_1": {
-    avant: "xgcg",
-    pendant: "cxgxcg",
+    avant: "TEST 1",
+    pendant: "TEST 1",
+    apres: "TEST 1",
+    updatedAt: "2026-10-01 18:18"
+  },
+
+  "JOUR1_TANTRA_CAF___TEST_1_": {
+    avant: "",
+    pendant: "",
     apres: "",
-    updatedAt: "2026-10-01 18:14"
+    updatedAt: "2026-10-01 18:42"
   }
 
 };
