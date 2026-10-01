@@ -822,6 +822,13 @@ var LOGISTICS_HELPERS = {
     pendant: "",
     apres: "",
     updatedAt: "2026-10-01 19:07"
+  },
+
+  "JOUR1_C_REMONIE_1": {
+    avant: "",
+    pendant: "",
+    apres: "",
+    updatedAt: "2026-10-01 19:07"
   }
 
 };
