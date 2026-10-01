@@ -1447,6 +1447,15 @@
               <label>Type</label>
               <select id="evFieldType"></select>
             </div>
+            <div class="ev-modal-field">
+              <label>🌶️ Piment</label>
+              <select id="evFieldPiment">
+                <option value="0">0 — Doux / Aucun</option>
+                <option value="1">1 🌶️</option>
+                <option value="2">2 🌶️🌶️</option>
+                <option value="3">3 🌶️🌶️🌶️</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -2082,12 +2091,13 @@
           const cd = REF_TYPE_COLORS.find(c => c.cssClass === tCss);
           if (cd) colorStyle = `--tc:${cd.color};--tbg:${cd.colorBg};--tbd:${cd.colorBd};`;
         }
+        const pimentSpan = a.piment > 0 ? ` <span style="margin-left:6px;font-size:11px;">${'🌶️'.repeat(a.piment)}</span>` : '';
         return `
           <div class="${cardCls}" style="${colorStyle}"
                draggable="true"
                ondragstart="handleDragStart(event, '${esc(a.id)}')"
                data-id="${esc(a.id)}">
-            <div class="event-time-badge">⏱ <span class="event-duree">${durStr}</span>${isPlaced ? ' <span class="badge-tag badge-placed-tag" style="margin-left:4px;">✓ Placé</span>' : ''}</div>
+            <div class="event-time-badge">⏱ <span class="event-duree">${durStr}</span>${pimentSpan}${isPlaced ? ' <span class="badge-tag badge-placed-tag" style="margin-left:4px;">✓ Placé</span>' : ''}</div>
             <div class="event-title" title="${esc(a.nomFr || '')}">${esc(a.nomFr || 'Sans titre')}</div>
             ${animList.length > 0 ? `<div class="event-anim">${animList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
             ${a.type ? `<div class="event-type">${esc(a.type)}</div>` : ''}
@@ -2163,6 +2173,7 @@
         endMin: endAbsMin,
         dureeMin: durTotalMin,
         type: currentDragAtelier.type || 'ATELIERS TANTRA',
+        piment: currentDragAtelier.piment || 0,
         animateurs: currentDragAtelier.animateurs || [],
         descFr: currentDragAtelier.descFr || '',
         descEn: currentDragAtelier.descEn || ''
@@ -2239,6 +2250,10 @@
         selType.appendChild(opt);
       });
 
+      // ── Select Piment ──
+      const pimentVal = ev.piment !== undefined ? ev.piment : (atRef ? atRef.piment || 0 : 0);
+      document.getElementById('evFieldPiment').value = String(pimentVal);
+
       // ── 4 selects animateurs individuels ──
       const animOpts = _buildAnimOpts();
       const anims = (ev.animateurs || []).map(String);
@@ -2307,7 +2322,7 @@
     function buildAteliersJs() {
       const header = '/**\n * TANTRAMOUR 2027 — Référentiel : Ateliers Proposés\n * Fichier géré via Rapport_Ateliers_Proposes.html\n */\nvar ATELIERS = [\n';
       const lines = (typeof ATELIERS !== 'undefined' ? ATELIERS : []).map(a =>
-        `  {id:"${escJs(a.id)}",nomFr:"${escJs(a.nomFr)}",nomEn:"${escJs(a.nomEn||'')}",animateurs:${JSON.stringify(a.animateurs||[])},type:"${escJs(a.type)}",dureeH:${parseInt(a.dureeH)||0},dureeMin:${parseInt(a.dureeMin)||0},prepDuration:${parseInt(a.prepDuration)||0},rangeDuration:${parseInt(a.rangeDuration)||0},descFr:"${escJs(a.descFr||'')}",descEn:"${escJs(a.descEn||'')}",statut:"${escJs(a.statut||'')}",createdAt:"${escJs(a.createdAt||'')}",updatedAt:"${escJs(a.updatedAt||'')}"}`
+        `  {id:"${escJs(a.id)}",nomFr:"${escJs(a.nomFr)}",nomEn:"${escJs(a.nomEn||'')}",animateurs:${JSON.stringify(a.animateurs||[])},type:"${escJs(a.type)}",dureeH:${parseInt(a.dureeH)||0},dureeMin:${parseInt(a.dureeMin)||0},prepDuration:${parseInt(a.prepDuration)||0},rangeDuration:${parseInt(a.rangeDuration)||0},piment:${parseInt(a.piment)||0},descFr:"${escJs(a.descFr||'')}",descEn:"${escJs(a.descEn||'')}",statut:"${escJs(a.statut||'')}",createdAt:"${escJs(a.createdAt||'')}",updatedAt:"${escJs(a.updatedAt||'')}"}`
       );
       return header + lines.join(',\n') + '\n];\n';
     }
@@ -2321,6 +2336,7 @@
       const newNom    = document.getElementById('evFieldNom').value.trim();
       const newNomEn  = document.getElementById('evFieldNomEn').value.trim();
       const newType   = document.getElementById('evFieldType').value;
+      const newPiment = parseInt(document.getElementById('evFieldPiment').value, 10) || 0;
       const newDuree  = parseInt(document.getElementById('evFieldDuree').value, 10) || ev.dureeMin;
       const newPrep   = parseInt(document.getElementById('evFieldPrep').value, 10) || 0;
       const newRange  = parseInt(document.getElementById('evFieldRange').value, 10) || 0;
@@ -2342,6 +2358,7 @@
       ev.nom          = newNom || ev.nom;
       ev.nomEn        = newNomEn;
       ev.type         = newType;
+      ev.piment       = newPiment;
       ev.dureeMin     = newDuree;
       ev.prepDuration = newPrep;
       ev.rangeDuration= newRange;
@@ -2387,6 +2404,7 @@
         ATELIERS[atIdx].dureeMin     = newDuree % 60;
         ATELIERS[atIdx].prepDuration = newPrep;
         ATELIERS[atIdx].rangeDuration= newRange;
+        ATELIERS[atIdx].piment       = newPiment;
         ATELIERS[atIdx].descFr       = newDescFr;
         ATELIERS[atIdx].descEn       = newDescEn;
         ATELIERS[atIdx].updatedAt    = new Date().toISOString();
@@ -2458,9 +2476,10 @@
         const dureeM   = dureeMin % 60;
         const dureeStr = dureeH ? (dureeH + 'h' + (dureeM ? (dureeM < 10 ? '0'+dureeM : dureeM) : '')) : (dureeM + ' min');
 
+        const pimentSpan = ev.piment > 0 ? ` <span style="margin-left:6px;font-size:11px;">${'🌶️'.repeat(ev.piment)}</span>` : '';
         card.innerHTML = `
           <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
-          <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span></div>
+          <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span>${pimentSpan}</div>
           <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
           ${animNamesList.length > 0 ? `<div class="event-anim">${animNamesList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
           ${ev.type ? `<div class="event-type">${esc(ev.type)}</div>` : ''}
@@ -2483,6 +2502,7 @@
               dureeH: Math.floor(ev.dureeMin / 60),
               dureeMin: ev.dureeMin % 60,
               type: ev.type,
+              piment: ev.piment || 0,
               animateurs: ev.animateurs,
               descFr: ev.descFr,
               descEn: ev.descEn
@@ -2609,6 +2629,7 @@
           endMin: iv.e,
           dureeMin: iv.e - iv.s,
           type: item.type || 'ATELIERS TANTRA',
+          piment: item.piment || 0,
           animateurs: anims,
           descFr: '',
           descEn: '',
@@ -2633,7 +2654,7 @@
         const anim4 = ev.animateurs[3] ? ((typeof REF_RESSOURCES !== 'undefined' && REF_RESSOURCES.find(r => String(r.id) === String(ev.animateurs[3]))) || {}).value || '' : '';
         const anim4Id = ev.animateurs[3] || '';
 
-        return `  {id:"${escJs(ev.atelierId || ev.id)}",jour:"${escJs(ev.jour)}",date:"${escJs(ev.date)}",heure:"${escJs(heureStr)}",type:"${escJs(ev.type)}",atelier:"${escJs(ev.nom)}",lieu:"${escJs(ev.lieu)}",fac1:"${escJs(anim1)}",fac1Id:"${escJs(anim1Id)}",fac2:"${escJs(anim2)}",fac2Id:"${escJs(anim2Id)}",fac3:"${escJs(anim3)}",fac3Id:"${escJs(anim3Id)}",fac4:"${escJs(anim4)}",fac4Id:"${escJs(anim4Id)}",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:1,colibri:false,logisticId:"",meetingRoles:"",locked:${ev.locked ? 'true' : 'false'}}`;
+        return `  {id:"${escJs(ev.atelierId || ev.id)}",jour:"${escJs(ev.jour)}",date:"${escJs(ev.date)}",heure:"${escJs(heureStr)}",type:"${escJs(ev.type)}",atelier:"${escJs(ev.nom)}",lieu:"${escJs(ev.lieu)}",fac1:"${escJs(anim1)}",fac1Id:"${escJs(anim1Id)}",fac2:"${escJs(anim2)}",fac2Id:"${escJs(anim2Id)}",fac3:"${escJs(anim3)}",fac3Id:"${escJs(anim3Id)}",fac4:"${escJs(anim4)}",fac4Id:"${escJs(anim4Id)}",traduction:"",helper1:"",helper2:"",helper3:"",helper4:"",angel:"",note:"",piment:${parseInt(ev.piment)||0},colibri:false,logisticId:"",meetingRoles:"",locked:${ev.locked ? 'true' : 'false'}}`;
       });
 
       return header + lines.join(',\n') + '\n];\n';
