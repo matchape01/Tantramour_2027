@@ -697,9 +697,9 @@ var LOGISTICS_SPECIAL = {
   },
 
   "JOUR2_MEDITATION_DU_MATIN": {
-    html: "",
-    text: "",
-    updatedAt: "2026-10-01 19:06"
+    html: "fhdfh",
+    text: "fhdfh",
+    updatedAt: "2026-10-01 21:46"
   },
 
   "JOUR2_DJ_SET": {
