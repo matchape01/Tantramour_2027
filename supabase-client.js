@@ -854,42 +854,58 @@ const supabaseClient = {
       throw new Error('Aucun item trouvé pour cette version — agenda non modifié.');
     }
 
-    // 2. Vider entièrement la table agenda
-    // Supabase requiert un filtre — on utilise id=not.is.null qui correspond à toutes les lignes
-    await this.request('/rest/v1/agenda?id=not.is.null', { method: 'DELETE' });
+    // 2. Lire l'agenda existant pour préserver les affectations (helpers, trad, angel, note…)
+    // Ces données sont indépendantes du planning et ne doivent pas être écrasées.
+    const existing = await this.request('/rest/v1/agenda?select=id,trad_id,helper1_id,helper2_id,helper3_id,helper4_id,angel_id,note,colibri,meeting_roles,locked');
+    const existingMap = {};
+    (existing || []).forEach(function(r) { existingMap[r.id] = r; });
 
-    // 3. Convertir et insérer les items dans agenda
+    // 3. Convertir start_min/end_min → "HH:MM - HH:MM"
     function minToHeure(s, e) {
       const pad = n => String(Math.floor(n)).padStart(2, '0');
-      const hS = pad(s / 60) + ':' + pad(s % 60);
-      const hE = pad(e / 60) + ':' + pad(e % 60);
-      return hS + ' - ' + hE;
+      return pad(s / 60) + ':' + pad(s % 60) + ' - ' + pad(e / 60) + ':' + pad(e % 60);
     }
 
-    const payload = items.map(it => ({
-      id:          it.atelier_id,          // id agenda = atelier_id (convention existante)
-      atelier_id:  it.atelier_id,
-      jour:        it.jour,
-      date_label:  it.date_label || '',
-      heure:       minToHeure(it.start_min, it.end_min),
-      lieu:        it.lieu || '',
-      fac1_id:     (it.animateurs && it.animateurs[0]) ? String(it.animateurs[0]) : '',
-      fac2_id:     (it.animateurs && it.animateurs[1]) ? String(it.animateurs[1]) : '',
-      fac3_id:     (it.animateurs && it.animateurs[2]) ? String(it.animateurs[2]) : '',
-      fac4_id:     (it.animateurs && it.animateurs[3]) ? String(it.animateurs[3]) : '',
-      trad_id:     '',
-      helper1_id:  '',
-      helper2_id:  '',
-      helper3_id:  '',
-      helper4_id:  '',
-      angel_id:    '',
-      note:        '',
-      colibri:     false,
-      meeting_roles: '',
-      locked:      Boolean(it.locked),
-      updated_at:  new Date().toISOString()
-    }));
+    // 4. Construire le payload fusionné :
+    //    - Planning (jour, heure, lieu, fac1..fac4) ← version
+    //    - Affectations (helpers, trad, angel, note…) ← agenda existant si présent
+    const payload = items.map(function(it) {
+      const prev = existingMap[it.atelier_id] || {};
+      return {
+        id:            it.atelier_id,
+        atelier_id:    it.atelier_id,
+        jour:          it.jour,
+        date_label:    it.date_label || '',
+        heure:         minToHeure(it.start_min, it.end_min),
+        lieu:          it.lieu || '',
+        fac1_id:       (it.animateurs && it.animateurs[0]) ? String(it.animateurs[0]) : '',
+        fac2_id:       (it.animateurs && it.animateurs[1]) ? String(it.animateurs[1]) : '',
+        fac3_id:       (it.animateurs && it.animateurs[2]) ? String(it.animateurs[2]) : '',
+        fac4_id:       (it.animateurs && it.animateurs[3]) ? String(it.animateurs[3]) : '',
+        // Affectations préservées depuis l'agenda existant
+        trad_id:       prev.trad_id    || '',
+        helper1_id:    prev.helper1_id || '',
+        helper2_id:    prev.helper2_id || '',
+        helper3_id:    prev.helper3_id || '',
+        helper4_id:    prev.helper4_id || '',
+        angel_id:      prev.angel_id   || '',
+        note:          prev.note       || '',
+        colibri:       Boolean(prev.colibri),
+        meeting_roles: prev.meeting_roles || '',
+        locked:        Boolean(it.locked),
+        updated_at:    new Date().toISOString()
+      };
+    });
 
+    // 5. Supprimer les entrées agenda qui ne sont plus dans la version
+    //    (ateliers retirés du planning)
+    const newIds = new Set(payload.map(function(p) { return p.id; }));
+    const toDelete = (existing || []).filter(function(r) { return !newIds.has(r.id); });
+    for (const r of toDelete) {
+      await this.request(`/rest/v1/agenda?id=eq.${encodeURIComponent(r.id)}`, { method: 'DELETE' });
+    }
+
+    // 6. Upsert : insert ou mise à jour des entrées fusionnées
     await this.request('/rest/v1/agenda', {
       method: 'POST',
       headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
