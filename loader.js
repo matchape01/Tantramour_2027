@@ -50,46 +50,50 @@ var _supabaseLoaders = {
       raw = await _sbFetch('/rest/v1/agenda?select=*&order=jour.asc,heure.asc');
     }
 
-    window.AGENDA = (raw || []).map(function(r) {
-      return {
-        id: r.id,
-        atelierId: r.atelier_id || r.id,
-        jour: r.jour,
-        date: r.date || r.date_label,
-        heure: r.heure,
-        type: r.type || '',
-        atelier: r.atelier || '',
-        atelierEn: r.atelier_en || '',
-        lieu: r.lieu || '',
-        fac1: r.fac1 || (r.fac1_id ? window.resolveName(r.fac1_id) : ''),
-        fac1Id: r.fac1_id || '',
-        fac2: r.fac2 || (r.fac2_id ? window.resolveName(r.fac2_id) : ''),
-        fac2Id: r.fac2_id || '',
-        fac3: r.fac3 || (r.fac3_id ? window.resolveName(r.fac3_id) : ''),
-        fac3Id: r.fac3_id || '',
-        fac4: r.fac4 || (r.fac4_id ? window.resolveName(r.fac4_id) : ''),
-        fac4Id: r.fac4_id || '',
-        traduction: r.traduction || (r.trad_id ? window.resolveName(r.trad_id) : ''),
-        tradId: r.trad_id || '',
-        helper1: r.helper1 || (r.helper1_id ? window.resolveName(r.helper1_id) : ''),
-        helper1Id: r.helper1_id || '',
-        helper2: r.helper2 || (r.helper2_id ? window.resolveName(r.helper2_id) : ''),
-        helper2Id: r.helper2_id || '',
-        helper3: r.helper3 || (r.helper3_id ? window.resolveName(r.helper3_id) : ''),
-        helper3Id: r.helper3_id || '',
-        helper4: r.helper4 || (r.helper4_id ? window.resolveName(r.helper4_id) : ''),
-        helper4Id: r.helper4_id || '',
-        angel: r.angel || (r.angel_id ? window.resolveName(r.angel_id) : ''),
-        angelId: r.angel_id || '',
-        note: r.note || '',
-        piment: r.piment || 0,
-        colibri: Boolean(r.colibri),
-        logisticId: r.logistic_id || '',
-        meetingRoles: r.meeting_roles || '',
-        statut: r.statut || 'APPROVED',
-        locked: Boolean(r.locked)
-      };
-    });
+    // AGENDA_ALL : toutes les entrées (NEW, APPROVED, REJECTED) — pour modules d'édition
+    // AGENDA     : uniquement APPROVED — pour tous les rapports opérationnels
+    var mapped = (raw || []).map(function(r) {
+        return {
+          id: r.id,
+          atelierId: r.atelier_id || r.id,
+          jour: r.jour,
+          date: r.date || r.date_label,
+          heure: r.heure,
+          type: r.type || '',
+          atelier: r.atelier || '',
+          atelierEn: r.atelier_en || '',
+          lieu: r.lieu || '',
+          fac1: r.fac1 || (r.fac1_id ? window.resolveName(r.fac1_id) : ''),
+          fac1Id: r.fac1_id || '',
+          fac2: r.fac2 || (r.fac2_id ? window.resolveName(r.fac2_id) : ''),
+          fac2Id: r.fac2_id || '',
+          fac3: r.fac3 || (r.fac3_id ? window.resolveName(r.fac3_id) : ''),
+          fac3Id: r.fac3_id || '',
+          fac4: r.fac4 || (r.fac4_id ? window.resolveName(r.fac4_id) : ''),
+          fac4Id: r.fac4_id || '',
+          traduction: r.traduction || (r.trad_id ? window.resolveName(r.trad_id) : ''),
+          tradId: r.trad_id || '',
+          helper1: r.helper1 || (r.helper1_id ? window.resolveName(r.helper1_id) : ''),
+          helper1Id: r.helper1_id || '',
+          helper2: r.helper2 || (r.helper2_id ? window.resolveName(r.helper2_id) : ''),
+          helper2Id: r.helper2_id || '',
+          helper3: r.helper3 || (r.helper3_id ? window.resolveName(r.helper3_id) : ''),
+          helper3Id: r.helper3_id || '',
+          helper4: r.helper4 || (r.helper4_id ? window.resolveName(r.helper4_id) : ''),
+          helper4Id: r.helper4_id || '',
+          angel: r.angel || (r.angel_id ? window.resolveName(r.angel_id) : ''),
+          angelId: r.angel_id || '',
+          note: r.note || '',
+          piment: r.piment || 0,
+          colibri: Boolean(r.colibri),
+          logisticId: r.logistic_id || '',
+          meetingRoles: r.meeting_roles || '',
+          statut: r.statut || 'APPROVED',
+          locked: Boolean(r.locked)
+        };
+      });
+    window.AGENDA_ALL = mapped;
+    window.AGENDA     = mapped.filter(function(e) { return e.statut === 'APPROVED'; });
   },
 
   // 2. Ateliers.js → ATELIERS

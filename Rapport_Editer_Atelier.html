@@ -392,6 +392,11 @@ document.addEventListener('change', function(evt) {
 if (typeof LOGISTICS_HELPERS === 'undefined') window.LOGISTICS_HELPERS = {};
 loadData(['ref_id_mapping.js', 'ref_translations.js', 'data.js', 'ref_descriptions.js', 'logistics.js', 'logistics.special.js', 'logistics.helpers.js', 'ref_consignes_type.js', 'ref_equipements.js', 'ref_equip_cat.js'], function() {
 
+// Ce module d'édition doit voir TOUS les ateliers (NEW, APPROVED, REJECTED).
+// On utilise AGENDA_ALL qui contient tous les statuts, contrairement à AGENDA
+// qui est filtré sur APPROVED pour les rapports opérationnels.
+if (typeof window.AGENDA_ALL !== 'undefined') window.AGENDA = window.AGENDA_ALL;
+
 // ══════════════════════════════════════════════
 // ÉTAT
 // ══════════════════════════════════════════════
