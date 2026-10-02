@@ -125,6 +125,16 @@ BEGIN
     CREATE POLICY "Anon full access ref_id_mapping" ON public.ref_id_mapping FOR ALL TO anon USING (true) WITH CHECK (true);
 END $$;
 
+-- Accorder explicitement les droits d'accès au rôle anon et recharger le cache schema
+GRANT ALL ON public.planning_versions TO anon, authenticated, service_role;
+GRANT ALL ON public.planning_version_items TO anon, authenticated, service_role;
+GRANT ALL ON public.festival_config TO anon, authenticated, service_role;
+GRANT ALL ON public.ref_display_reports TO anon, authenticated, service_role;
+GRANT ALL ON public.ref_id_mapping TO anon, authenticated, service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.ref_id_mapping_id_seq TO anon, authenticated, service_role;
+
+NOTIFY pgrst, 'reload schema';
+
 -- ============================================================================
 -- SEED INITIAL DES DONNÉES
 -- ============================================================================
