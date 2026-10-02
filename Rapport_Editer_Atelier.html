@@ -399,26 +399,21 @@ let selectedIdx = null;   // index dans AGENDA
 let editedData  = null;   // copie de travail de l'entrée en cours
 
 // ══════════════════════════════════════════════════════════════════════════════
-// SYSTÈME DE VERROUS COLLABORATIFS (locks.json)
+// SYSTÈME DE VERROUS COLLABORATIFS SQL (Supabase Native)
 // ══════════════════════════════════════════════════════════════════════════════
 //
 // Quand un utilisateur ouvre un atelier en édition :
-//   1. On vérifie si un verrou actif existe sur cet ID dans locks.json (GET API GitHub)
+//   1. On vérifie si un verrou actif existe sur cet ID dans Supabase SQL
 //   2. Si oui et non expiré → READ ONLY + bandeau "X est en train d'éditer"
-//   3. Si non → on acquiert le verrou (PUT locks.json avec notre entrée, TTL 5 min)
+//   3. Si non → on acquiert le verrou (table public.locks, TTL 5 min)
 //   4. Heartbeat toutes les 2 min pour renouveler le TTL tant que l'atelier est ouvert
 //   5. Libération : sauvegarde, annulation, sélection d'un autre atelier, fermeture de page
-//
-// locks.json : { "<atelierID>": { user, since, expires } }
-// Le fichier est dans le repo GitHub et partagé entre tous les utilisateurs.
 
-const LOCK_TTL_MS        = 5 * 60 * 1000;   // verrou expire après 5 min d'inactivité
+const LOCK_TTL_MINUTES   = 5;
 const LOCK_HEARTBEAT_MS  = 2 * 60 * 1000;   // renouvellement toutes les 2 min
-const LOCKS_FILE         = 'locks.json';
 
 let _lockHeldId     = null;   // ID de l'atelier dont on détient le verrou
 let _lockHeartbeat  = null;   // timer du heartbeat
-let _locksSha       = null;   // SHA de locks.json en cache (pour les PUT)
 let _isReadOnly     = false;  // true si l'atelier courant est verrouillé par quelqu'un d'autre
 
 // ── Nom d'utilisateur — demandé une fois, stocké dans localStorage ────────────
@@ -431,117 +426,57 @@ function _getLockUserName() {
   return localStorage.getItem('tm_user_name') || 'Anonyme';
 }
 
-// ── Récupérer locks.json frais depuis l'API GitHub ───────────────────────────
-async function _fetchLocks() {
-  try {
-    const token  = localStorage.getItem('tm_gh_token');
-    const apiUrl = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO +
-                   '/contents/' + LOCKS_FILE + '?ref=' + GITHUB_BRANCH + '&_t=' + Date.now();
-    const headers = { 'Accept': 'application/vnd.github+json', 'If-None-Match': '' };
-    if (token) headers['Authorization'] = 'token ' + token;
-    const res = await fetch(apiUrl, { headers: headers, cache: 'no-store' });
-    if (!res.ok) return { locks: {}, sha: null };
-    const data    = await res.json();
-    _locksSha     = data.sha || null;
-    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
-    return { locks: JSON.parse(content), sha: _locksSha };
-  } catch(_) {
-    return { locks: {}, sha: _locksSha };
-  }
-}
-
-// ── Écrire locks.json sur GitHub ─────────────────────────────────────────────
-async function _writeLocks(locksObj) {
-  try {
-    const token = localStorage.getItem('tm_gh_token');
-    if (!token) return;   // sans token on ne peut pas écrire — pas critique
-    const content = JSON.stringify(locksObj, null, 2);
-    const encoded = btoa(unescape(encodeURIComponent(content)));
-    const apiUrl  = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO +
-                    '/contents/' + LOCKS_FILE;
-    const body = {
-      message: '[Tantramour locks] ' + (_lockHeldId || '?'),
-      content: encoded,
-      branch:  GITHUB_BRANCH,
-    };
-    if (_locksSha) body.sha = _locksSha;
-    const res = await fetch(apiUrl, {
-      method:  'PUT',
-      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      _locksSha = (d.content && d.content.sha) || _locksSha;
-    } else if (res.status === 409 || res.status === 422) {
-      // SHA périmé → refetch et réessayer une fois
-      const fresh = await _fetchLocks();
-      _locksSha = fresh.sha;
-      await _writeLocks(locksObj);
-    }
-  } catch(_) { /* écriture de verrou non critique */ }
-}
-
 // ── Vérifier si un atelier est verrouillé par quelqu'un d'autre ──────────────
-// Retourne { locked: bool, locker: string } — locker = prénom de l'occupant
 async function checkLock(atelierID) {
-  if (!atelierID) return { locked: false, locker: '' };
-  // En local : pas de verrou (conflit impossible sur un seul poste)
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return { locked: false, locker: '' };
-  const me = _getLockUserName();
-  const { locks } = await _fetchLocks();
-  const entry = locks[atelierID];
-  if (!entry) return { locked: false, locker: '' };
-  // Expiration : ignorer les verrous périmés
-  if (entry.expires && Date.now() > new Date(entry.expires).getTime()) return { locked: false, locker: '' };
-  // C'est notre propre verrou (même prénom) → pas de blocage
-  if (entry.user === me) return { locked: false, locker: '' };
-  return { locked: true, locker: entry.user || 'quelqu\'un' };
+  if (!atelierID || typeof supabaseClient === 'undefined') return { locked: false, locker: '' };
+  try {
+    const me = _getLockUserName();
+    const lockInfo = await supabaseClient.checkLock(atelierID);
+    if (!lockInfo || !lockInfo.isLocked) return { locked: false, locker: '' };
+    if (lockInfo.user === me) return { locked: false, locker: '' }; // C'est nous
+    return { locked: true, locker: lockInfo.user || 'quelqu\'un' };
+  } catch(e) {
+    console.warn('[checkLock] Erreur Supabase:', e);
+    return { locked: false, locker: '' };
+  }
 }
 
 // ── Acquérir le verrou sur un atelier ────────────────────────────────────────
 async function acquireLock(atelierID) {
-  if (!atelierID) return;
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
-  const me = _getLockUserName();
-  const { locks } = await _fetchLocks();
-  const now     = new Date();
-  const expires = new Date(now.getTime() + LOCK_TTL_MS);
-  locks[atelierID] = { user: me, since: now.toISOString(), expires: expires.toISOString() };
-  // Libérer l'éventuel ancien verrou tenu sur un autre atelier
-  if (_lockHeldId && _lockHeldId !== atelierID) delete locks[_lockHeldId];
-  _lockHeldId = atelierID;
-  await _writeLocks(locks);
-  // Démarrer le heartbeat
-  _stopHeartbeat();
-  _lockHeartbeat = setInterval(function() { _renewLock(atelierID); }, LOCK_HEARTBEAT_MS);
+  if (!atelierID || typeof supabaseClient === 'undefined') return;
+  try {
+    const me = _getLockUserName();
+    if (_lockHeldId && _lockHeldId !== atelierID) {
+      await releaseLock(_lockHeldId);
+    }
+    _lockHeldId = atelierID;
+    await supabaseClient.acquireLock(atelierID, me, LOCK_TTL_MINUTES);
+
+    _stopHeartbeat();
+    _lockHeartbeat = setInterval(function() { _renewLock(atelierID); }, LOCK_HEARTBEAT_MS);
+  } catch(e) {
+    console.warn('[acquireLock] Erreur:', e);
+  }
 }
 
 // ── Renouveler le verrou (heartbeat) ─────────────────────────────────────────
 async function _renewLock(atelierID) {
-  if (!atelierID || _lockHeldId !== atelierID) return;
-  const me = _getLockUserName();
-  const { locks } = await _fetchLocks();
-  if (!locks[atelierID] || locks[atelierID].user !== me) return; // verrou perdu
-  const expires = new Date(Date.now() + LOCK_TTL_MS);
-  locks[atelierID].expires = expires.toISOString();
-  await _writeLocks(locks);
+  if (!atelierID || _lockHeldId !== atelierID || typeof supabaseClient === 'undefined') return;
+  try {
+    const me = _getLockUserName();
+    await supabaseClient.acquireLock(atelierID, me, LOCK_TTL_MINUTES);
+  } catch(e) {}
 }
 
 // ── Libérer le verrou ─────────────────────────────────────────────────────────
 async function releaseLock(atelierID) {
-  if (!atelierID) return;
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+  if (!atelierID || typeof supabaseClient === 'undefined') return;
   _stopHeartbeat();
-  _lockHeldId = null;
+  if (_lockHeldId === atelierID) _lockHeldId = null;
   try {
     const me = _getLockUserName();
-    const { locks } = await _fetchLocks();
-    if (locks[atelierID] && locks[atelierID].user === me) {
-      delete locks[atelierID];
-      await _writeLocks(locks);
-    }
-  } catch(_) {}
+    await supabaseClient.releaseLock(atelierID, me);
+  } catch(e) {}
 }
 
 function _stopHeartbeat() {
@@ -550,11 +485,16 @@ function _stopHeartbeat() {
 
 // ── Libération automatique à la fermeture de l'onglet ────────────────────────
 window.addEventListener('beforeunload', function() {
-  // Libération synchrone best-effort (sendBeacon n'est pas utilisable ici
-  // car on écrit sur l'API GitHub — on tente juste de stopper le heartbeat)
   _stopHeartbeat();
-  // Tentative de libération fire-and-forget (pas attendue — le TTL de 5 min prendra le relais)
-  if (_lockHeldId) releaseLock(_lockHeldId);
+  if (_lockHeldId && typeof supabaseClient !== 'undefined') {
+    const me = _getLockUserName();
+    const url = `${supabaseClient.url}/rest/v1/locks?atelier_id=eq.${encodeURIComponent(_lockHeldId)}&user_name=eq.${encodeURIComponent(me)}`;
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url, '');
+    } else {
+      releaseLock(_lockHeldId);
+    }
+  }
 });
 
 // ── Bandeau READ ONLY ─────────────────────────────────────────────────────────

@@ -401,6 +401,249 @@ const supabaseClient = {
       headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
       body: JSON.stringify(payload)
     });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 8. LIEUX (public.ref_lieux)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getLieux() {
+    const data = await this.request('/rest/v1/ref_lieux?select=*&order=ordre.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      label: r.label,
+      nomOfficiel: r.nom_officiel || '',
+      description: r.description || '',
+      capacite: r.capacite || 0,
+      ordre: r.ordre || 0
+    }));
+  },
+
+  async upsertLieu(lieu) {
+    const payload = {
+      id: lieu.id,
+      value: lieu.value,
+      label: lieu.label,
+      nom_officiel: lieu.nomOfficiel || '',
+      description: lieu.description || '',
+      capacite: lieu.capacite || 0,
+      ordre: lieu.ordre || 0,
+      updated_at: new Date().toISOString()
+    };
+    return await this.request('/rest/v1/ref_lieux', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async deleteLieu(id) {
+    return await this.request(`/rest/v1/ref_lieux?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 9. TYPES D'ATELIERS (public.ref_types)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getTypes() {
+    const data = await this.request('/rest/v1/ref_types?select=*&order=id.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      label: r.label,
+      minRes: r.min_res || 0,
+      minHelpers: r.min_helpers || 0,
+      minTrad: r.min_trad || 0,
+      tradCounts: r.trad_counts || 0,
+      showInProgramme: r.show_in_programme !== undefined ? r.show_in_programme : 1,
+      cssClass: r.css_class || 't-other',
+      color: r.color || '#374151',
+      colorBg: r.color_bg || '#f9fafb',
+      colorBd: r.color_bd || '#9ca3af',
+      colorDark: r.color_dark || '#9ca3af',
+      colorBgDk: r.color_bg_dk || '#1a1d20',
+      colorBdDk: r.color_bd_dk || '#4b5563'
+    }));
+  },
+
+  async upsertType(t) {
+    const payload = {
+      id: t.id,
+      value: t.value,
+      label: t.label,
+      min_res: t.minRes || 0,
+      min_helpers: t.minHelpers || 0,
+      min_trad: t.minTrad || 0,
+      trad_counts: t.tradCounts || 0,
+      show_in_programme: t.showInProgramme !== undefined ? t.showInProgramme : 1,
+      css_class: t.cssClass || 't-other',
+      color: t.color || '#374151',
+      color_bg: t.colorBg || '#f9fafb',
+      color_bd: t.colorBd || '#9ca3af',
+      color_dark: t.colorDark || '#9ca3af',
+      color_bg_dk: t.colorBgDk || '#1a1d20',
+      color_bd_dk: t.colorBdDk || '#4b5563',
+      updated_at: new Date().toISOString()
+    };
+    return await this.request('/rest/v1/ref_types', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async deleteType(id) {
+    return await this.request(`/rest/v1/ref_types?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 10. CONSIGNES (public.ref_consignes)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getConsignes(categorie) {
+    const endpoint = categorie
+      ? `/rest/v1/ref_consignes?categorie=eq.${encodeURIComponent(categorie)}&order=id.asc`
+      : '/rest/v1/ref_consignes?select=*&order=id.asc';
+    const data = await this.request(endpoint);
+    return (data || []).map(r => ({
+      id: r.id,
+      categorie: r.categorie,
+      valueFr: r.value_fr,
+      valueEn: r.value_en || '',
+      descriptif: r.descriptif || '',
+      placements: r.placements || [],
+      types: r.types || [],
+      actif: Boolean(r.actif)
+    }));
+  },
+
+  async upsertConsigne(c) {
+    const payload = {
+      id: c.id,
+      categorie: c.categorie || 'type',
+      value_fr: c.valueFr,
+      value_en: c.valueEn || '',
+      descriptif: c.descriptif || '',
+      placements: c.placements || [],
+      types: c.types || [],
+      actif: c.actif !== undefined ? Boolean(c.actif) : true,
+      updated_at: new Date().toISOString()
+    };
+    return await this.request('/rest/v1/ref_consignes', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async deleteConsigne(id) {
+    return await this.request(`/rest/v1/ref_consignes?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 11. JOURS (public.ref_jours)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getJours() {
+    const data = await this.request('/rest/v1/ref_jours?select=*&order=ordre.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      label: r.label,
+      date: r.date_label,
+      ordre: r.ordre || 0
+    }));
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 12. CATÉGORIES ÉQUIPEMENTS (public.ref_equip_categories)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getEquipCategories() {
+    const data = await this.request('/rest/v1/ref_equip_categories?select=*&order=ordre.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      ordre: r.ordre || 0
+    }));
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 13. TYPES DE RESSOURCES (public.ref_resource_types)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getResourceTypes() {
+    const data = await this.request('/rest/v1/ref_resource_types?select=*');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      label: r.label,
+      icon: r.icon || ''
+    }));
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 14. PIMENT (public.ref_piment)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getPiments() {
+    const data = await this.request('/rest/v1/ref_piment?select=*&order=value.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      label: r.label
+    }));
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 15. VERROUS TEMPS RÉEL (public.locks)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async checkLock(atelierId) {
+    const nowIso = new Date().toISOString();
+    const data = await this.request(`/rest/v1/locks?atelier_id=eq.${encodeURIComponent(atelierId)}&expires_at=gt.${encodeURIComponent(nowIso)}`);
+    if (data && data.length > 0) {
+      return {
+        isLocked: true,
+        user: data[0].user_name,
+        acquiredAt: data[0].acquired_at,
+        expiresAt: data[0].expires_at
+      };
+    }
+    return { isLocked: false };
+  },
+
+  async acquireLock(atelierId, userName, ttlMinutes = 5) {
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + ttlMinutes * 60000).toISOString();
+    const payload = {
+      atelier_id: atelierId,
+      user_name: userName,
+      acquired_at: now.toISOString(),
+      expires_at: expiresAt
+    };
+    return await this.request('/rest/v1/locks', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async releaseLock(atelierId, userName) {
+    let url = `/rest/v1/locks?atelier_id=eq.${encodeURIComponent(atelierId)}`;
+    if (userName) {
+      url += `&user_name=eq.${encodeURIComponent(userName)}`;
+    }
+    return await this.request(url, {
+      method: 'DELETE'
+    });
   }
 };
 

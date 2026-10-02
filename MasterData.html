@@ -763,10 +763,11 @@
 <script src="ref_consignes_recurrentes.js"></script>
 <script src="ref_pause_massage.js"></script>
 <script src="ref_type_colors.js"></script>
+<script src="supabase-client.js"></script>
 <script src="github-api.js"></script>
 <script src="loader.js"></script>
 <script>
-loadData(['ref_id_mapping.js', 'ref_translations.js', 'ref_type_colors.js', 'data.js'], function() {
+loadData(['ref_lieux.js', 'ref_types.js', 'ref_type_colors.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js', 'ref_jours.js', 'ref_equip_cat.js', 'ref_resource_types.js', 'ref_piment.js', 'ref_id_mapping.js', 'ref_translations.js', 'data.js'], function() {
 
 // ════════════════════════════════════════════════════════════
 // CONFIGURATION DES RÉFÉRENTIELS
@@ -1849,6 +1850,32 @@ function genDataJs() {
 // saveToServer() délègue à saveFile() de github-api.js (point d'entrée unique,
 // détection automatique local/GitHub Pages + détection de conflit multi-utilisateurs).
 async function saveToServer(filename, content) {
+  // Synchronisation Supabase si disponible
+  try {
+    if (typeof supabaseClient !== 'undefined') {
+      if (filename === 'ref_lieux.js' && window.REF_LIEUX) {
+        for (var l of window.REF_LIEUX) {
+          await supabaseClient.upsertLieu(l);
+        }
+      } else if (filename === 'ref_types.js' && window.REF_TYPES) {
+        for (var t of window.REF_TYPES) {
+          await supabaseClient.upsertType(t);
+        }
+      } else if (filename === 'ref_consignes_type.js' && window.REF_CONSIGNES_TYPE) {
+        for (var ct of window.REF_CONSIGNES_TYPE) {
+          ct.categorie = 'type';
+          await supabaseClient.upsertConsigne(ct);
+        }
+      } else if (filename === 'ref_consignes_recurrentes.js' && window.REF_CONSIGNES_RECURRENTES) {
+        for (var cr of window.REF_CONSIGNES_RECURRENTES) {
+          cr.categorie = 'recurrente';
+          await supabaseClient.upsertConsigne(cr);
+        }
+      }
+    }
+  } catch(err) {
+    console.warn('[MasterData] Synchro Supabase:', err.message);
+  }
   return saveFile(filename, content);
 }
 

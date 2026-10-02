@@ -217,6 +217,139 @@ var _supabaseLoaders = {
         updatedAt: r.updated_at
       };
     });
+  },
+
+  // 8. ref_lieux.js → REF_LIEUX
+  'ref_lieux.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_lieux?select=*&order=ordre.asc');
+    window.REF_LIEUX = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        label: r.label,
+        nomOfficiel: r.nom_officiel || '',
+        description: r.description || '',
+        capacite: r.capacite || 0
+      };
+    });
+  },
+
+  // 9. ref_types.js / ref_type_colors.js → REF_TYPES & REF_TYPE_COLORS
+  '_types_and_colors': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_types?select=*&order=id.asc');
+    window.REF_TYPES = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        label: r.label,
+        minRes: r.min_res || 0,
+        minHelpers: r.min_helpers || 0,
+        minTrad: r.min_trad || 0,
+        tradCounts: r.trad_counts || 0,
+        showInProgramme: r.show_in_programme !== undefined ? r.show_in_programme : 1
+      };
+    });
+
+    // Reconstitution de REF_TYPE_COLORS si non encore défini ou depuis DB
+    window.REF_TYPE_COLORS = (raw || []).map(function(r) {
+      return {
+        cssClass: r.css_class || 't-other',
+        label: r.label,
+        types: [r.value],
+        color: r.color || '#374151',
+        colorBg: r.color_bg || '#f9fafb',
+        colorBd: r.color_bd || '#9ca3af',
+        colorDark: r.color_dark || '#9ca3af',
+        colorBgDk: r.color_bg_dk || '#1a1d20',
+        colorBdDk: r.color_bd_dk || '#4b5563'
+      };
+    });
+  },
+  'ref_types.js': async function() {
+    return await _supabaseLoaders['_types_and_colors']();
+  },
+  'ref_type_colors.js': async function() {
+    return await _supabaseLoaders['_types_and_colors']();
+  },
+
+  // 10. ref_consignes_type.js / ref_consignes_recurrentes.js → REF_CONSIGNES_TYPE & REF_CONSIGNES_RECURRENTES
+  '_consignes_all': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_consignes?select=*&order=id.asc');
+    window.REF_CONSIGNES_TYPE = [];
+    window.REF_CONSIGNES_RECURRENTES = [];
+
+    (raw || []).forEach(function(r) {
+      var item = {
+        id: r.id,
+        valueFr: r.value_fr,
+        valueEn: r.value_en || '',
+        descriptif: r.descriptif || '',
+        placements: r.placements || [],
+        types: r.types || [],
+        actif: Boolean(r.actif)
+      };
+      if (r.categorie === 'type') {
+        window.REF_CONSIGNES_TYPE.push(item);
+      } else {
+        window.REF_CONSIGNES_RECURRENTES.push(item);
+      }
+    });
+  },
+  'ref_consignes_type.js': async function() {
+    return await _supabaseLoaders['_consignes_all']();
+  },
+  'ref_consignes_recurrentes.js': async function() {
+    return await _supabaseLoaders['_consignes_all']();
+  },
+
+  // 11. ref_jours.js → REF_JOURS
+  'ref_jours.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_jours?select=*&order=ordre.asc');
+    window.REF_JOURS = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        label: r.label,
+        date: r.date_label
+      };
+    });
+  },
+
+  // 12. ref_equip_cat.js → REF_EQUIP_CAT
+  'ref_equip_cat.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_equip_categories?select=*&order=ordre.asc');
+    window.REF_EQUIP_CAT = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        ordre: r.ordre || 0
+      };
+    });
+  },
+
+  // 13. ref_resource_types.js → REF_RESOURCE_TYPES
+  'ref_resource_types.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_resource_types?select=*');
+    window.REF_RESOURCE_TYPES = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        label: r.label,
+        icon: r.icon || ''
+      };
+    });
+  },
+
+  // 14. ref_piment.js → REF_PIMENT
+  'ref_piment.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_piment?select=*&order=value.asc');
+    window.REF_PIMENT = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        label: r.label
+      };
+    });
   }
 };
 
@@ -236,37 +369,88 @@ function _loadScriptFile(filename, onDone) {
 // ── API Publique Principale : loadData(files, callback) ────────────────────────
 async function loadData(files, callback) {
   var logHandled = false;
+  var typesHandled = false;
+  var consignesHandled = false;
 
-  // Toujours s'assurer que les ressources sont disponibles pour la résolution des noms
+  var promises = [];
+  var fallbackFiles = [];
+
+  // Toujours s'assurer que les ressources sont chargées pour la résolution des noms
   if (typeof REF_RESSOURCES === 'undefined' || !REF_RESSOURCES || !REF_RESSOURCES.length) {
-    try {
-      await _supabaseLoaders['ref_ressources.js']();
-    } catch(e) {}
+    if (files.indexOf('ref_ressources.js') === -1) {
+      promises.push(_supabaseLoaders['ref_ressources.js']().catch(function(e) {
+        console.warn('[loader] Supabase ref_ressources fallback:', e.message);
+      }));
+    }
   }
 
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
-    if (file === 'ref_ressources.js') continue; // Déjà chargé
 
-    try {
-      if (file === 'logistics.js' || file === 'logistics.special.js' || file === 'logistics.helpers.js') {
-        if (!logHandled) {
-          await _supabaseLoaders['_logistics_all']();
-          logHandled = true;
-        }
-      } else if (_supabaseLoaders[file]) {
-        await _supabaseLoaders[file]();
-      } else {
-        await new Promise(function(resolve) {
-          _loadScriptFile(file, resolve);
-        });
+    if (file === 'logistics.js' || file === 'logistics.special.js' || file === 'logistics.helpers.js') {
+      if (!logHandled) {
+        logHandled = true;
+        promises.push(
+          _supabaseLoaders['_logistics_all']().catch(function(e) {
+            console.warn('[loader] Supabase logistics fallback:', e.message);
+            return Promise.all([
+              new Promise(function(res) { _loadScriptFile('logistics.js', res); }),
+              new Promise(function(res) { _loadScriptFile('logistics.special.js', res); }),
+              new Promise(function(res) { _loadScriptFile('logistics.helpers.js', res); })
+            ]);
+          })
+        );
       }
-    } catch (err) {
-      console.warn('[loader] Erreur chargement ' + file + ' depuis Supabase (' + err.message + ') → essai local');
-      await new Promise(function(resolve) {
-        _loadScriptFile(file, resolve);
-      });
+    } else if (file === 'ref_types.js' || file === 'ref_type_colors.js') {
+      if (!typesHandled) {
+        typesHandled = true;
+        promises.push(
+          _supabaseLoaders['_types_and_colors']().catch(function(e) {
+            console.warn('[loader] Supabase types fallback:', e.message);
+            return Promise.all([
+              new Promise(function(res) { _loadScriptFile('ref_types.js', res); }),
+              new Promise(function(res) { _loadScriptFile('ref_type_colors.js', res); })
+            ]);
+          })
+        );
+      }
+    } else if (file === 'ref_consignes_type.js' || file === 'ref_consignes_recurrentes.js') {
+      if (!consignesHandled) {
+        consignesHandled = true;
+        promises.push(
+          _supabaseLoaders['_consignes_all']().catch(function(e) {
+            console.warn('[loader] Supabase consignes fallback:', e.message);
+            return Promise.all([
+              new Promise(function(res) { _loadScriptFile('ref_consignes_type.js', res); }),
+              new Promise(function(res) { _loadScriptFile('ref_consignes_recurrentes.js', res); })
+            ]);
+          })
+        );
+      }
+    } else if (_supabaseLoaders[file]) {
+      (function(f) {
+        promises.push(
+          _supabaseLoaders[f]().catch(function(err) {
+            console.warn('[loader] Erreur chargement ' + f + ' depuis Supabase (' + err.message + ') → essai local');
+            return new Promise(function(resolve) {
+              _loadScriptFile(f, resolve);
+            });
+          })
+        );
+      })(file);
+    } else {
+      fallbackFiles.push(file);
     }
+  }
+
+  // Exécution parallèle ultra-rapide des loaders Supabase
+  await Promise.all(promises);
+
+  // Exécution séquentielle/parallèle des scripts statiques purs restants (ex: template_config.js, etc.)
+  if (fallbackFiles.length > 0) {
+    await Promise.all(fallbackFiles.map(function(f) {
+      return new Promise(function(res) { _loadScriptFile(f, res); });
+    }));
   }
 
   if (typeof callback === 'function') {
