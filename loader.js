@@ -350,6 +350,43 @@ var _supabaseLoaders = {
         label: r.label
       };
     });
+  },
+
+  // 15. ref_heures.js → REF_HEURES
+  'ref_heures.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_heures?select=*&order=ordre.asc');
+    window.REF_HEURES = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value
+      };
+    });
+  },
+
+  // 16. ref_notes.js → REF_NOTES
+  'ref_notes.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_notes?select=*&order=id.asc');
+    window.REF_NOTES = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        value: r.value,
+        valueEn: r.value_en || ''
+      };
+    });
+  },
+
+  // 17. ref_pause_massage.js → REF_PAUSE_MASSAGE
+  'ref_pause_massage.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_pause_massage?select=*&order=id.asc');
+    window.REF_PAUSE_MASSAGE = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        jourId: r.jour_id,
+        textFr: r.text_fr || '',
+        textEn: r.text_en || '',
+        actif: Boolean(r.actif)
+      };
+    });
   }
 };
 

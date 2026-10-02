@@ -644,6 +644,77 @@ const supabaseClient = {
     return await this.request(url, {
       method: 'DELETE'
     });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 16. HEURES (public.ref_heures)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getHeures() {
+    const data = await this.request('/rest/v1/ref_heures?select=*&order=ordre.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      ordre: r.ordre || 0
+    }));
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 17. NOTES (public.ref_notes)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getNotes() {
+    const data = await this.request('/rest/v1/ref_notes?select=*&order=id.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      value: r.value,
+      valueEn: r.value_en || ''
+    }));
+  },
+
+  async upsertNote(n) {
+    const payload = {
+      id: n.id,
+      value: n.value,
+      value_en: n.valueEn || n.value_en || '',
+      updated_at: new Date().toISOString()
+    };
+    return await this.request('/rest/v1/ref_notes', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 18. PAUSE MASSAGE (public.ref_pause_massage)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getPauseMassage() {
+    const data = await this.request('/rest/v1/ref_pause_massage?select=*&order=id.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      jourId: r.jour_id,
+      textFr: r.text_fr || '',
+      textEn: r.text_en || '',
+      actif: Boolean(r.actif)
+    }));
+  },
+
+  async upsertPauseMassage(pm) {
+    const payload = {
+      id: pm.id,
+      jour_id: pm.jourId || pm.jour_id,
+      text_fr: pm.textFr || pm.text_fr || '',
+      text_en: pm.textEn || pm.text_en || '',
+      actif: pm.actif !== undefined ? Boolean(pm.actif) : true,
+      updated_at: new Date().toISOString()
+    };
+    return await this.request('/rest/v1/ref_pause_massage', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
   }
 };
 
