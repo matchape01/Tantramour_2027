@@ -3340,7 +3340,7 @@
         toast(`⛔ La version "${alreadyValid.versionLabel}" est déjà validée.`, true);
         return;
       }
-      if (!confirm('Valider définitivement cette version ?\nUne seule version peut être validée à la fois.')) return;
+      if (!confirm('Valider définitivement cette version ?\nCette action publiera les ateliers de cette version dans l\'agenda opérationnel.\nUne seule version peut être validée à la fois.')) return;
       const idx = versions.findIndex(v => v.id === versionId);
       if (idx === -1) return;
       versions[idx].status = 'Validé';
@@ -3348,6 +3348,24 @@
       versions[idx].validatedBy = 'Admin';
       versions[idx].updatedAt = nowIso();
       await saveVersions(versions);
+
+      // ── Publication : copie les items de cette version dans agenda ──────────
+      // Les ateliers de cette version deviennent les données opérationnelles
+      // visibles dans tous les rapports (Programme, Planning, Agenda, etc.)
+      if (typeof supabaseClient !== 'undefined') {
+        try {
+          toast(`⏳ Publication de la version dans l'agenda…`);
+          const nb = await supabaseClient.publishVersionToAgenda(versionId);
+          toast(`✅ Version "${versions[idx].versionLabel}" validée — ${nb} ateliers publiés dans l'agenda.`);
+        } catch(err) {
+          console.error('[validerVersion] Erreur publication agenda:', err);
+          toast(`⚠️ Version validée mais erreur publication agenda : ${err.message}`, true);
+        }
+      } else {
+        toast(`✅ Version "${versions[idx].versionLabel}" validée définitivement.`);
+      }
+      // ────────────────────────────────────────────────────────────────────────
+
       if (CURRENT_VERSION_ID === versionId) {
         renderVersionBanner(versions[idx]);
         document.getElementById('navbarTitle').textContent = `${versions[idx].versionLabel} — Validé`;
@@ -3357,7 +3375,6 @@
         if (btnSave)   btnSave.style.display   = 'none';
         if (btnSubmit) btnSubmit.style.display = 'none';
       }
-      toast(`✅ Version "${versions[idx].versionLabel}" validée définitivement.`);
     }
 
     // ─────────────────────────────────────────────────────────────

@@ -837,6 +837,69 @@ const supabaseClient = {
   },
 
   // ══════════════════════════════════════════════════════════════════════════
+  // 19b. PUBLICATION : copie planning_version_items → agenda
+  // ══════════════════════════════════════════════════════════════════════════
+  // Appelée quand une version passe au statut "Validé".
+  // Remplace intégralement le contenu d'agenda par les items de la version.
+  // Conversion : start_min/end_min → heure "HH:MM - HH:MM"
+  //              animateurs[]     → fac1_id…fac4_id
+  // ──────────────────────────────────────────────────────────────────────────
+
+  async publishVersionToAgenda(versionId) {
+    // 1. Récupérer les items de cette version
+    const items = await this.request(
+      `/rest/v1/planning_version_items?version_id=eq.${encodeURIComponent(versionId)}&select=*`
+    );
+    if (!items || items.length === 0) {
+      throw new Error('Aucun item trouvé pour cette version — agenda non modifié.');
+    }
+
+    // 2. Vider entièrement la table agenda
+    // Supabase requiert un filtre — on utilise id=not.is.null qui correspond à toutes les lignes
+    await this.request('/rest/v1/agenda?id=not.is.null', { method: 'DELETE' });
+
+    // 3. Convertir et insérer les items dans agenda
+    function minToHeure(s, e) {
+      const pad = n => String(Math.floor(n)).padStart(2, '0');
+      const hS = pad(s / 60) + ':' + pad(s % 60);
+      const hE = pad(e / 60) + ':' + pad(e % 60);
+      return hS + ' - ' + hE;
+    }
+
+    const payload = items.map(it => ({
+      id:          it.atelier_id,          // id agenda = atelier_id (convention existante)
+      atelier_id:  it.atelier_id,
+      jour:        it.jour,
+      date_label:  it.date_label || '',
+      heure:       minToHeure(it.start_min, it.end_min),
+      lieu:        it.lieu || '',
+      fac1_id:     (it.animateurs && it.animateurs[0]) ? String(it.animateurs[0]) : '',
+      fac2_id:     (it.animateurs && it.animateurs[1]) ? String(it.animateurs[1]) : '',
+      fac3_id:     (it.animateurs && it.animateurs[2]) ? String(it.animateurs[2]) : '',
+      fac4_id:     (it.animateurs && it.animateurs[3]) ? String(it.animateurs[3]) : '',
+      trad_id:     '',
+      helper1_id:  '',
+      helper2_id:  '',
+      helper3_id:  '',
+      helper4_id:  '',
+      angel_id:    '',
+      note:        '',
+      colibri:     false,
+      meeting_roles: '',
+      locked:      Boolean(it.locked),
+      updated_at:  new Date().toISOString()
+    }));
+
+    await this.request('/rest/v1/agenda', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+
+    return payload.length;
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
   // 20. CONFIGURATION DU FESTIVAL (public.festival_config)
   // ══════════════════════════════════════════════════════════════════════════
 
