@@ -250,7 +250,7 @@ var _supabaseLoaders = {
       };
     });
 
-    // Reconstitution de REF_TYPE_COLORS si non encore défini ou depuis DB
+    // Reconstitution de REF_TYPE_COLORS depuis DB
     window.REF_TYPE_COLORS = (raw || []).map(function(r) {
       return {
         cssClass: r.css_class || 't-other',
@@ -264,6 +264,46 @@ var _supabaseLoaders = {
         colorBdDk: r.color_bd_dk || '#4b5563'
       };
     });
+
+    // Définir les fonctions utilitaires couleur si elles ne sont pas déjà
+    // présentes (cas où ref_type_colors.js n'est pas chargé en mode Supabase)
+    if (typeof window.buildTypeCssVars !== 'function') {
+      window.buildTypeCssVars = function() {
+        var light = '', dark = '';
+        (window.REF_TYPE_COLORS || []).forEach(function(e) {
+          var n = e.cssClass.replace('t-', '');
+          light += '--c-' + n + ':' + e.color    + ';';
+          light += '--c-' + n + '-bg:' + e.colorBg  + ';';
+          light += '--c-' + n + '-bd:' + e.colorBd  + ';';
+          dark  += '--c-' + n + ':' + e.colorDark  + ';';
+          dark  += '--c-' + n + '-bg:' + e.colorBgDk + ';';
+          dark  += '--c-' + n + '-bd:' + e.colorBdDk + ';';
+        });
+        return ':root{' + light + '} .dark{' + dark + '}';
+      };
+    }
+
+    if (typeof window.typeColorClass !== 'function') {
+      window.typeColorClass = function(type) {
+        if (!type || !window.REF_TYPE_COLORS) return 't-other';
+        for (var i = 0; i < window.REF_TYPE_COLORS.length; i++) {
+          if (window.REF_TYPE_COLORS[i].types.indexOf(type) !== -1)
+            return window.REF_TYPE_COLORS[i].cssClass;
+        }
+        return 't-other';
+      };
+    }
+
+    if (typeof window.typeColorHex !== 'function') {
+      window.typeColorHex = function(type, dark) {
+        if (!type || !window.REF_TYPE_COLORS) return dark ? '#9ca3af' : '#374151';
+        for (var i = 0; i < window.REF_TYPE_COLORS.length; i++) {
+          var e = window.REF_TYPE_COLORS[i];
+          if (e.types.indexOf(type) !== -1) return dark ? e.colorDark : e.color;
+        }
+        return dark ? '#9ca3af' : '#374151';
+      };
+    }
   },
   'ref_types.js': async function() {
     return await _supabaseLoaders['_types_and_colors']();

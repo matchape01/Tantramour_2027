@@ -1861,6 +1861,29 @@ async function saveToServer(filename, content) {
         for (var t of window.REF_TYPES) {
           await supabaseClient.upsertType(t);
         }
+      } else if (filename === 'ref_type_colors.js' && window.REF_TYPE_COLORS) {
+        // Les couleurs sont stockées dans ref_types (colonnes css_class, color, …)
+        // On construit un objet type fusionné : on cherche dans REF_TYPES par cssClass/types
+        for (var tc of window.REF_TYPE_COLORS) {
+          // Chaque entrée REF_TYPE_COLORS peut couvrir plusieurs types (tc.types[])
+          // → on met à jour chaque REF_TYPES correspondant
+          if (window.REF_TYPES) {
+            for (var rt of window.REF_TYPES) {
+              if (tc.types && tc.types.indexOf(rt.value) !== -1) {
+                var merged = Object.assign({}, rt, {
+                  cssClass:  tc.cssClass,
+                  color:     tc.color,
+                  colorBg:   tc.colorBg,
+                  colorBd:   tc.colorBd,
+                  colorDark: tc.colorDark,
+                  colorBgDk: tc.colorBgDk,
+                  colorBdDk: tc.colorBdDk
+                });
+                await supabaseClient.upsertType(merged);
+              }
+            }
+          }
+        }
       } else if (filename === 'ref_consignes_type.js' && window.REF_CONSIGNES_TYPE) {
         for (var ct of window.REF_CONSIGNES_TYPE) {
           ct.categorie = 'type';

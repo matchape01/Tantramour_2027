@@ -272,6 +272,10 @@ async function saveConfiguration() {
   // saveFile() de github-api.js gère automatiquement local vs GitHub Pages
   // et la détection de conflit multi-utilisateurs.
   try {
+    // Synchronisation Supabase
+    if (typeof supabaseClient !== 'undefined') {
+      await supabaseClient.upsertDisplayReports(REPORTS_STORE);
+    }
     await saveFile(fileName, content);
     showToast('✅ Configuration sauvegardée !');
     isDirty = false;
