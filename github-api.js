@@ -274,6 +274,55 @@ async function saveFile(filename, content, opts) {
       }
     }
 
+    // 9. template_config.js → Synchronise la table FESTIVAL_CONFIG
+    else if (filename === 'template_config.js') {
+      var cfgObj = _extractObjectFromJs(content, 'TEMPLATE_CONFIG') || (typeof TEMPLATE_CONFIG !== 'undefined' ? TEMPLATE_CONFIG : null);
+      if (cfgObj) {
+        var payloadCfg = {
+          id: String(cfgObj.year || '2027'),
+          year: cfgObj.year || 2027,
+          date_start: cfgObj.dateStart,
+          date_end: cfgObj.dateEnd,
+          h_start: cfgObj.hStart !== undefined ? cfgObj.hStart : 7,
+          h_end: cfgObj.hEnd !== undefined ? cfgObj.hEnd : 24,
+          selected_lieux: cfgObj.selectedLieux || [],
+          is_configured: cfgObj.isConfigured !== undefined ? Boolean(cfgObj.isConfigured) : true,
+          updated_at: new Date().toISOString()
+        };
+        await _sbSaveRequest('/rest/v1/festival_config', [payloadCfg]);
+      }
+    }
+
+    // 10. ref_display_reports.js → Synchronise la table REF_DISPLAY_REPORTS
+    else if (filename === 'ref_display_reports.js') {
+      var repList = _extractArrayFromJs(content, 'REF_DISPLAY_REPORTS') || (typeof REF_DISPLAY_REPORTS !== 'undefined' ? REF_DISPLAY_REPORTS : []);
+      if (repList && repList.length > 0) {
+        var payloadReps = repList.map(function(r) {
+          return {
+            id: r.id,
+            title: r.title,
+            title_key: r.titleKey || '',
+            desc: r.desc || '',
+            desc_key: r.descKey || '',
+            icon: r.icon || '📄',
+            url: r.url,
+            section: r.section,
+            show_in_dreamteam: r.showInDreamTeam !== undefined ? Boolean(r.showInDreamTeam) : true,
+            active: r.active !== undefined ? Boolean(r.active) : true,
+            card_style: r.cardStyle || '',
+            icon_style: r.iconStyle || '',
+            title_style: r.titleStyle || '',
+            desc_style: r.descStyle || '',
+            arrow_style: r.arrowStyle || '',
+            is_protected: Boolean(r.isProtected),
+            order: r.order || 0,
+            updated_at: new Date().toISOString()
+          };
+        });
+        await _sbSaveRequest('/rest/v1/ref_display_reports', payloadReps);
+      }
+    }
+
     // Sauvegarde miroir locale optionnelle (si serveur local actif)
     if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
       try {

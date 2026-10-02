@@ -715,6 +715,243 @@ const supabaseClient = {
       headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
       body: JSON.stringify(payload)
     });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 19. VERSIONS DU PLANNING (public.planning_versions & public.planning_version_items)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getPlanningVersions() {
+    const versions = await this.request('/rest/v1/planning_versions?select=*&order=version_number.asc');
+    const items = await this.request('/rest/v1/planning_version_items?select=*');
+
+    const itemsByVersion = {};
+    (items || []).forEach(it => {
+      if (!itemsByVersion[it.version_id]) itemsByVersion[it.version_id] = [];
+      itemsByVersion[it.version_id].push({
+        id: it.id,
+        atelierId: it.atelier_id,
+        nom: it.nom,
+        nomEn: it.nom_en || '',
+        jour: it.jour,
+        date: it.date_label,
+        lieu: it.lieu,
+        startMin: it.start_min,
+        endMin: it.end_min,
+        dureeMin: it.duree_min,
+        type: it.type || '',
+        piment: it.piment || 0,
+        animateurs: it.animateurs || [],
+        descFr: it.desc_fr || '',
+        descEn: it.desc_en || '',
+        locked: Boolean(it.locked),
+        prepDuration: it.prep_duration || 0,
+        rangeDuration: it.range_duration || 0
+      });
+    });
+
+    return (versions || []).map(v => ({
+      id: v.id,
+      versionNumber: v.version_number,
+      versionLabel: v.version_label,
+      status: v.status || 'Draft',
+      createdBy: v.created_by || '',
+      createdAt: v.created_at,
+      updatedAt: v.updated_at,
+      validatedAt: v.validated_at,
+      validatedBy: v.validated_by,
+      lastSubmittedAt: v.last_submitted_at,
+      feedbacks: v.feedbacks || [],
+      items: itemsByVersion[v.id] || []
+    }));
+  },
+
+  async upsertPlanningVersion(v) {
+    const payload = {
+      id: v.id,
+      version_number: v.versionNumber,
+      version_label: v.versionLabel,
+      status: v.status || 'Draft',
+      created_by: v.createdBy || '',
+      created_at: v.createdAt || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      validated_at: v.validatedAt || null,
+      validated_by: v.validatedBy || null,
+      last_submitted_at: v.lastSubmittedAt || null,
+      feedbacks: v.feedbacks || []
+    };
+
+    // 1. Sauvegarder la version
+    await this.request('/rest/v1/planning_versions', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+
+    // 2. Si des items sont fournis, remplacer les items de cette version
+    if (v.items && Array.isArray(v.items)) {
+      // Supprimer les anciens items de cette version
+      await this.request(`/rest/v1/planning_version_items?version_id=eq.${encodeURIComponent(v.id)}`, {
+        method: 'DELETE'
+      });
+
+      if (v.items.length > 0) {
+        const payloadItems = v.items.map(it => ({
+          id: it.id,
+          version_id: v.id,
+          atelier_id: it.atelierId || it.id,
+          nom: it.nom,
+          nom_en: it.nomEn || '',
+          jour: it.jour,
+          date_label: it.date,
+          lieu: it.lieu,
+          start_min: it.startMin,
+          end_min: it.endMin,
+          duree_min: it.dureeMin || (it.endMin - it.startMin),
+          type: it.type || '',
+          piment: it.piment || 0,
+          animateurs: it.animateurs || [],
+          desc_fr: it.descFr || '',
+          desc_en: it.descEn || '',
+          locked: Boolean(it.locked),
+          prep_duration: it.prepDuration || 0,
+          range_duration: it.rangeDuration || 0,
+          updated_at: new Date().toISOString()
+        }));
+
+        await this.request('/rest/v1/planning_version_items', {
+          method: 'POST',
+          headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+          body: JSON.stringify(payloadItems)
+        });
+      }
+    }
+
+    return true;
+  },
+
+  async deletePlanningVersion(versionId) {
+    return await this.request(`/rest/v1/planning_versions?id=eq.${encodeURIComponent(versionId)}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 20. CONFIGURATION DU FESTIVAL (public.festival_config)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getFestivalConfig(id = '2027') {
+    const data = await this.request(`/rest/v1/festival_config?id=eq.${encodeURIComponent(id)}`);
+    if (data && data.length > 0) {
+      const c = data[0];
+      return {
+        year: c.year,
+        dateStart: c.date_start,
+        dateEnd: c.date_end,
+        hStart: c.h_start,
+        hEnd: c.h_end,
+        selectedLieux: c.selected_lieux || [],
+        isConfigured: Boolean(c.is_configured),
+        updatedAt: c.updated_at
+      };
+    }
+    return null;
+  },
+
+  async upsertFestivalConfig(cfg, id = '2027') {
+    const payload = {
+      id: String(id),
+      year: cfg.year || 2027,
+      date_start: cfg.dateStart,
+      date_end: cfg.dateEnd,
+      h_start: cfg.hStart !== undefined ? cfg.hStart : 7,
+      h_end: cfg.hEnd !== undefined ? cfg.hEnd : 24,
+      selected_lieux: cfg.selectedLieux || [],
+      is_configured: cfg.isConfigured !== undefined ? Boolean(cfg.isConfigured) : true,
+      updated_at: new Date().toISOString()
+    };
+
+    return await this.request('/rest/v1/festival_config', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 21. RAPPORTS & AFFICHAGE (public.ref_display_reports)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getDisplayReports() {
+    const data = await this.request('/rest/v1/ref_display_reports?select=*&order=order.asc');
+    return (data || []).map(r => ({
+      id: r.id,
+      title: r.title,
+      titleKey: r.title_key || '',
+      desc: r.desc || '',
+      descKey: r.desc_key || '',
+      icon: r.icon || '📄',
+      url: r.url,
+      section: r.section,
+      showInDreamTeam: Boolean(r.show_in_dreamteam),
+      active: Boolean(r.active),
+      cardStyle: r.card_style || '',
+      iconStyle: r.icon_style || '',
+      titleStyle: r.title_style || '',
+      descStyle: r.desc_style || '',
+      arrowStyle: r.arrow_style || '',
+      isProtected: Boolean(r.is_protected),
+      order: r.order || 0
+    }));
+  },
+
+  async upsertDisplayReports(reports) {
+    const payload = (reports || []).map(r => ({
+      id: r.id,
+      title: r.title,
+      title_key: r.titleKey || '',
+      desc: r.desc || '',
+      desc_key: r.descKey || '',
+      icon: r.icon || '📄',
+      url: r.url,
+      section: r.section,
+      show_in_dreamteam: r.showInDreamTeam !== undefined ? Boolean(r.showInDreamTeam) : true,
+      active: r.active !== undefined ? Boolean(r.active) : true,
+      card_style: r.cardStyle || '',
+      icon_style: r.iconStyle || '',
+      title_style: r.titleStyle || '',
+      desc_style: r.descStyle || '',
+      arrow_style: r.arrowStyle || '',
+      is_protected: Boolean(r.isProtected),
+      order: r.order || 0,
+      updated_at: new Date().toISOString()
+    }));
+
+    return await this.request('/rest/v1/ref_display_reports', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(payload)
+    });
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // 22. MAPPING D'IDENTIFIANTS (public.ref_id_mapping)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  async getIdMapping() {
+    const data = await this.request('/rest/v1/ref_id_mapping?select=*');
+    const result = { equipment: [], resource: [] };
+    (data || []).forEach(r => {
+      const item = {
+        old_id: r.old_id,
+        new_id: Number(r.new_id),
+        entity: r.entity,
+        migrated_at: r.migrated_at
+      };
+      if (r.entity === 'equipment') result.equipment.push(item);
+      else if (r.entity === 'resource') result.resource.push(item);
+    });
+    return result;
   }
 };
 

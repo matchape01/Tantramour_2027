@@ -1614,6 +1614,7 @@
   <script src="ref_type_colors.js"></script>
   <script src="ref_jours.js"></script>
   <script src="template_config.js"></script>
+  <script src="supabase-client.js"></script>
   <script src="github-api.js"></script>
   <script src="loader.js"></script>
 
@@ -1644,8 +1645,12 @@
     const VERSIONS_STORAGE_KEY = 'tm_planning_versions';
     const EDITABLE_STATUSES    = new Set(['Draft', 'Feedback']);
     let   CURRENT_VERSION_ID   = null;
+    let   _PLANNING_VERSIONS_CACHE = [];
 
     function loadVersions() {
+      if (_PLANNING_VERSIONS_CACHE && _PLANNING_VERSIONS_CACHE.length > 0) {
+        return _PLANNING_VERSIONS_CACHE;
+      }
       try {
         const raw = localStorage.getItem(VERSIONS_STORAGE_KEY);
         if (raw) return JSON.parse(raw);
@@ -1653,11 +1658,38 @@
       return [];
     }
 
-    function saveVersions(versions) {
+    async function fetchVersionsFromSupabase() {
+      if (typeof supabaseClient !== 'undefined') {
+        try {
+          const list = await supabaseClient.getPlanningVersions();
+          if (list && list.length > 0) {
+            _PLANNING_VERSIONS_CACHE = list;
+            try { localStorage.setItem(VERSIONS_STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
+            return list;
+          }
+        } catch(err) {
+          console.warn('[Creation_Planning] Erreur lecture versions Supabase:', err.message);
+        }
+      }
+      return loadVersions();
+    }
+
+    async function saveVersions(versions) {
+      _PLANNING_VERSIONS_CACHE = versions;
       try {
         localStorage.setItem(VERSIONS_STORAGE_KEY, JSON.stringify(versions));
-      } catch(e) {
-        toast('⚠️ Impossible de sauvegarder les versions (localStorage plein ?)', true);
+      } catch(e) {}
+
+      // Persistance en base SQL Supabase
+      if (typeof supabaseClient !== 'undefined') {
+        try {
+          for (const ver of versions) {
+            await supabaseClient.upsertPlanningVersion(ver);
+          }
+        } catch(err) {
+          console.error('[Creation_Planning] Erreur sauvegarde versions Supabase:', err);
+          toast('⚠️ Erreur synchronisation Supabase: ' + err.message, true);
+        }
       }
     }
 
@@ -1861,11 +1893,14 @@
         localStorage.setItem('tm_festival_template_config', JSON.stringify(CONFIG));
       } catch(e){}
 
-      // Sauvegarder dans template_config.js sur le serveur / GitHub
+      // Sauvegarder dans Supabase (table festival_config) et template_config.js
       try {
+        if (typeof supabaseClient !== 'undefined') {
+          await supabaseClient.upsertFestivalConfig(CONFIG, String(CONFIG.year || '2027'));
+        }
         await saveFile('template_config.js', buildTemplateConfigJs());
       } catch(err) {
-        console.warn('Sauvegarde template_config.js:', err);
+        console.warn('Sauvegarde festival_config / template_config.js:', err);
       }
 
       // Mise à jour de l'affichage
@@ -2940,7 +2975,7 @@
     // ─────────────────────────────────────────────────────────────
     // SAUVEGARDE DE LA VERSION COURANTE
     // ─────────────────────────────────────────────────────────────
-    function saveCurrentVersion() {
+    async function saveCurrentVersion() {
       if (!CURRENT_VERSION_ID) { toast('Aucune version ouverte.', true); return; }
       const versions = loadVersions();
       const idx = versions.findIndex(v => v.id === CURRENT_VERSION_ID);
@@ -2973,14 +3008,14 @@
       }));
       v.updatedAt = nowIso();
       versions[idx] = v;
-      saveVersions(versions);
+      await saveVersions(versions);
 
       // Rafraîchir le bandeau
       renderVersionBanner(v);
       document.getElementById('displayDatesSummary').textContent =
         `Par ${v.createdBy || '?'} · Modifiée ${fmtDateDisplay(v.updatedAt)}`;
 
-      toast(`✅ Version "${v.versionLabel}" sauvegardée (${v.items.length} atelier${v.items.length > 1 ? 's' : ''}).`);
+      toast(`✅ Version "${v.versionLabel}" sauvegardée dans Supabase (${v.items.length} atelier${v.items.length > 1 ? 's' : ''}).`);
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -3099,7 +3134,7 @@
     // ─────────────────────────────────────────────────────────────
     // SUPPRESSION D'UNE VERSION
     // ─────────────────────────────────────────────────────────────
-    function deleteVersion(versionId) {
+    async function deleteVersion(versionId) {
       const v = getVersionById(versionId);
       if (!v) return;
       if (v.status === 'Validé') {
@@ -3108,7 +3143,15 @@
       }
       if (!confirm(`Supprimer définitivement "${v.versionLabel}" ?\nCette action est irréversible.`)) return;
       const versions = loadVersions().filter(ver => ver.id !== versionId);
-      saveVersions(versions);
+      _PLANNING_VERSIONS_CACHE = versions;
+      try { localStorage.setItem(VERSIONS_STORAGE_KEY, JSON.stringify(versions)); } catch(e) {}
+      if (typeof supabaseClient !== 'undefined') {
+        try {
+          await supabaseClient.deletePlanningVersion(versionId);
+        } catch(err) {
+          console.error('Erreur suppression Supabase:', err);
+        }
+      }
       renderVersionsList();
       toast(`🗑 "${v.versionLabel}" supprimée.`);
     }
@@ -3290,7 +3333,7 @@
     }
 
     // Validation définitive depuis le bandeau
-    function validerVersion(versionId) {
+    async function validerVersion(versionId) {
       const versions = loadVersions();
       const alreadyValid = versions.find(v => v.id !== versionId && v.status === 'Validé');
       if (alreadyValid) {
@@ -3304,7 +3347,7 @@
       versions[idx].validatedAt = nowIso();
       versions[idx].validatedBy = 'Admin';
       versions[idx].updatedAt = nowIso();
-      saveVersions(versions);
+      await saveVersions(versions);
       if (CURRENT_VERSION_ID === versionId) {
         renderVersionBanner(versions[idx]);
         document.getElementById('navbarTitle').textContent = `${versions[idx].versionLabel} — Validé`;
@@ -3336,7 +3379,7 @@
     // ─────────────────────────────────────────────────────────────
     // INITIALISATION DE LA PAGE
     // ─────────────────────────────────────────────────────────────
-    loadData(['ref_type_colors.js', 'ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], function() {
+    loadData(['ref_type_colors.js', 'ref_translations.js', 'template_config.js', 'Ateliers.js', 'data.js', 'ref_lieux.js', 'ref_ressources.js', 'ref_types.js', 'ref_jours.js'], async function() {
 
       // Injecter les variables CSS couleurs depuis ref_type_colors.js
       (function() {
@@ -3348,12 +3391,12 @@
         }
       })();
 
-      // 1. Charger config depuis template_config.js s'il existe
+      // 1. Charger config depuis template_config.js / Supabase festival_config
       if (typeof TEMPLATE_CONFIG !== 'undefined' && TEMPLATE_CONFIG && typeof TEMPLATE_CONFIG === 'object') {
         Object.assign(CONFIG, TEMPLATE_CONFIG);
       }
 
-      // 2. Fallback / priorité localStorage si plus récent
+      // 2. Fallback / priorité localStorage si présent
       try {
         const savedCfg = localStorage.getItem('tm_festival_template_config');
         if (savedCfg) {
@@ -3394,7 +3437,10 @@
         backdrop.classList.add('hidden');
       }
 
-      // 6. Vérifier si une version est demandée via l'URL (?version=...)
+      // 6. Charger les versions fraîches depuis Supabase SQL
+      await fetchVersionsFromSupabase();
+
+      // 7. Vérifier si une version est demandée via l'URL (?version=...)
       const urlParams = new URLSearchParams(window.location.search);
       const versionParam = urlParams.get('version');
 

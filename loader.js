@@ -387,6 +387,67 @@ var _supabaseLoaders = {
         actif: Boolean(r.actif)
       };
     });
+  },
+
+  // 18. template_config.js → TEMPLATE_CONFIG
+  'template_config.js': async function() {
+    var raw = await _sbFetch('/rest/v1/festival_config?id=eq.2027');
+    if (raw && raw.length > 0) {
+      var c = raw[0];
+      window.TEMPLATE_CONFIG = {
+        year: c.year,
+        dateStart: c.date_start,
+        dateEnd: c.date_end,
+        hStart: c.h_start,
+        hEnd: c.h_end,
+        selectedLieux: c.selected_lieux || [],
+        isConfigured: Boolean(c.is_configured),
+        updatedAt: c.updated_at
+      };
+    }
+  },
+
+  // 19. ref_display_reports.js → REF_DISPLAY_REPORTS
+  'ref_display_reports.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_display_reports?select=*&order=order.asc');
+    window.REF_DISPLAY_REPORTS = (raw || []).map(function(r) {
+      return {
+        id: r.id,
+        title: r.title,
+        titleKey: r.title_key || '',
+        desc: r.desc || '',
+        descKey: r.desc_key || '',
+        icon: r.icon || '📄',
+        url: r.url,
+        section: r.section,
+        showInDreamTeam: Boolean(r.show_in_dreamteam),
+        active: Boolean(r.active),
+        cardStyle: r.card_style || '',
+        iconStyle: r.icon_style || '',
+        titleStyle: r.title_style || '',
+        descStyle: r.desc_style || '',
+        arrowStyle: r.arrow_style || '',
+        isProtected: Boolean(r.is_protected),
+        order: r.order || 0
+      };
+    });
+  },
+
+  // 20. ref_id_mapping.js → REF_ID_MAPPING
+  'ref_id_mapping.js': async function() {
+    var raw = await _sbFetch('/rest/v1/ref_id_mapping?select=*');
+    var map = { equipment: [], resource: [] };
+    (raw || []).forEach(function(r) {
+      var it = {
+        old_id: r.old_id,
+        new_id: Number(r.new_id),
+        entity: r.entity,
+        migrated_at: r.migrated_at
+      };
+      if (r.entity === 'equipment') map.equipment.push(it);
+      else if (r.entity === 'resource') map.resource.push(it);
+    });
+    window.REF_ID_MAPPING = map;
   }
 };
 
