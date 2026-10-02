@@ -372,17 +372,6 @@ function esc(str) {
 }
 
 loadData(['ref_translations.js', 'ref_display_reports.js'], function() {
-  // DIAG TEMPORAIRE
-  var _d = document.createElement('div');
-  _d.style.cssText = 'position:fixed;top:10px;left:10px;z-index:9999;background:#1e293b;color:#f1f5f9;font-size:11px;font-family:monospace;padding:10px 14px;border-radius:8px;max-width:500px;';
-  var _rdr = (typeof REF_DISPLAY_REPORTS !== 'undefined') ? REF_DISPLAY_REPORTS : [];
-  var _dt = _rdr.filter(function(r){ return r.showInDreamTeam === true && r.active !== false; });
-  _d.innerHTML = 'REF_DISPLAY_REPORTS: ' + _rdr.length + ' total<br>'
-    + 'showInDreamTeam=true & active: ' + _dt.length + '<br>'
-    + (_dt.length > 0 ? _dt.map(function(r){ return '✓ ' + r.id + ' (order=' + r.order + ')'; }).join('<br>') : '⚠️ AUCUN');
-  document.body.appendChild(_d);
-  setTimeout(function(){ if(_d.parentNode) _d.parentNode.removeChild(_d); }, 20000);
-  // FIN DIAG
   renderDreamTeamReports();
   if (typeof I18n !== 'undefined') {
     I18n.apply();
