@@ -496,12 +496,29 @@
 loadData(['ref_type_colors.js', 'ref_translations.js', 'ref_types.js', 'data.js', 'ref_descriptions.js', 'ref_ressources.js', 'ref_consignes_type.js', 'ref_consignes_recurrentes.js'], function() {
 // Injecter les variables CSS couleurs depuis ref_type_colors.js
 (function() {
+  // DIAG TEMPORAIRE — à supprimer après vérification
+  var _diagDiv = document.createElement('div');
+  _diagDiv.style.cssText = 'position:fixed;top:10px;left:10px;z-index:9999;background:#1e293b;color:#f1f5f9;font-size:11px;font-family:monospace;padding:10px 14px;border-radius:8px;max-width:480px;max-height:200px;overflow:auto;';
+  var _diagLines = [];
+  _diagLines.push('buildTypeCssVars: ' + (typeof buildTypeCssVars));
+  _diagLines.push('REF_TYPE_COLORS: ' + (typeof REF_TYPE_COLORS !== 'undefined' ? REF_TYPE_COLORS.length + ' entrées' : 'UNDEFINED'));
+  if (typeof REF_TYPE_COLORS !== 'undefined' && REF_TYPE_COLORS.length > 0) {
+    var _e = REF_TYPE_COLORS[0];
+    _diagLines.push('1er: ' + _e.cssClass + ' color=' + _e.color + ' colorBg=' + _e.colorBg);
+  }
   if (typeof buildTypeCssVars === 'function') {
+    var _css = buildTypeCssVars();
+    _diagLines.push('CSS généré: ' + _css.substring(0, 120) + '…');
     var s = document.createElement('style');
     s.id = 'type-color-vars';
-    s.textContent = buildTypeCssVars();
+    s.textContent = _css;
     document.head.appendChild(s);
+  } else {
+    _diagLines.push('⚠️ buildTypeCssVars ABSENTE');
   }
+  _diagDiv.innerHTML = _diagLines.join('<br>');
+  document.body.appendChild(_diagDiv);
+  setTimeout(function() { if (_diagDiv.parentNode) _diagDiv.parentNode.removeChild(_diagDiv); }, 15000);
 })();
 
 // ════════════════════════════════════════════
