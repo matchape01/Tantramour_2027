@@ -3425,7 +3425,8 @@
         return;
       }
       histSection.style.display = 'block';
-      histCont.innerHTML = v.feedbacks.map(fb => `
+      // .slice().reverse() permet de copier le tableau et de l'inverser pour afficher les commentaires les plus récents en premier
+      histCont.innerHTML = v.feedbacks.slice().reverse().map(fb => `
         <div class="feedback-entry">
           <div class="feedback-meta">${fmtDateDisplay(fb.date)} · ${esc(fb.statusFrom || '?')} → ${esc(fb.statusTo || '?')}</div>
           <div>${esc(fb.text || '—')}</div>
