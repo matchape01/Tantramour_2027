@@ -2295,26 +2295,34 @@
     }
 
     function openNewRuleModal() {
-      _CURRENT_RULE_EDITING = null;
-      document.getElementById('ruleModalTitle').textContent = '➕ Créer une règle / contrainte';
-      document.getElementById('ruleFieldName').value = '';
-      document.getElementById('ruleFieldSeverity').value = 'ALERTE';
-      document.getElementById('ruleFieldType').value = 'no_slot';
-      
-      populateRuleSelects();
-      onRuleTypeChange();
+      console.log('[Modal] openNewRuleModal() appelé');
+      try {
+        _CURRENT_RULE_EDITING = null;
+        document.getElementById('ruleModalTitle').textContent = '➕ Créer une règle / contrainte';
+        document.getElementById('ruleFieldName').value = '';
+        document.getElementById('ruleFieldSeverity').value = 'ALERTE';
+        document.getElementById('ruleFieldType').value = 'no_slot';
 
-      document.getElementById('ruleField_no_slot_start').value = '13:00';
-      document.getElementById('ruleField_no_slot_end').value = '14:00';
-      document.getElementById('ruleField_venue_unavail_start').value = '';
-      document.getElementById('ruleField_venue_unavail_end').value = '';
-      document.getElementById('ruleField_seq_before').value = '';
-      document.getElementById('ruleField_seq_after').value = '';
-      document.getElementById('ruleField_limit_before_time').value = '';
-      document.getElementById('ruleField_limit_after_time').value = '';
-      document.getElementById('ruleField_limit_count').value = '1';
+        populateRuleSelects();
+        onRuleTypeChange();
 
-      document.getElementById('ruleModalBackdrop').classList.add('open');
+        document.getElementById('ruleField_no_slot_start').value = '13:00';
+        document.getElementById('ruleField_no_slot_end').value = '14:00';
+        document.getElementById('ruleField_venue_unavail_start').value = '';
+        document.getElementById('ruleField_venue_unavail_end').value = '';
+        document.getElementById('ruleField_seq_before').value = '';
+        document.getElementById('ruleField_seq_after').value = '';
+        document.getElementById('ruleField_limit_before_time').value = '';
+        document.getElementById('ruleField_limit_after_time').value = '';
+        document.getElementById('ruleField_limit_count').value = '1';
+
+        const backdrop = document.getElementById('ruleModalBackdrop');
+        console.log('[Modal] backdrop trouvé :', backdrop);
+        backdrop.classList.add('open');
+        console.log('[Modal] modale ouverte');
+      } catch(e) {
+        console.error('[Modal] ERREUR openNewRuleModal:', e);
+      }
     }
 
     function openEditRuleModal(ruleId) {
