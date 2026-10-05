@@ -2102,18 +2102,23 @@
     async function fetchVersionsFromSupabase() {
       if (typeof supabaseClient !== 'undefined') {
         try {
+          console.log('[Versions] Chargement depuis Supabase...');
           const list = await supabaseClient.getPlanningVersions();
+          console.log('[Versions] Reçu :', list ? list.length : 'null', list);
           if (list) {
             _PLANNING_VERSIONS_CACHE = list;
             try { localStorage.setItem(VERSIONS_STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
             return list;
           }
         } catch(err) {
-          console.warn('[Creation_Planning] Erreur lecture versions Supabase:', err.message);
+          console.error('[Versions] Erreur lecture Supabase:', err.message, err);
         }
+      } else {
+        console.warn('[Versions] supabaseClient non défini !');
       }
       // Fallback localStorage
       const fromLocal = loadVersions();
+      console.log('[Versions] Fallback localStorage :', fromLocal.length, 'version(s)');
       _PLANNING_VERSIONS_CACHE = fromLocal;
       return fromLocal;
     }
@@ -2154,7 +2159,13 @@
       } else if (tab === 'rules') {
         document.getElementById('tabBtnRules').classList.add('active');
         document.getElementById('rulesTabContent').style.display = 'block';
-        fetchRulesFromSupabase().then(renderRulesTable);
+        console.log('[Rules] Chargement des règles depuis Supabase...');
+        fetchRulesFromSupabase().then(rules => {
+          console.log('[Rules] Règles reçues :', rules ? rules.length : 'null', rules);
+          renderRulesTable();
+        }).catch(err => {
+          console.error('[Rules] Erreur fetchRulesFromSupabase:', err);
+        });
       }
     }
 
