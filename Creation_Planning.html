@@ -2514,9 +2514,23 @@
         const dureeStr = dureeH ? (dureeH + 'h' + (dureeM ? (dureeM < 10 ? '0'+dureeM : dureeM) : '')) : (dureeM + ' min');
 
         const pimentEmojis = ev.piment > 0 ? '🌶️'.repeat(ev.piment) : '';
+        
+        let statusBadge = '';
+        if (ev.statut === 'NEW') {
+          statusBadge = `<span style="background:#dbeafe; color:#1d4ed8; font-size:10px; font-weight:800; padding:1px 4px; border-radius:3px; border:1px solid #93c5fd; margin-right:4px;" title="Statut: NEW (En attente)">🆕 NEW</span>`;
+          card.style.borderLeft = '5px solid #1d4ed8';
+        } else if (ev.statut === 'REJECTED') {
+          statusBadge = `<span style="background:#fee2e2; color:#dc2626; font-size:10px; font-weight:800; padding:1px 4px; border-radius:3px; border:1px solid #fecaca; margin-right:4px;" title="Statut: REJECTED (Non retenu)">🚫 REJECTED</span>`;
+          card.style.borderLeft = '5px solid #dc2626';
+          card.style.opacity = '0.78';
+        }
+
         card.innerHTML = `
           <button class="event-del-btn" title="Retirer du planning" onclick="removePlacedEvent('${ev.id}', event)">✕</button>
-          <div class="event-time-badge">${timeLabel} <span class="event-duree">(${dureeStr})</span></div>
+          <div class="event-time-badge">
+            ${statusBadge}
+            ${timeLabel} <span class="event-duree">(${dureeStr})</span>
+          </div>
           <div class="event-title" title="${esc(ev.nom)}">${esc(ev.nom)}</div>
           ${animNamesList.length > 0 ? `<div class="event-anim">${animNamesList.map(n => `👤 ${esc(n)}`).join('<br>')}</div>` : ''}
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1px;">
@@ -2858,10 +2872,11 @@
       CURRENT_VERSION_ID = versionId;
 
       const isOperational = (v.status === 'Validé');
-
-      if (isOperational && typeof window.AGENDA !== 'undefined' && Array.isArray(window.AGENDA)) {
-        // Pour la version opérationnelle validée, on charge en direct les données opérationnelles réelles (de AGENDA) !
-        PLACED_EVENTS = window.AGENDA.map(e => {
+      const sourceAgenda = (typeof window.AGENDA_ALL !== 'undefined' && Array.isArray(window.AGENDA_ALL)) ? window.AGENDA_ALL : (window.AGENDA || []);
+ 
+      if (isOperational && sourceAgenda && Array.isArray(sourceAgenda)) {
+        // Pour la version opérationnelle validée, on charge en direct les données opérationnelles réelles !
+        PLACED_EVENTS = sourceAgenda.map(e => {
           const atRef = (typeof ATELIERS !== 'undefined' ? ATELIERS : []).find(a => a.id === e.atelierId);
           
           // Traduction heure "08:30 - 09:30" -> startMin, endMin
@@ -2877,7 +2892,7 @@
             if (parts[1]) endMin = tMin(parts[1]);
             if (endMin <= startMin) endMin += 1440;
           }
-
+ 
           const resolvedPiment = e.piment !== undefined ? e.piment : (atRef ? atRef.piment || 0 : 0);
           
           return {
@@ -2898,7 +2913,8 @@
             descEn: '',
             locked: e.locked || false,
             prepDuration: atRef ? atRef.prepDuration || 0 : 0,
-            rangeDuration: atRef ? atRef.rangeDuration || 0 : 0
+            rangeDuration: atRef ? atRef.rangeDuration || 0 : 0,
+            statut: e.statut || 'APPROVED'
           };
         });
       } else {
@@ -2924,7 +2940,8 @@
             descEn: item.descEn || '',
             locked: item.locked || false,
             prepDuration: item.prepDuration || 0,
-            rangeDuration: item.rangeDuration || 0
+            rangeDuration: item.rangeDuration || 0,
+            statut: atRef ? atRef.statut || 'APPROVED' : 'APPROVED'
           };
         });
       }
