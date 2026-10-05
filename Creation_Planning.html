@@ -1968,10 +1968,38 @@
         <div id="ruleBlock_unique_atelier" class="rule-type-block" style="display:none;">
           <div class="ev-modal-section-title">Paramètres Unicité d'Atelier</div>
           <div class="ev-modal-grid">
+
+            <!-- Sélection du mode -->
             <div class="ev-modal-field full">
-              <label>ID de l'atelier (ex : A_2222) — cet atelier ne peut apparaître qu'une seule fois dans le planning</label>
+              <label>Portée de la règle</label>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;">
+                  <input type="radio" name="uniqueMode" value="all" id="ruleField_unique_mode_all" onchange="onUniqueModeChange()" checked />
+                  <span><strong>Tous les ateliers</strong> — aucun atelier ne peut être placé plus d'une fois</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;">
+                  <input type="radio" name="uniqueMode" value="types" id="ruleField_unique_mode_types" onchange="onUniqueModeChange()" />
+                  <span><strong>Par type(s)</strong> — les ateliers des types sélectionnés ne peuvent être placés qu'une fois</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;">
+                  <input type="radio" name="uniqueMode" value="id" id="ruleField_unique_mode_id" onchange="onUniqueModeChange()" />
+                  <span><strong>Atelier spécifique</strong> — un atelier précis (par ID)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Champ ID (mode "id") -->
+            <div class="ev-modal-field full" id="ruleField_unique_id_wrap" style="display:none;">
+              <label>ID de l'atelier (ex : A_2222)</label>
               <input type="text" id="ruleField_unique_atelier_id" placeholder="Ex: A_2222" style="width:100%;" />
             </div>
+
+            <!-- Checkboxes types (mode "types") -->
+            <div class="ev-modal-field full" id="ruleField_unique_types_wrap" style="display:none;">
+              <label>Types d'ateliers concernés (sélection multiple)</label>
+              <div id="ruleField_unique_types" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;"></div>
+            </div>
+
           </div>
         </div>
 
@@ -2290,6 +2318,12 @@
       if (targetBlock) targetBlock.style.display = 'block';
     }
 
+    function onUniqueModeChange() {
+      const mode = document.querySelector('input[name="uniqueMode"]:checked')?.value || 'all';
+      document.getElementById('ruleField_unique_id_wrap').style.display    = mode === 'id'    ? 'block' : 'none';
+      document.getElementById('ruleField_unique_types_wrap').style.display = mode === 'types' ? 'block' : 'none';
+    }
+
     function toggleMctAllDays(checked) {
       const cont = document.getElementById('ruleField_mct_jours');
       if (cont) cont.style.display = checked ? 'none' : 'flex';
@@ -2311,6 +2345,16 @@
           el.innerHTML = types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
         }
       });
+
+      // Checkboxes types pour unique_atelier (mode "types")
+      const chkUniqueTypes = document.getElementById('ruleField_unique_types');
+      if (chkUniqueTypes) {
+        chkUniqueTypes.innerHTML = types.map(t => `
+          <label class="lieu-chk-item" style="display:inline-flex;gap:4px;align-items:center;background:var(--border-subtle);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;">
+            <input type="checkbox" value="${esc(t)}" /> ${esc(t)}
+          </label>
+        `).join('');
+      }
 
       // Checkboxes jours pour max_concurrent_type
       const joursRef = (typeof REF_JOURS !== 'undefined' ? REF_JOURS : []);
@@ -2365,6 +2409,9 @@
         document.getElementById('ruleField_venue_unavail_start').value = '';
         document.getElementById('ruleField_venue_unavail_end').value = '';
         document.getElementById('ruleField_unique_atelier_id').value = '';
+        const uModeAll = document.getElementById('ruleField_unique_mode_all');
+        if (uModeAll) { uModeAll.checked = true; onUniqueModeChange(); }
+        document.querySelectorAll('#ruleField_unique_types input[type="checkbox"]').forEach(c => c.checked = false);
         document.getElementById('ruleField_mct_start').value = '';
         document.getElementById('ruleField_mct_end').value = '';
         document.getElementById('ruleField_mct_max').value = '3';
@@ -2411,7 +2458,17 @@
         document.getElementById('ruleField_venue_unavail_start').value = p.startMin ? minToTimeStr(p.startMin) : '';
         document.getElementById('ruleField_venue_unavail_end').value = p.endMin ? minToTimeStr(p.endMin) : '';
       } else if (r.type === 'unique_atelier') {
-        document.getElementById('ruleField_unique_atelier_id').value = p.atelierId || '';
+        const mode = p.atelierId ? 'id' : (p.atelierTypes && p.atelierTypes.length > 0 ? 'types' : 'all');
+        const radio = document.getElementById('ruleField_unique_mode_' + mode);
+        if (radio) { radio.checked = true; onUniqueModeChange(); }
+        if (mode === 'id') {
+          document.getElementById('ruleField_unique_atelier_id').value = p.atelierId || '';
+        } else if (mode === 'types') {
+          const sel = p.atelierTypes || [];
+          document.querySelectorAll('#ruleField_unique_types input[type="checkbox"]').forEach(chk => {
+            chk.checked = sel.includes(chk.value);
+          });
+        }
       } else if (r.type === 'max_concurrent_type') {
         document.getElementById('ruleField_mct_type').value = p.atelierType || '';
         document.getElementById('ruleField_mct_max').value = p.maxCount || 3;
@@ -2485,10 +2542,21 @@
         };
         description = `Le lieu ${lieu} n'est pas disponible le ${jour} entre ${startStr} et ${endStr}.`;
       } else if (type === 'unique_atelier') {
-        const atelierId = document.getElementById('ruleField_unique_atelier_id').value.trim();
-        if (!atelierId) { toast('⚠️ Veuillez saisir l\'ID de l\'atelier.', true); return; }
-        params = { atelierId: atelierId };
-        description = `L'atelier "${atelierId}" ne peut être placé qu\'une seule fois dans le planning.`;
+        const uMode = document.querySelector('input[name="uniqueMode"]:checked')?.value || 'all';
+        if (uMode === 'all') {
+          params = { scope: 'all' };
+          description = 'Aucun atelier ne peut être placé plus d\'une fois dans le planning.';
+        } else if (uMode === 'types') {
+          const atelierTypes = Array.from(document.querySelectorAll('#ruleField_unique_types input[type="checkbox"]:checked')).map(c => c.value);
+          if (atelierTypes.length === 0) { toast('⚠️ Sélectionnez au moins un type d\'atelier.', true); return; }
+          params = { scope: 'types', atelierTypes };
+          description = `Les ateliers de type [${atelierTypes.join(', ')}] ne peuvent être placés qu'une seule fois.`;
+        } else {
+          const atelierId = document.getElementById('ruleField_unique_atelier_id').value.trim();
+          if (!atelierId) { toast('⚠️ Veuillez saisir l\'ID de l\'atelier.', true); return; }
+          params = { scope: 'id', atelierId };
+          description = `L'atelier "${atelierId}" ne peut être placé qu'une seule fois dans le planning.`;
+        }
       } else if (type === 'max_concurrent_type') {
         const mctType = document.getElementById('ruleField_mct_type').value;
         const mctMax = parseInt(document.getElementById('ruleField_mct_max').value) || 3;
@@ -2895,19 +2963,56 @@
         });
       });
 
-      // Règle 3 : unique_atelier (Atelier placé une seule fois)
+      // Règle 3 : unique_atelier — scope: 'all' | 'types' | 'id'
       activeRules.filter(r => r.type === 'unique_atelier').forEach(rule => {
         const p = rule.params || {};
-        if (!p.atelierId) return;
-        const matchingEvents = PLACED_EVENTS.filter(ev => ev.atelierId === p.atelierId);
-        if (matchingEvents.length > 1) {
-          conflicts.push({
-            ruleId: rule.id,
-            ruleName: rule.name,
-            severity: rule.severity,
-            eventId: matchingEvents[1].id,
-            message: `L'atelier "${p.atelierId}" apparaît ${matchingEvents.length} fois dans le planning — il ne doit être placé qu'une seule fois.`
+        const scope = p.scope || (p.atelierId ? 'id' : 'all'); // rétrocompat
+
+        if (scope === 'all') {
+          // Compter par atelierId — signaler chaque doublon
+          const counts = {};
+          PLACED_EVENTS.forEach(ev => {
+            counts[ev.atelierId] = (counts[ev.atelierId] || 0) + 1;
           });
+          Object.entries(counts).forEach(([aid, n]) => {
+            if (n > 1) {
+              const ev = PLACED_EVENTS.find(e => e.atelierId === aid);
+              conflicts.push({
+                ruleId: rule.id, ruleName: rule.name, severity: rule.severity,
+                eventId: ev ? ev.id : null,
+                message: `L'atelier "${aid}" (${ev ? ev.nom : aid}) apparaît ${n} fois — chaque atelier doit être unique.`
+              });
+            }
+          });
+
+        } else if (scope === 'types') {
+          const typesToCheck = p.atelierTypes || [];
+          const counts = {};
+          PLACED_EVENTS.filter(ev => typesToCheck.includes(ev.type)).forEach(ev => {
+            counts[ev.atelierId] = (counts[ev.atelierId] || 0) + 1;
+          });
+          Object.entries(counts).forEach(([aid, n]) => {
+            if (n > 1) {
+              const ev = PLACED_EVENTS.find(e => e.atelierId === aid);
+              conflicts.push({
+                ruleId: rule.id, ruleName: rule.name, severity: rule.severity,
+                eventId: ev ? ev.id : null,
+                message: `L'atelier "${aid}" (${ev ? ev.nom : aid}) de type ${ev ? ev.type : ''} apparaît ${n} fois — il doit être unique.`
+              });
+            }
+          });
+
+        } else if (scope === 'id') {
+          const aid = p.atelierId;
+          if (!aid) return;
+          const evs = PLACED_EVENTS.filter(ev => ev.atelierId === aid);
+          if (evs.length > 1) {
+            conflicts.push({
+              ruleId: rule.id, ruleName: rule.name, severity: rule.severity,
+              eventId: evs[1].id,
+              message: `L'atelier "${aid}" apparaît ${evs.length} fois dans le planning — il ne doit être placé qu'une seule fois.`
+            });
+          }
         }
       });
 
