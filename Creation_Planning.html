@@ -2765,7 +2765,7 @@
         const itemCount = (validatedVersion.items || []).length;
         const validatedAt = validatedVersion.validatedAt ? fmtDateDisplay(validatedVersion.validatedAt) : '—';
         opRow = `
-          <tr style="background: rgba(30, 58, 138, 0.06); font-weight: 600; border-left: 4px solid #1e3a8a; border-bottom: 2px solid #e5e7eb;" onclick="openVersion('${esc(validatedVersion.id)}')" title="Ouvrir la version d'origine (${esc(validatedVersion.versionLabel)})">
+          <tr style="background: rgba(30, 58, 138, 0.06); font-weight: 600; border-left: 4px solid #1e3a8a; border-bottom: 2px solid #e5e7eb;" onclick="openVersion('${esc(validatedVersion.id)}')" title="Ouvrir la version opérationnelle active en temps réel (${esc(validatedVersion.versionLabel)})">
             <td class="version-num-cell" style="color: #1e3a8a; font-weight: 700;">🌟 ${esc(opLabel)}</td>
             <td><span class="status-badge" style="background: #1e3a8a; color: #fff; font-weight: bold; border-radius: 4px; padding: 2px 8px; font-size: 11px; text-transform: uppercase;">🚀 OPERATIONNEL</span></td>
             <td><div class="version-creator" style="color: #1e3a8a; font-weight: 700;">${esc(validatedVersion.createdBy || '—')}</div></td>
@@ -2777,7 +2777,7 @@
             <td style="max-width:160px;"><div class="version-date" style="color: #1e3a8a; font-weight: 700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="Programme actif sur le terrain">Actif sur le terrain 🚀</div></td>
             <td>
               <div class="versions-actions-cell" onclick="event.stopPropagation()">
-                <button class="btn-icon btn-open" style="background: #1e3a8a; color: #fff; border-color: #1e3a8a;" onclick="openVersion('${esc(validatedVersion.id)}')">📂 Ouvrir Origine</button>
+                <button class="btn-icon btn-open" style="background: #1e3a8a; color: #fff; border-color: #1e3a8a;" onclick="openVersion('${esc(validatedVersion.id)}')">📂 Ouvrir OP (Temps réel)</button>
               </div>
             </td>
           </tr>
@@ -3006,6 +3006,7 @@
           ${v.validatedAt ? `<span>✅ Validée le ${fmtDateDisplay(v.validatedAt)}</span>` : ''}
         </div>
         <div class="version-banner-actions">
+          ${v.status === 'Validé' ? `<span class="readonly-overlay-badge" style="background:#1e3a8a;color:#fff;">🌟 OPÉRATIONNEL (Temps réel)</span>` : ''}
           ${!isEditable ? `<span class="readonly-overlay-badge">👁 Consultation uniquement</span>` : ''}
           ${v.status === 'Soumis à validation' ? `<button class="btn btn-outline btn-sm" onclick="openStatusModal('${esc(v.id)}')">💬 Donner un feedback</button>` : ''}
           ${v.status === 'Retenu' ? `<button class="btn btn-success btn-sm" onclick="validerVersion('${esc(v.id)}')">✅ Valider définitivement</button>` : ''}
