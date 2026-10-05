@@ -2103,7 +2103,7 @@
       if (typeof supabaseClient !== 'undefined') {
         try {
           const list = await supabaseClient.getPlanningVersions();
-          if (list && list.length > 0) {
+          if (list) {
             _PLANNING_VERSIONS_CACHE = list;
             try { localStorage.setItem(VERSIONS_STORAGE_KEY, JSON.stringify(list)); } catch(e) {}
             return list;
@@ -2112,7 +2112,10 @@
           console.warn('[Creation_Planning] Erreur lecture versions Supabase:', err.message);
         }
       }
-      return loadVersions();
+      // Fallback localStorage
+      const fromLocal = loadVersions();
+      _PLANNING_VERSIONS_CACHE = fromLocal;
+      return fromLocal;
     }
 
     async function saveVersions(versions) {
@@ -2156,18 +2159,15 @@
     }
 
     async function fetchRulesFromSupabase() {
-      if (typeof _sbFetch !== 'undefined') {
-        try {
-          const raw = await _sbFetch('/rest/v1/planning_rules?select=*&order=name.asc');
-          _PLANNING_RULES_CACHE = raw || [];
-          return _PLANNING_RULES_CACHE;
-        } catch (err) {
-          console.error('[fetchRulesFromSupabase] Erreur lecture règles Supabase:', err);
-          _PLANNING_RULES_CACHE = [];
-          return [];
-        }
+      try {
+        const raw = await supabaseClient.request('/rest/v1/planning_rules?select=*&order=name.asc');
+        _PLANNING_RULES_CACHE = raw || [];
+        return _PLANNING_RULES_CACHE;
+      } catch (err) {
+        console.error('[fetchRulesFromSupabase] Erreur lecture règles Supabase:', err);
+        _PLANNING_RULES_CACHE = [];
+        return [];
       }
-      return [];
     }
 
     function renderRulesTable() {
@@ -2453,7 +2453,11 @@
 
       try {
         toast('⏳ Enregistrement de la règle...');
-        await _sbSaveRequest('/rest/v1/planning_rules', [payload]);
+        await supabaseClient.request('/rest/v1/planning_rules', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates,return=representation',
+          body: JSON.stringify([payload])
+        });
         toast('✅ Règle enregistrée avec succès !');
         closeRuleModal();
         fetchRulesFromSupabase().then(renderRulesTable);
@@ -2467,11 +2471,10 @@
       if (!r) return;
       r.active = activeValue;
       try {
-        await _sbSaveRequest('/rest/v1/planning_rules', [{
-          id: r.id,
-          active: activeValue,
-          updated_at: new Date().toISOString()
-        }]);
+        await supabaseClient.request(`/rest/v1/planning_rules?id=eq.${encodeURIComponent(ruleId)}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ active: activeValue, updated_at: new Date().toISOString() })
+        });
         toast(`✅ Règle "${r.name}" : ${activeValue ? 'Activée' : 'Désactivée'}.`);
       } catch (err) {
         toast('⚠️ Erreur d\'activation : ' + err.message, true);
@@ -2494,7 +2497,11 @@
         updated_at: new Date().toISOString()
       };
       try {
-        await _sbSaveRequest('/rest/v1/planning_rules', [payload]);
+        await supabaseClient.request('/rest/v1/planning_rules', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates,return=representation',
+          body: JSON.stringify([payload])
+        });
         toast(`👯 Règle "${r.name}" dupliquée.`);
         fetchRulesFromSupabase().then(renderRulesTable);
       } catch (err) {
@@ -2508,12 +2515,8 @@
       if (!confirm(`Supprimer définitivement la règle "${r.name}" ?`)) return;
 
       try {
-        await fetch(_SB_SAVE_URL + `/rest/v1/planning_rules?id=eq.${ruleId}`, {
-          method: 'DELETE',
-          headers: {
-            'apikey': _SB_SAVE_KEY,
-            'Authorization': 'Bearer ' + _SB_SAVE_KEY
-          }
+        await supabaseClient.request(`/rest/v1/planning_rules?id=eq.${encodeURIComponent(ruleId)}`, {
+          method: 'DELETE'
         });
         toast(`🗑️ Règle "${r.name}" supprimée.`);
         fetchRulesFromSupabase().then(renderRulesTable);
@@ -2527,9 +2530,9 @@
     let _CURRENT_VERSION_RULES_STATES = {};
 
     async function fetchVersionRules(versionId) {
-      if (!versionId || typeof _sbFetch === 'undefined') return {};
+      if (!versionId) return {};
       try {
-        const versionRulesRaw = await _sbFetch(`/rest/v1/planning_version_rules?version_id=eq.${versionId}`);
+        const versionRulesRaw = await supabaseClient.request(`/rest/v1/planning_version_rules?version_id=eq.${encodeURIComponent(versionId)}`);
         const globalRules = _PLANNING_RULES_CACHE.length > 0 ? _PLANNING_RULES_CACHE : await fetchRulesFromSupabase();
         const states = {};
 
@@ -2550,17 +2553,20 @@
     }
 
     async function saveVersionRuleState(versionId, ruleId, activeValue) {
-      if (!versionId || !ruleId || typeof _sbSaveRequest === 'undefined') return;
+      if (!versionId || !ruleId) return;
       _CURRENT_VERSION_RULES_STATES[ruleId] = activeValue;
 
       const payload = {
         version_id: versionId,
         rule_id: ruleId,
-        active: activeValue,
-        updated_at: new Date().toISOString()
+        active: activeValue
       };
       try {
-        await _sbSaveRequest('/rest/v1/planning_version_rules', [payload]);
+        await supabaseClient.request('/rest/v1/planning_version_rules', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates,return=representation',
+          body: JSON.stringify([payload])
+        });
         console.log(`[saveVersionRuleState] Règle ${ruleId} mise à jour à ${activeValue} pour la version ${versionId}`);
       } catch (err) {
         console.error('[saveVersionRuleState] Erreur enregistrement règle de version:', err);
@@ -2568,9 +2574,9 @@
     }
 
     async function duplicateVersionRules(sourceVersionId, targetVersionId) {
-      if (!sourceVersionId || !targetVersionId || typeof _sbFetch === 'undefined' || typeof _sbSaveRequest === 'undefined') return;
+      if (!sourceVersionId || !targetVersionId) return;
       try {
-        const sourceRules = await _sbFetch(`/rest/v1/planning_version_rules?version_id=eq.${sourceVersionId}`);
+        const sourceRules = await supabaseClient.request(`/rest/v1/planning_version_rules?version_id=eq.${encodeURIComponent(sourceVersionId)}`);
         if (sourceRules && sourceRules.length > 0) {
           const payload = sourceRules.map(sr => ({
             version_id: targetVersionId,
@@ -2578,7 +2584,11 @@
             active: sr.active,
             params: sr.params
           }));
-          await _sbSaveRequest('/rest/v1/planning_version_rules', payload);
+          await supabaseClient.request('/rest/v1/planning_version_rules', {
+            method: 'POST',
+            prefer: 'resolution=merge-duplicates,return=representation',
+            body: JSON.stringify(payload)
+          });
           console.log(`[duplicateVersionRules] ${payload.length} règle(s) copiée(s) de ${sourceVersionId} vers ${targetVersionId}`);
         }
       } catch (err) {
