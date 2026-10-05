@@ -1645,6 +1645,7 @@
     const VERSIONS_STORAGE_KEY = 'tm_planning_versions';
     const EDITABLE_STATUSES    = new Set(['Draft', 'Feedback']);
     let   CURRENT_VERSION_ID   = null;
+    let   SHOW_OPERATIONAL_VIEW = false; // true si on affiche le programme opérationnel temps réel de la version rattachée
     let   _PLANNING_VERSIONS_CACHE = [];
 
     function loadVersions() {
@@ -2771,15 +2772,18 @@
         return;
       }
 
-      // Détection et insertion de la version opérationnelle active (Programme Opérationnel)
-      const validatedVersion = versions.find(v => v.status === 'Validé');
+      // Détection et insertion de la version opérationnelle active (la plus récemment validée, même si son statut physique a changé)
+      const sortedByValidation = versions
+        .filter(v => v.validatedAt)
+        .sort((a, b) => new Date(b.validatedAt) - new Date(a.validatedAt));
+      const validatedVersion = sortedByValidation[0];
       let opRow = '';
       if (validatedVersion) {
         const opLabel = (validatedVersion.versionLabel || 'Version') + ' OP';
         const itemCount = (validatedVersion.items || []).length;
         const validatedAt = validatedVersion.validatedAt ? fmtDateDisplay(validatedVersion.validatedAt) : '—';
         opRow = `
-          <tr style="background: rgba(30, 58, 138, 0.06); font-weight: 600; border-left: 4px solid #1e3a8a; border-bottom: 2px solid #e5e7eb;" onclick="openVersion('${esc(validatedVersion.id)}')" title="Ouvrir la version opérationnelle active en temps réel (${esc(validatedVersion.versionLabel)})">
+          <tr style="background: rgba(30, 58, 138, 0.06); font-weight: 600; border-left: 4px solid #1e3a8a; border-bottom: 2px solid #e5e7eb;" onclick="openVersion('${esc(validatedVersion.id)}', true)" title="Ouvrir la version opérationnelle active en temps réel (${esc(validatedVersion.versionLabel)})">
             <td class="version-num-cell" style="color: #1e3a8a; font-weight: 700;">🌟 ${esc(opLabel)}</td>
             <td><span class="status-badge" style="background: #1e3a8a; color: #fff; font-weight: bold; border-radius: 4px; padding: 2px 8px; font-size: 11px; text-transform: uppercase;">🚀 OPERATIONNEL</span></td>
             <td><div class="version-creator" style="color: #1e3a8a; font-weight: 700;">${esc(validatedVersion.createdBy || '—')}</div></td>
@@ -2791,7 +2795,7 @@
             <td style="max-width:160px;"><div class="version-date" style="color: #1e3a8a; font-weight: 700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="Programme actif sur le terrain">Actif sur le terrain 🚀</div></td>
             <td>
               <div class="versions-actions-cell" onclick="event.stopPropagation()">
-                <button class="btn-icon btn-open" style="background: #1e3a8a; color: #fff; border-color: #1e3a8a;" onclick="openVersion('${esc(validatedVersion.id)}')">📂 Ouvrir OP (Temps réel)</button>
+                <button class="btn-icon btn-open" style="background: #1e3a8a; color: #fff; border-color: #1e3a8a;" onclick="openVersion('${esc(validatedVersion.id)}', true)">📂 Ouvrir OP (Temps réel)</button>
               </div>
             </td>
           </tr>
@@ -2859,9 +2863,11 @@
       document.getElementById('navbarTitle').textContent = 'Gestion des versions du Planning';
       document.getElementById('displayDatesSummary').textContent = 'Sélectionnez ou créez une version';
       CURRENT_VERSION_ID = null;
+      SHOW_OPERATIONAL_VIEW = false;
       // Mettre à jour l'URL
       const url = new URL(window.location.href);
       url.searchParams.delete('version');
+      url.searchParams.delete('op');
       window.history.pushState({}, '', url.toString());
       renderVersionsList();
     }
@@ -2871,7 +2877,7 @@
       if (!v) { toast('Version introuvable.', true); return; }
       CURRENT_VERSION_ID = versionId;
 
-      const isOperational = (v.status === 'Validé');
+      const isOperational = SHOW_OPERATIONAL_VIEW || (v.status === 'Validé');
       const sourceAgenda = (typeof window.AGENDA_ALL !== 'undefined' && Array.isArray(window.AGENDA_ALL)) ? window.AGENDA_ALL : (window.AGENDA || []);
  
       if (isOperational && sourceAgenda && Array.isArray(sourceAgenda)) {
@@ -2955,18 +2961,23 @@
       // Mettre à jour l'URL
       const url = new URL(window.location.href);
       url.searchParams.set('version', versionId);
+      if (SHOW_OPERATIONAL_VIEW) {
+        url.searchParams.set('op', 'true');
+      } else {
+        url.searchParams.delete('op');
+      }
       window.history.pushState({}, '', url.toString());
 
       // Titre navbar
-      document.getElementById('navbarTitle').textContent = `${v.versionLabel} — ${v.status}`;
+      document.getElementById('navbarTitle').textContent = isOperational ? `${v.versionLabel} — OPÉRATIONNEL (Temps réel)` : `${v.versionLabel} — ${v.status}`;
       document.getElementById('displayDatesSummary').textContent =
         `Par ${v.createdBy || '?'} · Modifiée ${fmtDateDisplay(v.updatedAt)}`;
 
       // Bandeau version
       renderVersionBanner(v);
 
-      // Mode lecture ou édition
-      const isEditable = EDITABLE_STATUSES.has(v.status);
+      // Mode lecture ou édition : bloqué en mode opérationnel temps réel
+      const isEditable = EDITABLE_STATUSES.has(v.status) && !isOperational;
       applyEditMode(isEditable);
 
       // Boutons contextuels
@@ -2996,13 +3007,14 @@
       showVersionsList();
     }
 
-    function openVersion(versionId) {
+    function openVersion(versionId, isOp = false) {
       // Construire la grille si nécessaire
       if (FESTIVAL_DAYS.length === 0) {
         toast('⚠️ Configurez d\'abord le template festival.', true);
         openConfigModal();
         return;
       }
+      SHOW_OPERATIONAL_VIEW = isOp;
       showCalendarView(versionId);
     }
 
@@ -3012,10 +3024,11 @@
     function renderVersionBanner(v) {
       const banner = document.getElementById('versionBanner');
       if (!banner) return;
-      const isEditable = EDITABLE_STATUSES.has(v.status);
+      const isOperational = SHOW_OPERATIONAL_VIEW || (v.status === 'Validé');
+      const isEditable = EDITABLE_STATUSES.has(v.status) && !isOperational;
       banner.innerHTML = `
-        <div class="version-banner-title">${esc(v.versionLabel)}</div>
-        <span class="status-badge ${statusClass(v.status)}">${statusEmoji(v.status)} ${esc(v.status)}</span>
+        <div class="version-banner-title">${esc(v.versionLabel)} ${isOperational ? 'OP (Temps réel)' : ''}</div>
+        <span class="status-badge ${isOperational ? 'status-valid' : statusClass(v.status)}" ${isOperational ? 'style="background:#1e3a8a;color:#fff;"' : ''}>${isOperational ? '🚀' : statusEmoji(v.status)} ${isOperational ? 'OPERATIONNEL' : esc(v.status)}</span>
         <div class="version-banner-meta">
           <span>📅 Créée le ${fmtDateDisplay(v.createdAt)}</span>
           <span>👤 ${esc(v.createdBy || '—')}</span>
@@ -3023,7 +3036,7 @@
           ${v.validatedAt ? `<span>✅ Validée le ${fmtDateDisplay(v.validatedAt)}</span>` : ''}
         </div>
         <div class="version-banner-actions">
-          ${v.status === 'Validé' ? `<span class="readonly-overlay-badge" style="background:#1e3a8a;color:#fff;">🌟 OPÉRATIONNEL (Temps réel)</span>` : ''}
+          ${isOperational ? `<span class="readonly-overlay-badge" style="background:#1e3a8a;color:#fff;">🌟 OPÉRATIONNEL (Temps réel)</span>` : ''}
           ${!isEditable ? `<span class="readonly-overlay-badge">👁 Consultation uniquement</span>` : ''}
           ${v.status === 'Soumis à validation' ? `<button class="btn btn-outline btn-sm" onclick="openStatusModal('${esc(v.id)}')">💬 Donner un feedback</button>` : ''}
           ${v.status === 'Retenu' ? `<button class="btn btn-success btn-sm" onclick="validerVersion('${esc(v.id)}')">✅ Valider définitivement</button>` : ''}
@@ -3551,11 +3564,13 @@
       // 7. Vérifier si une version est demandée via l'URL (?version=...)
       const urlParams = new URLSearchParams(window.location.search);
       const versionParam = urlParams.get('version');
+      const opParam = urlParams.get('op') === 'true';
 
       if (versionParam) {
         // AC-NAV-07 : ouvrir directement une version via l'URL
         const v = getVersionById(versionParam);
         if (v) {
+          SHOW_OPERATIONAL_VIEW = opParam;
           showCalendarView(versionParam);
         } else {
           toast('⚠️ Version introuvable dans l\'URL — affichage de la liste.', true);
@@ -3570,9 +3585,14 @@
       window.addEventListener('popstate', function() {
         const params = new URLSearchParams(window.location.search);
         const vId = params.get('version');
+        const opVal = params.get('op') === 'true';
         if (vId) {
           const vv = getVersionById(vId);
-          if (vv) { showCalendarView(vId); return; }
+          if (vv) {
+            SHOW_OPERATIONAL_VIEW = opVal;
+            showCalendarView(vId);
+            return;
+          }
         }
         showVersionsList();
       });
