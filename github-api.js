@@ -96,12 +96,19 @@ async function saveFile(filename, content, opts) {
 
           // Maintien de cohérence du catalogue ATELIERS
           if (ag.atelier) {
+            var animsList = [];
+            if (ag.fac1Id) animsList.push(String(ag.fac1Id));
+            if (ag.fac2Id) animsList.push(String(ag.fac2Id));
+            if (ag.fac3Id) animsList.push(String(ag.fac3Id));
+            if (ag.fac4Id) animsList.push(String(ag.fac4Id));
+
             payloadAteliers.push({
               id: atelierId,
               nom_fr: ag.atelier,
               type: ag.type || '',
               piment: ag.piment !== undefined ? ag.piment : 0,
               statut: ag.statut || 'APPROVED',
+              animateurs: animsList, // Synchronise la liste des animateurs du catalogue !
               logistic_id: ag.logisticId || '',
               updated_at: new Date().toISOString()
             });
