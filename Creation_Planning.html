@@ -2260,7 +2260,9 @@
     }
 
     function populateRuleSelects() {
-      const types = (typeof REF_TYPES !== 'undefined' ? REF_TYPES : []).sort((a,b) => a.localeCompare(b, 'fr'));
+      const types = (typeof REF_TYPES !== 'undefined' ? REF_TYPES : [])
+        .map(t => typeof t === 'object' ? (t.value || t.label || t.id) : t)
+        .sort((a, b) => a.localeCompare(b, 'fr'));
       const selectIds = ['ruleField_limit_type', 'ruleField_limit_before_type', 'ruleField_limit_after_type', 'ruleField_forced_type'];
       selectIds.forEach(id => {
         const el = document.getElementById(id);
