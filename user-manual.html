@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Manuel — Tantramour 2026</title>
+<title>Manuel — Tantramour 2027</title>
 <style>
   :root {
     --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
@@ -165,8 +165,8 @@
       <span data-lang="en">User Manual — DreamTeam</span>
     </h2>
     <div class="cover-meta">
-      <span data-lang="fr">9 rapports · Programme festivaliers, plannings équipes · Master Data</span>
-      <span data-lang="en">9 reports · Festival programme, team schedules · Master Data</span>
+      <span data-lang="fr">Rapports · Programme festivaliers, plannings équipes · Workflow ateliers · Admin SQL</span>
+      <span data-lang="en">Reports · Festival programme, team schedules · Workshop workflow · SQL Admin</span>
     </div>
   </div>
 
@@ -214,8 +214,28 @@
         <span data-lang="en">Simplified Schedule by Room</span>
       </a></li>
       <li><span class="toc-num" style="background:#0f766e">10</span><a href="#master-data">
-        <span data-lang="fr">Master Data — Tri & Filtres (nouveau)</span>
-        <span data-lang="en">Master Data — Sort & Filters (new)</span>
+        <span data-lang="fr">Master Data — Tri &amp; Filtres</span>
+        <span data-lang="en">Master Data — Sort &amp; Filters</span>
+      </a></li>
+      <li><span class="toc-num" style="background:#166534">11</span><a href="#workflow-ateliers">
+        <span data-lang="fr">Workflow — Ateliers Proposés</span>
+        <span data-lang="en">Workflow — Proposed Workshops</span>
+      </a></li>
+      <li><span class="toc-num" style="background:#2563eb">12</span><a href="#creation-planning">
+        <span data-lang="fr">Création du Planning</span>
+        <span data-lang="en">Planning Creation</span>
+      </a></li>
+      <li><span class="toc-num" style="background:#4b5563">13</span><a href="#editer-atelier">
+        <span data-lang="fr">Éditer un atelier — ce qui est possible</span>
+        <span data-lang="en">Edit a Workshop — what is possible</span>
+      </a></li>
+      <li><span class="toc-num" style="background:#7c3aed">14</span><a href="#logique-affichage">
+        <span data-lang="fr">Logique d'affichage dans les rapports</span>
+        <span data-lang="en">Display logic in reports</span>
+      </a></li>
+      <li><span class="toc-num" style="background:#0e7490">15</span><a href="#admin-sql">
+        <span data-lang="fr">Admin — Structure base SQL</span>
+        <span data-lang="en">Admin — SQL Database structure</span>
       </a></li>
     </ol>
   </div>
@@ -1241,9 +1261,568 @@
   </div>
 
 
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       11 — WORKFLOW ATELIERS PROPOSÉS
+  ══════════════════════════════════════ -->
+  <div class="section" id="workflow-ateliers">
+    <div class="section-header">
+      <div class="section-icon">🌱</div>
+      <div>
+        <div class="section-title">
+          <span data-lang="fr">Workflow — Ateliers Proposés</span>
+          <span data-lang="en">Workflow — Proposed Workshops</span>
+          <span class="section-badge" style="background:#dcfce7;color:#166534">Admin</span>
+        </div>
+        <div class="section-subtitle">
+          <span data-lang="fr">De la proposition à l'approbation — cycle de vie d'un atelier</span>
+          <span data-lang="en">From proposal to approval — workshop lifecycle</span>
+        </div>
+      </div>
+    </div>
+
+    <p data-lang="fr">Chaque atelier suit un cycle de vie défini par un <strong>statut</strong>. Ce statut détermine s'il est visible dans les rapports opérationnels ou seulement dans les modules de gestion.</p>
+    <p data-lang="en">Each workshop follows a lifecycle defined by a <strong>status</strong>. This status determines whether it appears in operational reports or only in management modules.</p>
+
+    <h3 style="border-left-color:#166534">
+      <span data-lang="fr">Les 3 statuts d'un atelier</span>
+      <span data-lang="en">The 3 workshop statuses</span>
+    </h3>
+    <table class="data-table">
+      <thead><tr>
+        <th><span data-lang="fr">Statut</span><span data-lang="en">Status</span></th>
+        <th><span data-lang="fr">Signification</span><span data-lang="en">Meaning</span></th>
+        <th><span data-lang="fr">Visible dans les rapports ?</span><span data-lang="en">Visible in reports?</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="pill" style="background:#dbeafe;color:#1d4ed8">NEW</span></td>
+          <td><span data-lang="fr">Atelier proposé, en attente de décision</span><span data-lang="en">Proposed workshop, awaiting decision</span></td>
+          <td><span data-lang="fr">❌ Non</span><span data-lang="en">❌ No</span></td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#dcfce7;color:#166534">APPROVED</span></td>
+          <td><span data-lang="fr">Atelier retenu — apparaît dans l'agenda opérationnel</span><span data-lang="en">Accepted workshop — appears in the operational agenda</span></td>
+          <td><span data-lang="fr">✅ Oui (si planning validé)</span><span data-lang="en">✅ Yes (if planning validated)</span></td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#fee2e2;color:#dc2626">REJECTED</span></td>
+          <td><span data-lang="fr">Atelier non retenu</span><span data-lang="en">Workshop not accepted</span></td>
+          <td><span data-lang="fr">❌ Non</span><span data-lang="en">❌ No</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="border-left-color:#166534">
+      <span data-lang="fr">Étapes du workflow</span>
+      <span data-lang="en">Workflow steps</span>
+    </h3>
+    <div class="steps-block">
+      <div class="step">
+        <div class="step-n" style="background:#166534">1</div>
+        <div class="step-body">
+          <span data-lang="fr">Ouvrez <strong>Ateliers Proposés</strong> depuis la section Gestion Planning.</span>
+          <span data-lang="en">Open <strong>Proposed Workshops</strong> from the Planning Management section.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#166534">2</div>
+        <div class="step-body">
+          <span data-lang="fr">Créez un nouvel atelier via le bouton <strong>+ Nouveau</strong> — il est automatiquement créé avec le statut <code>NEW</code>.</span>
+          <span data-lang="en">Create a new workshop via the <strong>+ New</strong> button — it is automatically created with status <code>NEW</code>.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#166534">3</div>
+        <div class="step-body">
+          <span data-lang="fr">Renseignez les informations : nom FR/EN, type, piment, description, animateurs proposés.</span>
+          <span data-lang="en">Fill in the details: FR/EN name, type, heat level, description, proposed facilitators.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#166534">4</div>
+        <div class="step-body">
+          <span data-lang="fr">Changez le statut en <code>APPROVED</code> pour valider l'atelier. Il devient alors disponible pour être placé dans un planning.</span>
+          <span data-lang="en">Change the status to <code>APPROVED</code> to validate the workshop. It then becomes available to be placed in a planning version.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#166534">5</div>
+        <div class="step-body">
+          <span data-lang="fr">Les ateliers <code>NEW</code> et <code>REJECTED</code> restent accessibles dans ce module mais <strong>n'apparaissent jamais dans les rapports opérationnels</strong>.</span>
+          <span data-lang="en"><code>NEW</code> and <code>REJECTED</code> workshops remain accessible in this module but <strong>never appear in operational reports</strong>.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠️</div>
+      <div>
+        <span data-lang="fr">Approuver un atelier ne le rend pas immédiatement visible dans les rapports. Il doit également être <strong>placé dans une version de planning</strong> et cette version doit être <strong>Validée</strong>. Voir section 12.</span>
+        <span data-lang="en">Approving a workshop does not immediately make it visible in reports. It must also be <strong>placed in a planning version</strong> and that version must be <strong>Validated</strong>. See section 12.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       12 — CRÉATION DU PLANNING
+  ══════════════════════════════════════ -->
+  <div class="section" id="creation-planning">
+    <div class="section-header">
+      <div class="section-icon">🗓️</div>
+      <div>
+        <div class="section-title">
+          <span data-lang="fr">Création du Planning</span>
+          <span data-lang="en">Planning Creation</span>
+          <span class="section-badge" style="background:#dbeafe;color:#1d4ed8">Admin</span>
+        </div>
+        <div class="section-subtitle">
+          <span data-lang="fr">Versions multiples · Validation = publication dans les rapports</span>
+          <span data-lang="en">Multiple versions · Validation = publication in reports</span>
+        </div>
+      </div>
+    </div>
+
+    <p data-lang="fr">Le module <strong>Création du Planning</strong> permet de construire et gérer plusieurs versions du planning en parallèle. Chaque version est indépendante et ne modifie les rapports opérationnels qu'au moment de sa <strong>validation</strong>.</p>
+    <p data-lang="en">The <strong>Planning Creation</strong> module lets you build and manage multiple planning versions in parallel. Each version is independent and only updates operational reports when <strong>validated</strong>.</p>
+
+    <h3 style="border-left-color:#2563eb">
+      <span data-lang="fr">Les 5 statuts d'une version de planning</span>
+      <span data-lang="en">The 5 statuses of a planning version</span>
+    </h3>
+    <table class="data-table">
+      <thead><tr>
+        <th><span data-lang="fr">Statut</span><span data-lang="en">Status</span></th>
+        <th><span data-lang="fr">Signification</span><span data-lang="en">Meaning</span></th>
+        <th><span data-lang="fr">Impact sur les rapports</span><span data-lang="en">Impact on reports</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Draft</code></td>
+          <td><span data-lang="fr">Version en construction</span><span data-lang="en">Version under construction</span></td>
+          <td><span data-lang="fr">❌ Aucun</span><span data-lang="en">❌ None</span></td>
+        </tr>
+        <tr>
+          <td><code>Soumis à validation</code></td>
+          <td><span data-lang="fr">Version soumise pour relecture</span><span data-lang="en">Version submitted for review</span></td>
+          <td><span data-lang="fr">❌ Aucun</span><span data-lang="en">❌ None</span></td>
+        </tr>
+        <tr>
+          <td><code>Feedback</code></td>
+          <td><span data-lang="fr">Retours reçus — à corriger</span><span data-lang="en">Feedback received — needs corrections</span></td>
+          <td><span data-lang="fr">❌ Aucun</span><span data-lang="en">❌ None</span></td>
+        </tr>
+        <tr>
+          <td><code>Retenu</code></td>
+          <td><span data-lang="fr">Version retenue, en attente de validation finale</span><span data-lang="en">Version selected, awaiting final validation</span></td>
+          <td><span data-lang="fr">❌ Aucun</span><span data-lang="en">❌ None</span></td>
+        </tr>
+        <tr>
+          <td><code style="background:#dcfce7;color:#166534;border:1px solid #86efac;border-radius:4px;padding:1px 6px">Validé</code></td>
+          <td><span data-lang="fr">Version officielle — <strong>une seule possible</strong> à la fois</span><span data-lang="en">Official version — <strong>only one</strong> at a time</span></td>
+          <td><span data-lang="fr">✅ <strong>Publie les ateliers APPROVED dans l'agenda</strong></span><span data-lang="en">✅ <strong>Publishes APPROVED workshops to the agenda</strong></span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="border-left-color:#2563eb">
+      <span data-lang="fr">Workflow de validation</span>
+      <span data-lang="en">Validation workflow</span>
+    </h3>
+    <div class="steps-block">
+      <div class="step">
+        <div class="step-n" style="background:#2563eb">1</div>
+        <div class="step-body">
+          <span data-lang="fr">Créez une nouvelle version (bouton <strong>+ Nouvelle version</strong>). Elle démarre en statut <code>Draft</code>.</span>
+          <span data-lang="en">Create a new version (<strong>+ New version</strong> button). It starts in <code>Draft</code> status.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#2563eb">2</div>
+        <div class="step-body">
+          <span data-lang="fr">Faites glisser les ateliers <code>APPROVED</code> sur la grille — chaque atelier est positionné sur un <strong>jour</strong>, une <strong>heure</strong> et un <strong>lieu</strong>.</span>
+          <span data-lang="en">Drag <code>APPROVED</code> workshops onto the grid — each is positioned on a <strong>day</strong>, <strong>time</strong> and <strong>venue</strong>.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#2563eb">3</div>
+        <div class="step-body">
+          <span data-lang="fr">Faites évoluer le statut de la version : <code>Draft</code> → <code>Soumis à validation</code> → <code>Feedback</code> → <code>Retenu</code> → <code>Validé</code>.</span>
+          <span data-lang="en">Advance the version status: <code>Draft</code> → <code>Soumis à validation</code> → <code>Feedback</code> → <code>Retenu</code> → <code>Validé</code>.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n" style="background:#166534">4</div>
+        <div class="step-body">
+          <span data-lang="fr">Au clic sur <strong>Valider</strong> : les ateliers de cette version sont <strong>copiés dans l'agenda opérationnel</strong>. Seuls les champs <em>jour / heure / lieu / animateurs</em> sont mis à jour — les affectations helpers, traducteurs, angels et notes déjà saisies sont <strong>préservées</strong>.</span>
+          <span data-lang="en">On clicking <strong>Validate</strong>: the workshops from this version are <strong>copied into the operational agenda</strong>. Only the <em>day / time / venue / facilitators</em> fields are updated — already entered helper, translator, angel assignments and notes are <strong>preserved</strong>.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ️</div>
+      <div>
+        <span data-lang="fr"><strong>Une seule version peut être Validée à la fois.</strong> Si une autre version est déjà validée, le bouton de validation est bloqué et un message d'erreur apparaît.</span>
+        <span data-lang="en"><strong>Only one version can be Validated at a time.</strong> If another version is already validated, the validate button is blocked and an error message appears.</span>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div>
+        <span data-lang="fr">Les versions <code>Draft</code>, <code>Soumis à validation</code>, <code>Feedback</code> et <code>Retenu</code> sont des <strong>espaces de travail isolés</strong> — elles n'affectent jamais les rapports opérationnels, même si elles contiennent des ateliers <code>APPROVED</code>.</span>
+        <span data-lang="en"><code>Draft</code>, <code>Soumis à validation</code>, <code>Feedback</code> and <code>Retenu</code> versions are <strong>isolated workspaces</strong> — they never affect operational reports, even if they contain <code>APPROVED</code> workshops.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       13 — ÉDITER UN ATELIER
+  ══════════════════════════════════════ -->
+  <div class="section" id="editer-atelier">
+    <div class="section-header">
+      <div class="section-icon">✏️</div>
+      <div>
+        <div class="section-title">
+          <span data-lang="fr">Éditer un atelier — ce qui est possible</span>
+          <span data-lang="en">Edit a Workshop — what is possible</span>
+          <span class="section-badge" style="background:#f1f5f9;color:#4b5563">Admin</span>
+        </div>
+        <div class="section-subtitle">
+          <span data-lang="fr">Tous les statuts accessibles · Affectations libres · Informations de créneau depuis le planning validé</span>
+          <span data-lang="en">All statuses accessible · Free assignments · Slot info from validated planning</span>
+        </div>
+      </div>
+    </div>
+
+    <p data-lang="fr"><strong>Éditer un atelier</strong> est le module de gestion des affectations opérationnelles. Contrairement aux rapports, il affiche <strong>tous les ateliers quel que soit leur statut</strong> (NEW, APPROVED, REJECTED) afin de permettre une préparation anticipée.</p>
+    <p data-lang="en"><strong>Edit a Workshop</strong> is the operational assignment management module. Unlike reports, it shows <strong>all workshops regardless of status</strong> (NEW, APPROVED, REJECTED) to allow early preparation.</p>
+
+    <h3 style="border-left-color:#4b5563">
+      <span data-lang="fr">Ce qui est possible dans ce module</span>
+      <span data-lang="en">What is possible in this module</span>
+    </h3>
+    <table class="data-table">
+      <thead><tr>
+        <th><span data-lang="fr">Action</span><span data-lang="en">Action</span></th>
+        <th><span data-lang="fr">Disponible ?</span><span data-lang="en">Available?</span></th>
+        <th><span data-lang="fr">Remarque</span><span data-lang="en">Note</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><span data-lang="fr">Affecter un helper</span><span data-lang="en">Assign a helper</span></td>
+          <td>✅</td>
+          <td><span data-lang="fr">Même si l'atelier est NEW ou le planning non validé</span><span data-lang="en">Even if the workshop is NEW or the planning not yet validated</span></td>
+        </tr>
+        <tr>
+          <td><span data-lang="fr">Affecter un traducteur</span><span data-lang="en">Assign a translator</span></td>
+          <td>✅</td>
+          <td><span data-lang="fr">Idem — indépendant du statut du planning</span><span data-lang="en">Same — independent of planning status</span></td>
+        </tr>
+        <tr>
+          <td><span data-lang="fr">Affecter un angel</span><span data-lang="en">Assign an angel</span></td>
+          <td>✅</td>
+          <td><span data-lang="fr">Idem</span><span data-lang="en">Same</span></td>
+        </tr>
+        <tr>
+          <td><span data-lang="fr">Ajouter une note</span><span data-lang="en">Add a note</span></td>
+          <td>✅</td>
+          <td><span data-lang="fr">Préservée lors des validations de planning ultérieures</span><span data-lang="en">Preserved during subsequent planning validations</span></td>
+        </tr>
+        <tr>
+          <td><span data-lang="fr">Modifier le créneau (jour / heure / lieu)</span><span data-lang="en">Modify the slot (day / time / venue)</span></td>
+          <td>⚠️</td>
+          <td><span data-lang="fr">Possible techniquement, mais ces champs sont <strong>écrasés à chaque validation de planning</strong>. Utiliser <em>Création du Planning</em> pour ces modifications.</span><span data-lang="en">Technically possible, but these fields are <strong>overwritten at each planning validation</strong>. Use <em>Planning Creation</em> for these changes.</span></td>
+        </tr>
+        <tr>
+          <td><span data-lang="fr">Voir les ateliers NEW ou REJECTED</span><span data-lang="en">See NEW or REJECTED workshops</span></td>
+          <td>✅</td>
+          <td><span data-lang="fr">Filtrable par statut via le menu déroulant "Statut"</span><span data-lang="en">Filterable by status via the "Status" dropdown</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠️</div>
+      <div>
+        <span data-lang="fr"><strong>Les informations de créneau (jour, heure, lieu) affichées dans ce module proviennent de l'agenda opérationnel</strong>, c'est-à-dire de la dernière version de planning <code>Validé</code>. Si aucune version n'est encore validée, ces champs peuvent être vides ou nuls.</span>
+        <span data-lang="en"><strong>Slot information (day, time, venue) shown in this module comes from the operational agenda</strong>, i.e. the last <code>Validated</code> planning version. If no version has been validated yet, these fields may be empty or null.</span>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div>
+        <span data-lang="fr">Les affectations (helpers, traducteurs, angels, notes) saisies ici sont <strong>préservées lors des validations de planning successives</strong>. Seuls les champs de positionnement (jour / heure / lieu / animateurs) sont mis à jour lors d'une validation.</span>
+        <span data-lang="en">Assignments (helpers, translators, angels, notes) entered here are <strong>preserved during successive planning validations</strong>. Only positioning fields (day / time / venue / facilitators) are updated during a validation.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       14 — LOGIQUE D'AFFICHAGE
+  ══════════════════════════════════════ -->
+  <div class="section" id="logique-affichage">
+    <div class="section-header">
+      <div class="section-icon">🔍</div>
+      <div>
+        <div class="section-title">
+          <span data-lang="fr">Logique d'affichage dans les rapports opérationnels</span>
+          <span data-lang="en">Display logic in operational reports</span>
+          <span class="section-badge" style="background:#ede9fe;color:#7c3aed">Admin</span>
+        </div>
+        <div class="section-subtitle">
+          <span data-lang="fr">Condition de publication d'un atelier dans les rapports</span>
+          <span data-lang="en">Workshop publication condition in reports</span>
+        </div>
+      </div>
+    </div>
+
+    <p data-lang="fr">Tous les rapports opérationnels (Programme, Mon Planning, Agenda, Conflits, Charge de travail, etc.) appliquent la même règle de filtrage. Un atelier n'apparaît dans ces rapports que s'il remplit <strong>les deux conditions simultanément</strong> :</p>
+    <p data-lang="en">All operational reports (Programme, My Planning, Agenda, Conflicts, Workload, etc.) apply the same filtering rule. A workshop only appears in these reports if it meets <strong>both conditions simultaneously</strong>:</p>
+
+    <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:16px 20px;margin:16px 0;font-size:13px;">
+      <div style="font-weight:700;color:#166534;margin-bottom:8px;">
+        <span data-lang="fr">✅ Condition de publication</span>
+        <span data-lang="en">✅ Publication condition</span>
+      </div>
+      <div style="font-family:'Courier New',monospace;font-size:13px;color:#1f2328;">
+        atelier.statut = <span style="color:#166534;font-weight:700">"APPROVED"</span>
+        <span style="color:#7c3aed;font-weight:700"> ET </span>
+        atelier appartient à la version de planning <span style="color:#166534;font-weight:700">"Validé"</span>
+      </div>
+    </div>
+
+    <h3 style="border-left-color:#7c3aed">
+      <span data-lang="fr">Tableau de décision</span>
+      <span data-lang="en">Decision table</span>
+    </h3>
+    <table class="data-table">
+      <thead><tr>
+        <th><span data-lang="fr">Statut atelier</span><span data-lang="en">Workshop status</span></th>
+        <th><span data-lang="fr">Statut version planning</span><span data-lang="en">Planning version status</span></th>
+        <th><span data-lang="fr">Visible dans les rapports ?</span><span data-lang="en">Visible in reports?</span></th>
+      </tr></thead>
+      <tbody>
+        <tr style="background:#f0fdf4">
+          <td><span class="pill" style="background:#dcfce7;color:#166534">APPROVED</span></td>
+          <td><code style="background:#dcfce7;color:#166534">Validé</code></td>
+          <td><strong>✅ Oui</strong></td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#dbeafe;color:#1d4ed8">NEW</span></td>
+          <td><code>Validé</code></td>
+          <td>❌ Non</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#fee2e2;color:#dc2626">REJECTED</span></td>
+          <td><code>Validé</code></td>
+          <td>❌ Non</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#dcfce7;color:#166534">APPROVED</span></td>
+          <td><code>Draft</code> / <code>Feedback</code> / <code>Retenu</code></td>
+          <td>❌ Non</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="border-left-color:#7c3aed">
+      <span data-lang="fr">Rapports concernés par ce filtre</span>
+      <span data-lang="en">Reports affected by this filter</span>
+    </h3>
+    <p data-lang="fr">Les rapports suivants n'affichent que les ateliers publiés :</p>
+    <p data-lang="en">The following reports only display published workshops:</p>
+    <ul>
+      <li>🎪 <span data-lang="fr">Programme Festival</span><span data-lang="en">Festival Programme</span></li>
+      <li>📋 <span data-lang="fr">Mon Planning V2</span><span data-lang="en">My Planning V2</span></li>
+      <li>🗓️ <span data-lang="fr">Mon Agenda Simplifié</span><span data-lang="en">My Simplified Schedule</span></li>
+      <li>🏛️ <span data-lang="fr">Agenda Simplifié par Salle</span><span data-lang="en">Simplified Schedule by Room</span></li>
+      <li>📅 <span data-lang="fr">Planning par Jour</span><span data-lang="en">Planning by Day</span></li>
+      <li>👼 <span data-lang="fr">Planning Angels</span><span data-lang="en">Angels Schedule</span></li>
+      <li>🌐 <span data-lang="fr">Planning Traducteurs</span><span data-lang="en">Translators Schedule</span></li>
+      <li>🐦 <span data-lang="fr">Planning Colibri</span><span data-lang="en">Colibri Schedule</span></li>
+      <li>⚖️ <span data-lang="fr">Charge de travail</span><span data-lang="en">Workload</span></li>
+      <li>⚠️ <span data-lang="fr">Conflits de planning</span><span data-lang="en">Planning Conflicts</span></li>
+      <li>🚨 <span data-lang="fr">Problèmes de planning</span><span data-lang="en">Planning Problems</span></li>
+    </ul>
+
+    <h3 style="border-left-color:#7c3aed">
+      <span data-lang="fr">Modules qui voient TOUS les ateliers</span>
+      <span data-lang="en">Modules that see ALL workshops</span>
+    </h3>
+    <p data-lang="fr">Les modules de gestion suivants affichent tous les ateliers quel que soit leur statut :</p>
+    <p data-lang="en">The following management modules show all workshops regardless of status:</p>
+    <ul>
+      <li>🌱 <span data-lang="fr"><strong>Ateliers Proposés</strong> — liste complète NEW / APPROVED / REJECTED</span><span data-lang="en"><strong>Proposed Workshops</strong> — complete list NEW / APPROVED / REJECTED</span></li>
+      <li>✏️ <span data-lang="fr"><strong>Éditer un atelier</strong> — tous statuts, filtrable via le menu Statut</span><span data-lang="en"><strong>Edit a Workshop</strong> — all statuses, filterable via the Status menu</span></li>
+    </ul>
+
+    <div class="callout info">
+      <div class="callout-icon">ℹ️</div>
+      <div>
+        <span data-lang="fr">La règle de filtrage est appliquée <strong>une seule fois au chargement des données</strong>, dans le loader central (<code>loader.js</code>). Tous les rapports bénéficient automatiquement de cette règle sans code spécifique dans chaque rapport.</span>
+        <span data-lang="en">The filtering rule is applied <strong>once at data load</strong>, in the central loader (<code>loader.js</code>). All reports automatically benefit from this rule without specific code in each report.</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════
+       15 — ADMIN — STRUCTURE SQL
+  ══════════════════════════════════════ -->
+  <div class="section" id="admin-sql">
+    <div class="section-header">
+      <div class="section-icon">🗄️</div>
+      <div>
+        <div class="section-title">
+          <span data-lang="fr">Admin — Structure de la base SQL</span>
+          <span data-lang="en">Admin — SQL Database Structure</span>
+          <span class="section-badge" style="background:#cffafe;color:#0e7490">Supabase</span>
+        </div>
+        <div class="section-subtitle">
+          <span data-lang="fr">Tables, vues et rôles de chaque entité dans Supabase</span>
+          <span data-lang="en">Tables, views and role of each entity in Supabase</span>
+        </div>
+      </div>
+    </div>
+
+    <p data-lang="fr">L'application utilise <strong>Supabase</strong> (PostgreSQL hébergé) comme base de données. Toutes les données sont synchronisées en temps réel entre les fichiers <code>.js</code> locaux et la base SQL. En cas de conflit, <strong>Supabase est autoritaire</strong> — les données de la base priment sur les fichiers locaux au chargement.</p>
+    <p data-lang="en">The application uses <strong>Supabase</strong> (hosted PostgreSQL) as its database. All data is synchronised in real time between local <code>.js</code> files and the SQL database. In case of conflict, <strong>Supabase is authoritative</strong> — database data takes precedence over local files at load time.</p>
+
+    <h3 style="border-left-color:#0e7490">
+      <span data-lang="fr">Tables principales</span>
+      <span data-lang="en">Main tables</span>
+    </h3>
+    <table class="data-table">
+      <thead><tr>
+        <th><span data-lang="fr">Table</span><span data-lang="en">Table</span></th>
+        <th><span data-lang="fr">Rôle</span><span data-lang="en">Role</span></th>
+        <th><span data-lang="fr">Clé principale</span><span data-lang="en">Primary key</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><code>ateliers</code></td>
+          <td><span data-lang="fr">Propriétés des ateliers — nom FR/EN, type, description, statut (NEW/APPROVED/REJECTED), animateurs, piment</span><span data-lang="en">Workshop properties — FR/EN name, type, description, status (NEW/APPROVED/REJECTED), facilitators, heat level</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>agenda</code></td>
+          <td><span data-lang="fr">Planning opérationnel actif — créneau (jour, heure, lieu) et affectations (helpers, trad, angel, note). Contenu = la dernière version <code>Validé</code>.</span><span data-lang="en">Active operational schedule — slot (day, time, venue) and assignments (helpers, translator, angel, note). Content = last <code>Validated</code> version.</span></td>
+          <td><code>id</code> = <code>atelier_id</code></td>
+        </tr>
+        <tr>
+          <td><code>planning_versions</code></td>
+          <td><span data-lang="fr">Versions de planning — statut, dates de validation, feedbacks. Une seule peut être <code>Validé</code>.</span><span data-lang="en">Planning versions — status, validation dates, feedbacks. Only one can be <code>Validé</code>.</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>planning_version_items</code></td>
+          <td><span data-lang="fr">Créneaux de chaque version — jour, lieu, start_min/end_min, animateurs. Liés à planning_versions par <code>version_id</code>.</span><span data-lang="en">Slots for each version — day, venue, start_min/end_min, facilitators. Linked to planning_versions by <code>version_id</code>.</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>ressources</code></td>
+          <td><span data-lang="fr">Référentiel des personnes — nom, prénom, email, téléphone, rôles (animateur, helper, trad, angel, colibri…)</span><span data-lang="en">People reference — name, first name, email, phone, roles (facilitator, helper, translator, angel, colibri…)</span></td>
+          <td><code>id</code> INTEGER</td>
+        </tr>
+        <tr>
+          <td><code>logistique</code></td>
+          <td><span data-lang="fr">Informations logistiques par atelier — installation, besoins matériels, consignes helpers</span><span data-lang="en">Logistics information per workshop — setup, material needs, helper instructions</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>ref_types</code></td>
+          <td><span data-lang="fr">Types d'ateliers — valeur, label, règles staffing (minRes, minHelpers, minTrad), couleurs CSS (css_class, color, color_bg…)</span><span data-lang="en">Workshop types — value, label, staffing rules (minRes, minHelpers, minTrad), CSS colours (css_class, color, color_bg…)</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>ref_lieux</code></td>
+          <td><span data-lang="fr">Référentiel des salles/lieux du festival</span><span data-lang="en">Festival venue/room reference</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>ref_display_reports</code></td>
+          <td><span data-lang="fr">Configuration de l'affichage des rapports — quels rapports sont actifs, dans quelle section, quel style de carte</span><span data-lang="en">Report display configuration — which reports are active, in which section, which card style</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>ref_news</code></td>
+          <td><span data-lang="fr">Messages importants DreamTeam / festivaliers</span><span data-lang="en">Important DreamTeam / attendee messages</span></td>
+          <td><code>id</code> TEXT</td>
+        </tr>
+        <tr>
+          <td><code>ref_equipements</code></td>
+          <td><span data-lang="fr">Catalogue des équipements disponibles — stock, catégorie, fournisseur</span><span data-lang="en">Available equipment catalogue — stock, category, supplier</span></td>
+          <td><code>id</code> INTEGER</td>
+        </tr>
+        <tr>
+          <td><code>festival_config</code></td>
+          <td><span data-lang="fr">Configuration globale du festival — année, dates, heures, salles sélectionnées</span><span data-lang="en">Global festival configuration — year, dates, hours, selected venues</span></td>
+          <td><code>id</code> = <code>'2027'</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="border-left-color:#0e7490">
+      <span data-lang="fr">Vue SQL — <code>v_agenda</code></span>
+      <span data-lang="en">SQL View — <code>v_agenda</code></span>
+    </h3>
+    <p data-lang="fr">La vue <code>v_agenda</code> est la <strong>source de données principale</strong> pour tous les rapports opérationnels. Elle joint automatiquement les tables <code>agenda</code>, <code>ateliers</code> et <code>ressources</code> pour résoudre les noms et exposer toutes les colonnes utiles en un seul appel REST.</p>
+    <p data-lang="en">The <code>v_agenda</code> view is the <strong>main data source</strong> for all operational reports. It automatically joins the <code>agenda</code>, <code>ateliers</code> and <code>ressources</code> tables to resolve names and expose all useful columns in a single REST call.</p>
+    <table class="data-table">
+      <thead><tr>
+        <th><span data-lang="fr">Colonne clé</span><span data-lang="en">Key column</span></th>
+        <th><span data-lang="fr">Source</span><span data-lang="en">Source</span></th>
+      </tr></thead>
+      <tbody>
+        <tr><td><code>statut</code></td><td><span data-lang="fr">Statut de l'atelier (NEW/APPROVED/REJECTED) — depuis <code>ateliers.statut</code></span><span data-lang="en">Workshop status (NEW/APPROVED/REJECTED) — from <code>ateliers.statut</code></span></td></tr>
+        <tr><td><code>jour</code>, <code>heure</code>, <code>lieu</code></td><td><span data-lang="fr">Créneau depuis <code>agenda</code></span><span data-lang="en">Slot from <code>agenda</code></span></td></tr>
+        <tr><td><code>fac1</code>…<code>fac4</code></td><td><span data-lang="fr">Noms résolus des animateurs depuis <code>ressources</code></span><span data-lang="en">Resolved facilitator names from <code>ressources</code></span></td></tr>
+        <tr><td><code>helper1</code>…<code>helper4</code></td><td><span data-lang="fr">Noms résolus des helpers depuis <code>ressources</code></span><span data-lang="en">Resolved helper names from <code>ressources</code></span></td></tr>
+        <tr><td><code>traduction</code>, <code>angel</code></td><td><span data-lang="fr">Noms résolus depuis <code>ressources</code></span><span data-lang="en">Resolved names from <code>ressources</code></span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="border-left-color:#0e7490">
+      <span data-lang="fr">Architecture des données — schéma simplifié</span>
+      <span data-lang="en">Data architecture — simplified schema</span>
+    </h3>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.8;color:#1e293b;overflow-x:auto;">
+      ateliers (statut: NEW/APPROVED/REJECTED)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;↓ atelier_id<br>
+      agenda (créneau + affectations) ←── <strong>source des rapports</strong><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;↑ copié lors de la validation<br>
+      planning_version_items<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;↓ version_id<br>
+      planning_versions (status: Draft → Validé)<br>
+      <br>
+      ressources → noms résolus dans v_agenda<br>
+      ref_types → couleurs CSS injectées dynamiquement<br>
+      ref_display_reports → quels rapports afficher sur l'accueil
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠️</div>
+      <div>
+        <span data-lang="fr"><strong>Pour les opérations de maintenance SQL</strong> (migrations, seeds, corrections manuelles), les scripts sont disponibles dans <code>Backup/Supabase_Migrations/</code>. Toujours exécuter les scripts dans le SQL Editor Supabase, jamais directement sur les fichiers <code>.js</code>.</span>
+        <span data-lang="en"><strong>For SQL maintenance operations</strong> (migrations, seeds, manual corrections), scripts are available in <code>Backup/Supabase_Migrations/</code>. Always run scripts in the Supabase SQL Editor, never directly on <code>.js</code> files.</span>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">
-    <span data-lang="fr">Tantramour 2026 — Manuel DreamTeam</span>
-    <span data-lang="en">Tantramour 2026 — DreamTeam Manual</span>
+    <span data-lang="fr">Tantramour 2027 — Manuel DreamTeam</span>
+    <span data-lang="en">Tantramour 2027 — DreamTeam Manual</span>
   </div>
 
 </div><!-- /page -->
