@@ -1049,6 +1049,53 @@
   .empty-versions-state h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
   .empty-versions-state p  { font-size: 13px; max-width: 380px; margin: 0 auto 20px; }
 
+  /* ── FLOW DES STATUTS (WORKFLOW) ── */
+  .workflow-flow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .workflow-step-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 110px;
+    position: relative;
+  }
+  .workflow-step-badge {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .workflow-step-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.35;
+    max-width: 130px;
+  }
+  .workflow-arrow {
+    color: var(--border);
+    font-size: 16px;
+    font-weight: bold;
+    user-select: none;
+    align-self: center;
+    margin-bottom: 24px;
+  }
+
   /* ═══════════════════════════════════════════════════════════
      BANDEAU VERSION DANS LA VUE CALENDRIER
   ═══════════════════════════════════════════════════════════ */
@@ -1259,6 +1306,40 @@
         </div>
         <button class="btn btn-primary" onclick="openNewVersionModal()">＋ Créer une nouvelle version</button>
       </div>
+
+      <!-- WORKFLOW FLOW CHART -->
+      <div class="workflow-flow">
+        <div class="workflow-step-item">
+          <span class="workflow-step-badge status-draft">📝 Draft</span>
+          <span class="workflow-step-desc">Version de travail privée. Modifiable librement sans affecter les rapports.</span>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step-item">
+          <span class="workflow-step-badge status-soumis" style="background:#eff6ff;color:#1d4ed8;border:1px solid #93c5fd;">📤 Soumis</span>
+          <span class="workflow-step-desc">Planning envoyé à la DreamTeam pour relecture globale.</span>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step-item">
+          <span class="workflow-step-badge status-feedback" style="background:#fffbeb;color:#b45309;border:1px solid #fcd34d;">💬 Feedback</span>
+          <span class="workflow-step-desc">Corrections demandées (staffing, horaires, conflits ou manques).</span>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step-item">
+          <span class="workflow-step-badge status-retenu" style="background:#f0fdf4;color:#15803d;border:1px solid #86efac;">🎯 Retenu</span>
+          <span class="workflow-step-desc">Version figée, approuvée par l'équipe et prête à être activée.</span>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step-item">
+          <span class="workflow-step-badge status-valide" style="background:#fdf4ff;color:#7e22ce;border:1px solid #d8b4fe;">✅ Validé</span>
+          <span class="workflow-step-desc">Version officielle du festival. Publie les ateliers dans l'agenda.</span>
+        </div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-step-item">
+          <span class="workflow-step-badge" style="background:#1e3a8a;color:#fff;border:1px solid #1e3a8a;">🚀 Opérationnel</span>
+          <span class="workflow-step-desc">Le planning actif en direct du terrain (OP), éditable en temps réel.</span>
+        </div>
+      </div>
+
       <div id="versionsTableContainer">
         <!-- Rempli en JS -->
       </div>
