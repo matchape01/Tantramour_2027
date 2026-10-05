@@ -88,6 +88,7 @@ async function saveFile(filename, content, opts) {
             note: ag.note || '',
             colibri: Boolean(ag.colibri),
             meeting_roles: ag.meetingRoles || '',
+            statut: ag.statut || 'APPROVED',
             locked: Boolean(ag.locked),
             updated_at: new Date().toISOString()
           });
@@ -99,6 +100,7 @@ async function saveFile(filename, content, opts) {
               nom_fr: ag.atelier,
               type: ag.type || '',
               piment: ag.piment !== undefined ? ag.piment : 0,
+              statut: ag.statut || 'APPROVED',
               logistic_id: ag.logisticId || '',
               updated_at: new Date().toISOString()
             });
