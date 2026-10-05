@@ -1346,6 +1346,79 @@
   .sev-alerte { background: var(--warning-light); color: var(--warning); border: 1px solid #fcd34d; }
   .sev-bloquant { background: var(--danger-light); color: var(--danger); border: 1px solid #fca5a5; }
 
+  /* ── BADGE COMPTEUR CONTRAINTES ── */
+  #constraintsBadge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 17px; height: 17px; border-radius: 99px;
+    font-size: 10px; font-weight: 800; padding: 0 4px;
+    margin-left: 4px; line-height: 1;
+  }
+  #constraintsBadge.badge-ok     { background: #dcfce7; color: #166534; }
+  #constraintsBadge.badge-alerte { background: #fef3c7; color: #b45309; }
+  #constraintsBadge.badge-block  { background: #fee2e2; color: #dc2626; animation: pulse-badge .8s ease-in-out infinite alternate; }
+  @keyframes pulse-badge { from { opacity: 1; } to { opacity: .5; } }
+
+  /* ── TOAST DROP ENRICHI ── */
+  #dropToast {
+    position: fixed; bottom: 80px; right: 20px; z-index: 9999;
+    max-width: 340px; min-width: 220px;
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 12px; line-height: 1.5; font-family: inherit;
+    box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    transform: translateX(120%); opacity: 0;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+    pointer-events: none;
+  }
+  #dropToast.show { transform: translateX(0); opacity: 1; pointer-events: auto; }
+  #dropToast.dt-ok    { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+  #dropToast.dt-warn  { background: #fffbeb; border: 2px solid #fbbf24; color: #78350f; }
+  #dropToast.dt-block { background: #fef2f2; border: 2px solid #f87171; color: #7f1d1d; }
+  .dt-title { font-weight: 800; font-size: 13px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+  .dt-item  { font-size: 11px; padding: 3px 6px; border-radius: 4px; margin-top: 3px; }
+  .dt-item-block { background: #fee2e2; border-left: 3px solid #ef4444; }
+  .dt-item-alerte { background: #fef3c7; border-left: 3px solid #f59e0b; }
+  .dt-footer { margin-top: 8px; font-size: 10px; opacity: .7; cursor: pointer; text-align: right; }
+
+  /* ── CARTES CONFLITS SIDEBAR (enrichies) ── */
+  .conflict-card {
+    border-radius: 8px; padding: 9px 11px; cursor: default;
+    transition: transform .1s, box-shadow .1s;
+    border-left: 4px solid transparent;
+  }
+  .conflict-card.cc-block {
+    background: #fef2f2; border-color: #ef4444; border: 1px solid #fca5a5; border-left: 4px solid #ef4444;
+  }
+  .conflict-card.cc-alerte {
+    background: #fffbeb; border-color: #f59e0b; border: 1px solid #fde68a; border-left: 4px solid #f59e0b;
+  }
+  .conflict-card.cc-link { cursor: pointer; }
+  .conflict-card.cc-link:hover { transform: translateX(2px); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .cc-header { display:flex; justify-content:space-between; align-items:center; gap:4px; margin-bottom:4px; }
+  .cc-rule-name { font-weight: 800; font-size: 11px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cc-severity { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; white-space:nowrap; }
+  .cc-severity.sev-b { background: #fca5a5; color: #7f1d1d; }
+  .cc-severity.sev-a { background: #fde68a; color: #78350f; }
+  .cc-message { font-size: 11px; line-height: 1.4; }
+  .cc-locate { font-size: 9px; font-weight: 700; margin-top: 5px; text-align:right; opacity:.7; }
+
+  /* ── PANEL RÉSUMÉ CONFLITS (en-tête sidebar contraintes) ── */
+  .conflicts-summary {
+    display: flex; gap: 8px; flex-shrink: 0; padding: 8px 0 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-pill {
+    flex:1; border-radius:6px; padding: 6px 10px; text-align:center;
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .cs-pill .cs-num { font-size: 20px; font-weight: 800; line-height: 1; }
+  .cs-pill .cs-lbl { font-size: 9px; text-transform:uppercase; letter-spacing:.4px; color: var(--muted); font-weight:700; margin-top:2px; }
+  .cs-pill.cs-ok    { background:#f0fdf4; border-color:#86efac; }
+  .cs-pill.cs-ok    .cs-num { color: #16a34a; }
+  .cs-pill.cs-warn  { background:#fffbeb; border-color:#fde68a; }
+  .cs-pill.cs-warn  .cs-num { color: #d97706; }
+  .cs-pill.cs-block { background:#fef2f2; border-color:#fca5a5; }
+  .cs-pill.cs-block .cs-num { color: #dc2626; }
+
   /* Règles modal */
   .rule-modal-backdrop {
     position: fixed;
@@ -1522,7 +1595,7 @@
       <!-- SOUS-ONGLETS SIDEBAR -->
       <div class="sidebar-tabs" style="display:flex;background:var(--border-subtle);border-bottom:1px solid var(--border);padding:4px 8px 0;gap:4px;flex-shrink:0;">
         <button class="sidebar-tab-btn active" id="sideTabBtnAteliers" onclick="switchSidebarTab('ateliers')" style="flex:1;cursor:pointer;background:transparent;border:none;border-bottom:3px solid var(--accent);padding:8px 4px;font-size:12px;font-weight:700;color:var(--text);font-family:inherit;">🎪 Ateliers</button>
-        <button class="sidebar-tab-btn" id="sideTabBtnConstraints" onclick="switchSidebarTab('constraints')" style="flex:1;cursor:pointer;background:transparent;border:none;border-bottom:3px solid transparent;padding:8px 4px;font-size:12px;font-weight:700;color:var(--muted);font-family:inherit;">⚠️ Contraintes</button>
+        <button class="sidebar-tab-btn" id="sideTabBtnConstraints" onclick="switchSidebarTab('constraints')" style="flex:1;cursor:pointer;background:transparent;border:none;border-bottom:3px solid transparent;padding:8px 4px;font-size:12px;font-weight:700;color:var(--muted);font-family:inherit;">⚠️ Contraintes<span id="constraintsBadge"></span></button>
       </div>
 
       <!-- CONTENU DE L'ONGLET ATELIERS -->
@@ -1562,25 +1635,43 @@
 
       <!-- CONTENU DE L'ONGLET CONTRAINTES -->
       <div id="sidebarConstraintsContent" style="display:none; flex-direction:column; flex:1; overflow:hidden; padding:12px;">
-        <div class="sidebar-header" style="padding:0 0 10px; border-bottom:1px solid var(--border); flex-shrink:0;">
-          <div style="font-size:13px; font-weight:700; color:var(--text);">⚠️ Activation des Contraintes</div>
-          <div style="font-size:11px; color:var(--muted); margin-top:2px;">Cochez les règles à appliquer pour ce planning.</div>
-        </div>
-        
-        <!-- Liste des règles activables -->
-        <div id="sidebarRulesActivatorList" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding:10px 0; border-bottom:1px solid var(--border);">
-          <!-- Rempli en JS -->
+
+        <!-- Résumé compteurs -->
+        <div class="conflicts-summary" id="conflictsSummary" style="display:none;">
+          <div class="cs-pill cs-block" id="csPillBlock">
+            <div class="cs-num" id="csPillBlockNum">0</div>
+            <div class="cs-lbl">Bloquants</div>
+          </div>
+          <div class="cs-pill cs-warn" id="csPillAlerte">
+            <div class="cs-num" id="csPillAlerteNum">0</div>
+            <div class="cs-lbl">Alertes</div>
+          </div>
+          <div class="cs-pill cs-ok" id="csPillOk" style="display:none;">
+            <div class="cs-num">✓</div>
+            <div class="cs-lbl">Aucun conflit</div>
+          </div>
         </div>
 
-        <!-- Section Analyse et Conflits -->
-        <div style="flex-shrink:0; padding:10px 0 0; display:flex; flex-direction:column; gap:10px;">
-          <button class="btn btn-primary" onclick="runConstraintsCheckAndRender()" style="width:100%; justify-content:center; padding:8px;">🔍 Lancer l'Analyse</button>
-          <div style="font-size:12px; font-weight:700; color:var(--text);">🚨 Résultat de l'analyse :</div>
+        <!-- Titre + activation des règles (collapsible) -->
+        <div style="flex-shrink:0;">
+          <button onclick="toggleRulesActivator()" style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted);padding:6px 0;width:100%;text-align:left;display:flex;justify-content:space-between;font-family:inherit;">
+            <span>⚙️ Règles activées pour ce planning</span>
+            <span id="rulesActivatorChevron">▼</span>
+          </button>
+          <div id="sidebarRulesActivatorList" style="display:flex; flex-direction:column; gap:8px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+            <!-- Rempli en JS -->
+          </div>
         </div>
 
-        <!-- Conteneur d'affichage des conflits détectés -->
-        <div id="sidebarConflictsResults" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-top:6px;">
-          <div style="color:var(--muted); font-size:11px; text-align:center; padding:20px 0;">Aucune analyse lancée. Cliquez sur "Lancer l'Analyse" ci-dessus.</div>
+        <!-- Bouton analyse -->
+        <button class="btn btn-primary" onclick="runConstraintsCheckAndRender()" style="width:100%;justify-content:center;padding:8px;flex-shrink:0;margin-top:10px;">🔍 Analyser maintenant</button>
+
+        <!-- Conflits détectés -->
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:10px;margin-bottom:4px;flex-shrink:0;" id="conflictsListLabel" style="display:none;">Conflits détectés</div>
+        <div id="sidebarConflictsResults" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px;">
+          <div style="color:var(--muted); font-size:11px; text-align:center; padding:20px 0; line-height:1.6;">
+            🔍 Cliquez sur "Analyser maintenant"<br>ou placez un atelier pour voir les conflits.
+          </div>
         </div>
       </div>
 
@@ -1694,6 +1785,8 @@
   </div>
 
   <div id="toast"></div>
+  <!-- Toast drop enrichi (coin bas-droite) -->
+  <div id="dropToast"></div>
 
   <!-- MODALE DÉTAIL / ÉDITION ATELIER PLACÉ -->
   <div class="ev-modal-backdrop" id="evDetailBackdrop">
@@ -3049,36 +3142,146 @@
       return conflicts;
     }
 
+    // ── Met à jour le badge compteur sur l'onglet Contraintes ──────────────
+    function updateConstraintsBadge(conflicts) {
+      const badge = document.getElementById('constraintsBadge');
+      if (!badge) return;
+      const nb = conflicts.length;
+      const hasBlock = conflicts.some(c => c.severity === 'BLOQUANT');
+      if (nb === 0) {
+        badge.textContent = '✓';
+        badge.className = 'badge-ok';
+      } else {
+        badge.textContent = nb;
+        badge.className = hasBlock ? 'badge-block' : 'badge-alerte';
+      }
+    }
+
+    // ── Met à jour les pills résumé du panel Contraintes ───────────────────
+    function updateConflictsSummaryPills(conflicts) {
+      const summary = document.getElementById('conflictsSummary');
+      if (!summary) return;
+      const nb = conflicts.length;
+      const bloquants = conflicts.filter(c => c.severity === 'BLOQUANT').length;
+      const alertes = conflicts.filter(c => c.severity === 'ALERTE').length;
+      if (nb === 0) {
+        document.getElementById('csPillBlock').style.display = 'none';
+        document.getElementById('csPillAlerte').style.display = 'none';
+        document.getElementById('csPillOk').style.display = 'block';
+      } else {
+        document.getElementById('csPillBlock').style.display = bloquants > 0 ? 'block' : 'none';
+        document.getElementById('csPillBlockNum').textContent = bloquants;
+        document.getElementById('csPillAlerte').style.display = alertes > 0 ? 'block' : 'none';
+        document.getElementById('csPillAlerteNum').textContent = alertes;
+        document.getElementById('csPillOk').style.display = 'none';
+      }
+      summary.style.display = 'flex';
+    }
+
+    // ── Toast enrichi après drop ────────────────────────────────────────────
+    let _dropToastTimer = null;
+    function showDropToast(atelierNom, conflicts) {
+      const el = document.getElementById('dropToast');
+      if (!el) return;
+      clearTimeout(_dropToastTimer);
+
+      const bloquants = conflicts.filter(c => c.severity === 'BLOQUANT');
+      const alertes   = conflicts.filter(c => c.severity === 'ALERTE');
+
+      // Filtrer les conflits qui concernent l'atelier qu'on vient de poser (ou globaux)
+      // On affiche max 3 conflits dans le toast
+      const toShow = conflicts.slice(0, 3);
+
+      el.className = '';
+      if (bloquants.length > 0) {
+        el.className = 'dt-block';
+        el.innerHTML = `
+          <div class="dt-title">⛔ ${bloquants.length} conflit(s) BLOQUANT(S)</div>
+          ${toShow.map(c => `<div class="dt-item ${c.severity==='BLOQUANT'?'dt-item-block':'dt-item-alerte'}">${esc(c.message)}</div>`).join('')}
+          ${conflicts.length > 3 ? `<div style="font-size:10px;margin-top:4px;opacity:.7;">+ ${conflicts.length-3} autre(s) — voir le panneau Contraintes</div>` : ''}
+          <div class="dt-footer" onclick="switchSidebarTab('constraints');runConstraintsCheckAndRender();">→ Voir tous les conflits</div>
+        `;
+      } else if (alertes.length > 0) {
+        el.className = 'dt-warn';
+        el.innerHTML = `
+          <div class="dt-title">⚠️ ${alertes.length} avertissement(s)</div>
+          ${toShow.map(c => `<div class="dt-item dt-item-alerte">${esc(c.message)}</div>`).join('')}
+          ${conflicts.length > 3 ? `<div style="font-size:10px;margin-top:4px;opacity:.7;">+ ${conflicts.length-3} autre(s) — voir le panneau Contraintes</div>` : ''}
+          <div class="dt-footer" onclick="switchSidebarTab('constraints');runConstraintsCheckAndRender();">→ Voir tous les conflits</div>
+        `;
+      } else {
+        el.className = 'dt-ok';
+        el.innerHTML = `<div class="dt-title">✅ "${esc(atelierNom)}" placé — aucun conflit</div>`;
+      }
+
+      el.classList.add('show');
+      const delay = bloquants.length > 0 ? 8000 : (alertes.length > 0 ? 6000 : 3000);
+      _dropToastTimer = setTimeout(() => { el.classList.remove('show'); }, delay);
+    }
+
+    // ── Appelé après chaque drop pour valider + mettre à jour l'UI ─────────
+    function postDropConstraintCheck(atelierNom) {
+      if (_PLANNING_RULES_CACHE.length === 0) return; // pas de règles chargées
+      const conflicts = checkPlanningConstraints();
+      updateConstraintsBadge(conflicts);
+      showDropToast(atelierNom, conflicts);
+      // Si le panel contraintes est ouvert, l'actualiser automatiquement
+      const panel = document.getElementById('sidebarConstraintsContent');
+      if (panel && panel.style.display !== 'none') {
+        updateConflictsSummaryPills(conflicts);
+        runConstraintsCheckAndRender();
+      }
+    }
+
+    // ── Collapsible liste des règles activées ───────────────────────────────
+    let _rulesActivatorOpen = true;
+    function toggleRulesActivator() {
+      _rulesActivatorOpen = !_rulesActivatorOpen;
+      const list = document.getElementById('sidebarRulesActivatorList');
+      const chevron = document.getElementById('rulesActivatorChevron');
+      if (list) list.style.display = _rulesActivatorOpen ? 'flex' : 'none';
+      if (chevron) chevron.textContent = _rulesActivatorOpen ? '▼' : '▶';
+    }
+
     function runConstraintsCheckAndRender() {
       const resultsCont = document.getElementById('sidebarConflictsResults');
       if (!resultsCont) return;
 
       const conflicts = checkPlanningConstraints();
+      updateConstraintsBadge(conflicts);
+      updateConflictsSummaryPills(conflicts);
 
       if (conflicts.length === 0) {
         resultsCont.innerHTML = `
-          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px; color:#15803d; font-size:11px; text-align:center; font-weight:700;">
-            ✅ Félicitations ! Aucun conflit ou problème détecté sur ce planning.
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:14px;color:#15803d;font-size:12px;text-align:center;font-weight:700;margin-top:6px;">
+            ✅ Aucun conflit détecté — le planning respecte toutes les règles actives.
           </div>
         `;
         return;
       }
 
-      resultsCont.innerHTML = conflicts.map(c => {
-        const isBloquant = c.severity === 'BLOQUANT';
-        const bg = isBloquant ? '#fef2f2' : '#fffbeb';
-        const border = isBloquant ? '#fee2e2' : '#fef3c7';
-        const color = isBloquant ? '#dc2626' : '#d97706';
-        const indicator = isBloquant ? '⛔ BLOQUANT' : '⚠️ ALERTE';
+      // Trier : BLOQUANT en premier
+      const sorted = [...conflicts].sort((a,b) => {
+        if (a.severity === b.severity) return 0;
+        return a.severity === 'BLOQUANT' ? -1 : 1;
+      });
+
+      resultsCont.innerHTML = sorted.map(c => {
+        const isBlock = c.severity === 'BLOQUANT';
+        const ccClass = isBlock ? 'cc-block' : 'cc-alerte';
+        const sevClass = isBlock ? 'sev-b' : 'sev-a';
+        const sevLabel = isBlock ? '⛔ BLOQUANT' : '⚠️ ALERTE';
+        const hasLink = !!c.eventId;
 
         return `
-          <div class="conflict-item-card" onclick="highlightConflictEvent('${esc(c.eventId)}')" style="background:${bg}; border:1px solid ${border}; border-radius:6px; padding:8px; cursor:${c.eventId ? 'pointer' : 'default'}; transition:all 0.1s ease;" title="${c.eventId ? 'Cliquer pour localiser l\'atelier' : ''}">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; font-weight:700; font-size:10px; color:${color};">
-              <span>${esc(c.ruleName)}</span>
-              <span>${indicator}</span>
+          <div class="conflict-card ${ccClass} ${hasLink ? 'cc-link' : ''}"
+               ${hasLink ? `onclick="highlightConflictEvent('${esc(c.eventId)}')"` : ''}>
+            <div class="cc-header">
+              <span class="cc-rule-name" title="${esc(c.ruleName)}">${esc(c.ruleName)}</span>
+              <span class="cc-severity ${sevClass}">${sevLabel}</span>
             </div>
-            <div style="font-size:11px; color:var(--text); margin-top:4px; line-height:1.3;">${esc(c.message)}</div>
-            ${c.eventId ? `<div style="font-size:9px; color:var(--muted); text-align:right; margin-top:4px; font-weight:bold;">🔍 Cliquer pour cibler</div>` : ''}
+            <div class="cc-message">${esc(c.message)}</div>
+            ${hasLink ? `<div class="cc-locate">🔍 Cliquer pour localiser l\'atelier sur la grille</div>` : ''}
           </div>
         `;
       }).join('');
@@ -3627,8 +3830,10 @@
       PLACED_EVENTS.push(newPlaced);
       renderPlacedEvents();
       renderAteliersSidebar();
-      toast(`✅ "${currentDragAtelier.nomFr}" placé à ${minToTimeStr(startAbsMin)} sur ${lieuCode}`);
+      const _atelierNomDrop = newPlaced.nom;
       currentDragAtelier = null;
+      // Validation immédiate des contraintes après le drop
+      postDropConstraintCheck(_atelierNomDrop);
     }
 
     // ═══════════════════════════════════════════════════════════════
