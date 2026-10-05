@@ -315,6 +315,7 @@
         <option value="Jour 5" data-i18n="jour5_label">Jour 5 — Mar. 31 août</option>
         <option value="Jour 6" data-i18n="jour6_label">Jour 6 — Mer. 1 sept.</option>
         <option value="Jour 7" data-i18n="jour7_label">Jour 7 — Jeu. 2 sept.</option>
+        <option value="Non planifié">Non planifié</option>
       </select>
     </div>
     <div class="filter-group">
@@ -390,12 +391,55 @@ document.addEventListener('change', function(evt) {
 
 // Initialisation par défaut — écrasée si logistics.helpers.js se charge correctement
 if (typeof LOGISTICS_HELPERS === 'undefined') window.LOGISTICS_HELPERS = {};
-loadData(['ref_id_mapping.js', 'ref_translations.js', 'data.js', 'ref_descriptions.js', 'logistics.js', 'logistics.special.js', 'logistics.helpers.js', 'ref_consignes_type.js', 'ref_equipements.js', 'ref_equip_cat.js'], function() {
+loadData(['ref_id_mapping.js', 'ref_translations.js', 'data.js', 'Ateliers.js', 'ref_descriptions.js', 'logistics.js', 'logistics.special.js', 'logistics.helpers.js', 'ref_consignes_type.js', 'ref_equipements.js', 'ref_equip_cat.js'], function() {
 
 // Ce module d'édition doit voir TOUS les ateliers (NEW, APPROVED, REJECTED).
 // On utilise AGENDA_ALL qui contient tous les statuts, contrairement à AGENDA
 // qui est filtré sur APPROVED pour les rapports opérationnels.
-if (typeof window.AGENDA_ALL !== 'undefined') window.AGENDA = window.AGENDA_ALL;
+if (typeof window.AGENDA_ALL !== 'undefined') {
+  window.AGENDA = window.AGENDA_ALL.slice(); // Copie locale de travail
+  if (typeof window.ATELIERS !== 'undefined' && Array.isArray(window.ATELIERS)) {
+    const planifiedIds = new Set(window.AGENDA_ALL.map(e => e.atelierId || e.id).filter(Boolean));
+    window.ATELIERS.forEach(function(at) {
+      if (at.id && !planifiedIds.has(at.id)) {
+        // Cet atelier du catalogue n'est pas encore planifié sur la grille horaire.
+        // On l'ajoute virtuellement dans AGENDA avec le statut "Non planifié" pour permettre son édition !
+        window.AGENDA.push({
+          id: at.id,
+          atelierId: at.id,
+          jour: 'Non planifié',
+          date: '',
+          heure: '',
+          type: at.type || '',
+          atelier: at.nomFr || '',
+          atelierEn: at.nomEn || '',
+          lieu: '',
+          fac1: at.animateurs && at.animateurs[0] ? resolveName(at.animateurs[0]) : '',
+          fac1Id: at.animateurs && at.animateurs[0] ? at.animateurs[0] : '',
+          fac2: at.animateurs && at.animateurs[1] ? resolveName(at.animateurs[1]) : '',
+          fac2Id: at.animateurs && at.animateurs[1] ? at.animateurs[1] : '',
+          fac3: at.animateurs && at.animateurs[2] ? resolveName(at.animateurs[2]) : '',
+          fac3Id: at.animateurs && at.animateurs[2] ? at.animateurs[2] : '',
+          fac4: at.animateurs && at.animateurs[3] ? resolveName(at.animateurs[3]) : '',
+          fac4Id: at.animateurs && at.animateurs[3] ? at.animateurs[3] : '',
+          traduction: '',
+          helper1: '',
+          helper2: '',
+          helper3: '',
+          helper4: '',
+          angel: '',
+          note: '',
+          piment: at.piment || 0,
+          colibri: false,
+          logisticId: at.logisticId || '',
+          meetingRoles: '',
+          statut: at.statut || 'NEW',
+          locked: false
+        });
+      }
+    });
+  }
+}
 
 // ══════════════════════════════════════════════
 // ÉTAT
@@ -741,7 +785,7 @@ facsUniq.forEach(f => {
 // ══════════════════════════════════════════════
 // FILTRE + TRI
 // ══════════════════════════════════════════════
-const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7'];
+const JOUR_ORDER = ['Jour 1','Jour 2','Jour 3','Jour 4','Jour 5','Jour 6','Jour 7','Non planifié'];
 
 function getFiltered() {
   const j = document.getElementById('filterJour').value;
@@ -1380,7 +1424,7 @@ function renderEditor() {
       <div class="form-grid">
         <div class="form-group">
           <label data-i18n="col_jour">Jour</label>
-          ${buildSelect('f-jour', REF_JOURS.map(j=>({value:j.value,label:j.label})), e.jour, false)}
+          ${buildSelect('f-jour', [{value:'Non planifié', label:'— Non planifié —'}].concat(REF_JOURS.map(j=>({value:j.value,label:j.label}))), e.jour, false)}
         </div>
         <div class="form-group">
           <label>Heure de début &amp; Durée</label>

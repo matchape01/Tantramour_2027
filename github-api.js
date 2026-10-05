@@ -67,31 +67,33 @@ async function saveFile(filename, content, opts) {
         agendaList.forEach(function(ag) {
           var atelierId = ag.atelierId || ag.id;
 
-          // Données créneau AGENDA (sans doublons de nom/type/piment)
-          payloadAgenda.push({
-            id: ag.id,
-            atelier_id: atelierId,
-            jour: ag.jour,
-            date_label: ag.date,
-            heure: ag.heure,
-            lieu: ag.lieu || '',
-            fac1_id: ag.fac1Id || (ag.fac1 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac1) : '') : ''),
-            fac2_id: ag.fac2Id || (ag.fac2 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac2) : '') : ''),
-            fac3_id: ag.fac3Id || (ag.fac3 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac3) : '') : ''),
-            fac4_id: ag.fac4Id || (ag.fac4 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac4) : '') : ''),
-            trad_id: ag.tradId || (ag.traduction ? (window.resolveResourceId ? window.resolveResourceId(ag.traduction) : '') : ''),
-            helper1_id: ag.helper1Id || (ag.helper1 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper1) : '') : ''),
-            helper2_id: ag.helper2Id || (ag.helper2 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper2) : '') : ''),
-            helper3_id: ag.helper3Id || (ag.helper3 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper3) : '') : ''),
-            helper4_id: ag.helper4Id || (ag.helper4 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper4) : '') : ''),
-            angel_id: ag.angelId || (ag.angel ? (window.resolveResourceId ? window.resolveResourceId(ag.angel) : '') : ''),
-            note: ag.note || '',
-            colibri: Boolean(ag.colibri),
-            meeting_roles: ag.meetingRoles || '',
-            statut: ag.statut || 'APPROVED',
-            locked: Boolean(ag.locked),
-            updated_at: new Date().toISOString()
-          });
+          // Données créneau AGENDA (uniquement si planifié !)
+          if (ag.jour && ag.jour !== 'Non planifié') {
+            payloadAgenda.push({
+              id: ag.id,
+              atelier_id: atelierId,
+              jour: ag.jour,
+              date_label: ag.date,
+              heure: ag.heure,
+              lieu: ag.lieu || '',
+              fac1_id: ag.fac1Id || (ag.fac1 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac1) : '') : ''),
+              fac2_id: ag.fac2Id || (ag.fac2 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac2) : '') : ''),
+              fac3_id: ag.fac3Id || (ag.fac3 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac3) : '') : ''),
+              fac4_id: ag.fac4Id || (ag.fac4 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac4) : '') : ''),
+              trad_id: ag.tradId || (ag.traduction ? (window.resolveResourceId ? window.resolveResourceId(ag.traduction) : '') : ''),
+              helper1_id: ag.helper1Id || (ag.helper1 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper1) : '') : ''),
+              helper2_id: ag.helper2Id || (ag.helper2 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper2) : '') : ''),
+              helper3_id: ag.helper3Id || (ag.helper3 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper3) : '') : ''),
+              helper4_id: ag.helper4Id || (ag.helper4 ? (window.resolveResourceId ? window.resolveResourceId(ag.helper4) : '') : ''),
+              angel_id: ag.angelId || (ag.angel ? (window.resolveResourceId ? window.resolveResourceId(ag.angel) : '') : ''),
+              note: ag.note || '',
+              colibri: Boolean(ag.colibri),
+              meeting_roles: ag.meetingRoles || '',
+              statut: ag.statut || 'APPROVED',
+              locked: Boolean(ag.locked),
+              updated_at: new Date().toISOString()
+            });
+          }
 
           // Maintien de cohérence du catalogue ATELIERS
           if (ag.atelier) {
