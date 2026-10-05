@@ -1967,9 +1967,9 @@
         <div id="ruleBlock_limit_count" class="rule-type-block" style="display:none;">
           <div class="ev-modal-section-title">Paramètres Limite de Nombre</div>
           <div class="ev-modal-grid">
-            <div class="ev-modal-field">
-              <label>Type d'ateliers</label>
-              <select id="ruleField_limit_type"></select>
+            <div class="ev-modal-field full">
+              <label>Types d'ateliers concernés (sélection multiple)</label>
+              <div id="ruleField_limit_types" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;"></div>
             </div>
             <div class="ev-modal-field">
               <label>Nombre maximal autorisé</label>
@@ -2263,13 +2263,25 @@
       const types = (typeof REF_TYPES !== 'undefined' ? REF_TYPES : [])
         .map(t => typeof t === 'object' ? (t.value || t.label || t.id) : t)
         .sort((a, b) => a.localeCompare(b, 'fr'));
-      const selectIds = ['ruleField_limit_type', 'ruleField_limit_before_type', 'ruleField_limit_after_type', 'ruleField_forced_type'];
+
+      // Selects simples (un seul type)
+      const selectIds = ['ruleField_limit_before_type', 'ruleField_limit_after_type', 'ruleField_forced_type'];
       selectIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
           el.innerHTML = types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
         }
       });
+
+      // Checkboxes multi-sélection pour limit_count
+      const chkTypeCont = document.getElementById('ruleField_limit_types');
+      if (chkTypeCont) {
+        chkTypeCont.innerHTML = types.map(t => `
+          <label class="lieu-chk-item" style="display:inline-flex;gap:4px;align-items:center;background:var(--border-subtle);border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;">
+            <input type="checkbox" value="${esc(t)}" /> ${esc(t)}
+          </label>
+        `).join('');
+      }
 
       const lieux = (typeof REF_LIEUX !== 'undefined' ? REF_LIEUX : []);
       const chkCont = document.getElementById('ruleField_no_slot_lieux');
@@ -2354,7 +2366,11 @@
         document.getElementById('ruleField_venue_unavail_start').value = p.startMin ? minToTimeStr(p.startMin) : '';
         document.getElementById('ruleField_venue_unavail_end').value = p.endMin ? minToTimeStr(p.endMin) : '';
       } else if (r.type === 'limit_count') {
-        document.getElementById('ruleField_limit_type').value = p.atelierType || '';
+        // Compatibilité : atelierType (string) OU atelierTypes (array)
+        const selectedTypes = p.atelierTypes || (p.atelierType ? [p.atelierType] : []);
+        document.querySelectorAll('#ruleField_limit_types input[type="checkbox"]').forEach(chk => {
+          chk.checked = selectedTypes.includes(chk.value);
+        });
         document.getElementById('ruleField_limit_count').value = p.maxCount || 1;
       } else if (r.type === 'sequence_before_after') {
         document.getElementById('ruleField_seq_before').value = p.beforeAtelierId || '';
@@ -2416,13 +2432,14 @@
         };
         description = `Le lieu ${lieu} n'est pas disponible le ${jour} entre ${startStr} et ${endStr}.`;
       } else if (type === 'limit_count') {
-        const atelierType = document.getElementById('ruleField_limit_type').value;
+        const atelierTypes = Array.from(document.querySelectorAll('#ruleField_limit_types input[type="checkbox"]:checked')).map(chk => chk.value);
+        if (atelierTypes.length === 0) { toast('⚠️ Sélectionnez au moins un type d\'atelier.', true); return; }
         const maxCount = parseInt(document.getElementById('ruleField_limit_count').value) || 1;
         params = {
-          atelierType: atelierType,
+          atelierTypes: atelierTypes,
           maxCount: maxCount
         };
-        description = `Limite les ateliers de type "${atelierType}" à maximum ${maxCount} occurrence(s) sur le planning complet.`;
+        description = `Limite les ateliers de type [${atelierTypes.join(', ')}] à maximum ${maxCount} occurrence(s) sur le planning complet.`;
       } else if (type === 'sequence_before_after') {
         const before = document.getElementById('ruleField_seq_before').value.trim();
         const after = document.getElementById('ruleField_seq_after').value.trim();
@@ -2809,16 +2826,17 @@
         });
       });
 
-      // Règle 3 : limit_count (Répétition maximale)
+      // Règle 3 : limit_count (Répétition maximale) — supporte atelierTypes[] et atelierType (rétrocompat)
       activeRules.filter(r => r.type === 'limit_count').forEach(rule => {
         const p = rule.params || {};
-        const matchingEvents = PLACED_EVENTS.filter(ev => ev.type === p.atelierType);
-        if (matchingEvents.length > p.maxCount) {
+        const typesToCheck = p.atelierTypes || (p.atelierType ? [p.atelierType] : []);
+        const matchingEvents = PLACED_EVENTS.filter(ev => typesToCheck.includes(ev.type));
+        if (typesToCheck.length > 0 && matchingEvents.length > p.maxCount) {
           conflicts.push({
             ruleId: rule.id,
             ruleName: rule.name,
             severity: rule.severity,
-            message: `Il y a ${matchingEvents.length} ateliers de type "${p.atelierType}" sur le planning, dépassant la limite maximale de ${p.maxCount} autorisée.`
+            message: `Il y a ${matchingEvents.length} ateliers de type [${typesToCheck.join(', ')}] sur le planning, dépassant la limite maximale de ${p.maxCount} autorisée.`
           });
         }
       });
