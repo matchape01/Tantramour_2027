@@ -97,10 +97,15 @@ async function saveFile(filename, content, opts) {
           // Maintien de cohérence du catalogue ATELIERS
           if (ag.atelier) {
             var animsList = [];
-            if (ag.fac1Id) animsList.push(String(ag.fac1Id));
-            if (ag.fac2Id) animsList.push(String(ag.fac2Id));
-            if (ag.fac3Id) animsList.push(String(ag.fac3Id));
-            if (ag.fac4Id) animsList.push(String(ag.fac4Id));
+            var id1 = ag.fac1Id || (ag.fac1 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac1) : '') : '');
+            var id2 = ag.fac2Id || (ag.fac2 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac2) : '') : '');
+            var id3 = ag.fac3Id || (ag.fac3 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac3) : '') : '');
+            var id4 = ag.fac4Id || (ag.fac4 ? (window.resolveResourceId ? window.resolveResourceId(ag.fac4) : '') : '');
+
+            if (id1) animsList.push(String(id1));
+            if (id2) animsList.push(String(id2));
+            if (id3) animsList.push(String(id3));
+            if (id4) animsList.push(String(id4));
 
             payloadAteliers.push({
               id: atelierId,
@@ -108,7 +113,7 @@ async function saveFile(filename, content, opts) {
               type: ag.type || '',
               piment: ag.piment !== undefined ? ag.piment : 0,
               statut: ag.statut || 'APPROVED',
-              animateurs: animsList, // Synchronise la liste des animateurs du catalogue !
+              animateurs: animsList, // Synchronise la liste des animateurs résolus !
               logistic_id: ag.logisticId || '',
               updated_at: new Date().toISOString()
             });
