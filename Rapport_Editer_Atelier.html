@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -338,9 +338,9 @@
     <div class="filter-group">
       <label>Statut</label>
       <select id="filterStatut" onchange="renderList()">
-        <option value="">Tous les statuts</option>
+        <option value="" selected>Tous les statuts</option>
         <option value="NEW">NEW</option>
-        <option value="APPROVED" selected>APPROVED</option>
+        <option value="APPROVED">APPROVED</option>
         <option value="REJECTED">REJECTED</option>
       </select>
     </div>
@@ -2526,79 +2526,10 @@ function agendaToRaw(entries) {
 // @returns {Promise<void>}
 
 async function mergeAndSaveDataJs(changedEntries, deletedIds) {
-  deletedIds = deletedIds || [];
-
-  // ── Étape 1 : récupérer la version fraîche de data.js depuis l'API GitHub ──
-  // En local on ne fait pas la fusion (le serveur Python écrit directement).
-  var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  if (isLocal) {
-    // En local, les conflits multi-utilisateurs ne se posent pas (un seul serveur).
-    // On régénère depuis AGENDA local et on sauvegarde directement.
-    return saveFile('data.js', genererDataJs());
-  }
-
-  var freshAgenda = null;
-  try {
-    const token = localStorage.getItem('tm_gh_token');
-    const apiUrl = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO +
-                   '/contents/data.js?ref=' + GITHUB_BRANCH + '&_t=' + Date.now();
-    const headers = { 'Accept': 'application/vnd.github+json', 'If-None-Match': '' };
-    if (token) headers['Authorization'] = 'token ' + token;
-    const res = await fetch(apiUrl, { headers: headers, cache: 'no-store' });
-    if (res.ok) {
-      const data    = await res.json();
-      const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
-      // Enregistrer le SHA frais pour que saveFile() ne lève pas de faux conflit
-      if (data.sha && typeof githubRegisterLoadedSha === 'function') {
-        githubRegisterLoadedSha('data.js', data.sha);
-      }
-      freshAgenda = parseDataJs(content);
-    }
-  } catch(_) { /* réseau indispo → on tombe sur le fallback ci-dessous */ }
-
-  if (!freshAgenda || !Array.isArray(freshAgenda)) {
-    // Pas pu récupérer la version fraîche → on sauvegarde depuis AGENDA local
-    // (comportement dégradé identique à avant)
-    console.warn('[mergeAndSave] Fallback : sauvegarde depuis AGENDA local (impossible de récupérer data.js frais)');
-    return saveFile('data.js', genererDataJs());
-  }
-
-  // ── Étape 2 : fusionner les changements locaux sur la base fraîche ────────
-  // Index par ID pour O(1)
-  const freshById = {};
-  freshAgenda.forEach(function(e, i) { if (e.id) freshById[e.id] = i; });
-
-  // Upsert : pour chaque entrée modifiée localement, remplacer dans la base fraîche
-  changedEntries.forEach(function(entry) {
-    if (!entry.id) return;
-    if (freshById[entry.id] !== undefined) {
-      freshAgenda[freshById[entry.id]] = entry; // mise à jour
-    } else {
-      freshAgenda.push(entry); // nouvel atelier
-    }
-  });
-
-  // Supprimer les IDs marqués pour suppression
-  if (deletedIds.length) {
-    const delSet = new Set(deletedIds);
-    freshAgenda = freshAgenda.filter(function(e) { return !delSet.has(e.id); });
-  }
-
-  // ── Étape 3 : regénérer data.js depuis la base fusionnée ─────────────────
-  // On remplace temporairement AGENDA pour réutiliser genererDataJs() tel quel,
-  // puis on restaure le tableau local.
-  const savedAgenda = AGENDA.slice();
-  AGENDA.length = 0;
-  freshAgenda.forEach(function(e) { AGENDA.push(e); });
-  const mergedContent = genererDataJs();
-  AGENDA.length = 0;
-  savedAgenda.forEach(function(e) { AGENDA.push(e); });
-
-  // ── Étape 4 : sauvegarder la version fusionnée ────────────────────────────
-  // skipConflictCheck = true : on vient de récupérer le SHA frais à l'étape 1,
-  // inutile de refaire un GET — évite un double appel API et un faux conflit.
-  await saveFile('data.js', mergedContent, { skipConflictCheck: true });
-  console.log('[mergeAndSave] ✅ data.js fusionné (' + freshAgenda.length + ' ateliers)');
+  // ── Supabase SQL natif est la source unique de vérité ──
+  // Plus besoin de fusionner manuellement des fichiers texte de données via l'API GitHub.
+  // saveFile s'occupe de faire un upsert direct dans la table SQL Supabase de manière instantanée !
+  return saveFile('data.js', genererDataJs());
 }
 
 // ── Parseur de data.js — reconstruit AGENDA[] sans eval() ───────────────────
