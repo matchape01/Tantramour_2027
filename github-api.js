@@ -89,7 +89,6 @@ async function saveFile(filename, content, opts) {
               note: ag.note || '',
               colibri: Boolean(ag.colibri),
               meeting_roles: ag.meetingRoles || '',
-              statut: ag.statut || 'APPROVED',
               locked: Boolean(ag.locked),
               updated_at: new Date().toISOString()
             });
