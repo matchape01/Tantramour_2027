@@ -1318,6 +1318,10 @@ function openImport() {
   document.getElementById('impAnalyzing').style.display = 'none';
   document.getElementById('impDropZone').style.display  = '';
   document.getElementById('imp-file-input').value = '';
+  // Réinitialiser l'état du bouton à chaque ouverture
+  var btn = document.getElementById('impValidateBtn');
+  btn.disabled = false;
+  btn.title = '';
   document.getElementById('impOverlay').classList.add('open');
 }
 
@@ -1518,6 +1522,10 @@ function analyzeImport(wb2, fileName) {
 // ── IMPORT : affichage prévisualisation ───────────────────────
 function renderImportPreview() {
   var p = _importParsed;
+  // Reset du bouton avant d'appliquer la logique
+  var validateBtn = document.getElementById('impValidateBtn');
+  validateBtn.disabled = false;
+  validateBtn.title = '';
   document.getElementById('impAnalyzing').style.display = 'none';
   document.getElementById('impStep1').style.display = 'none';
   document.getElementById('impStep2').style.display  = '';
@@ -1570,10 +1578,15 @@ function renderImportPreview() {
   });
   document.getElementById('impUpdatesTbody').innerHTML = upRows.join('');
 
-  // Désactiver validation si erreurs
-  document.getElementById('impValidateBtn').disabled = p.errors.length > 0;
-  if (p.errors.length > 0) {
-    document.getElementById('impValidateBtn').title = 'Corrigez les erreurs avant de valider.';
+  // Désactiver validation uniquement s'il n'y a rien à faire (créations + mises à jour = 0)
+  if (p.errors.length > 0 && (p.creates.length > 0 || p.updates.length > 0)) {
+    document.getElementById('impValidateBtn').disabled = false;
+    document.getElementById('impValidateBtn').title =
+      p.errors.length + ' ligne(s) en erreur seront ignorées — les ' +
+      (p.creates.length + p.updates.length) + ' ligne(s) valides seront importées.';
+  } else if (p.errors.length > 0) {
+    document.getElementById('impValidateBtn').disabled = true;
+    document.getElementById('impValidateBtn').title = 'Toutes les lignes sont en erreur — rien à importer.';
   }
 
   // Rien à faire ?
@@ -1587,7 +1600,9 @@ function renderImportPreview() {
 // ── IMPORT : application après validation ─────────────────────
 function applyImport() {
   var p = _importParsed;
-  if (!p || p.errors.length > 0) return;
+  if (!p) return;
+  // On n'annule plus si des erreurs existent — on importe uniquement les lignes valides
+  if (p.creates.length === 0 && p.updates.length === 0) return;
 
   var now = nowISO();
   var nCreated = 0, nUpdated = 0;
