@@ -4640,6 +4640,11 @@ function genTypeColorsJs() {
 
 async function tcSave() {
   try {
+    // Synchroniser window.REF_TYPE_COLORS depuis TC_STORE avant la sauvegarde
+    // (saveToServer lit window.REF_TYPE_COLORS pour synchro Supabase)
+    window.REF_TYPE_COLORS = TC_STORE.map(function(e) {
+      return Object.assign({}, e, { types: (e.types || []).slice() });
+    });
     await saveToServer('ref_type_colors.js', genTypeColorsJs());
     TC_DIRTY = false;
     var bar = document.getElementById('bar-type_colors');

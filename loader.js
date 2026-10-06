@@ -255,19 +255,28 @@ var _supabaseLoaders = {
     });
 
     // Reconstitution de REF_TYPE_COLORS depuis DB
-    window.REF_TYPE_COLORS = (raw || []).map(function(r) {
-      return {
-        cssClass: r.css_class || 't-other',
-        label: r.label,
-        types: [r.value],
-        color: r.color || '#374151',
-        colorBg: r.color_bg || '#f9fafb',
-        colorBd: r.color_bd || '#9ca3af',
-        colorDark: r.color_dark || '#9ca3af',
-        colorBgDk: r.color_bg_dk || '#1a1d20',
-        colorBdDk: r.color_bd_dk || '#4b5563'
-      };
+    // Regroupement par css_class : plusieurs types peuvent partager la même couleur
+    var colorMap = {};
+    var colorOrder = [];
+    (raw || []).forEach(function(r) {
+      var cls = r.css_class || 't-other';
+      if (!colorMap[cls]) {
+        colorMap[cls] = {
+          cssClass:  cls,
+          label:     r.label,
+          types:     [],
+          color:     r.color     || '#374151',
+          colorBg:   r.color_bg  || '#f9fafb',
+          colorBd:   r.color_bd  || '#9ca3af',
+          colorDark: r.color_dark   || '#9ca3af',
+          colorBgDk: r.color_bg_dk  || '#1a1d20',
+          colorBdDk: r.color_bd_dk  || '#4b5563'
+        };
+        colorOrder.push(cls);
+      }
+      colorMap[cls].types.push(r.value);
     });
+    window.REF_TYPE_COLORS = colorOrder.map(function(cls) { return colorMap[cls]; });
 
     // Définir les fonctions utilitaires couleur si elles ne sont pas déjà
     // présentes (cas où ref_type_colors.js n'est pas chargé en mode Supabase)
